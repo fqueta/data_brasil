@@ -1,0 +1,28 @@
+.div-salvar{
+  position: fixed;
+  bottom: 3px;
+  z-index: 2;
+}
+.mens{
+  position: fixed;
+  top: 50px;
+  width: 50%;
+  z-index: 1035;
+  right: 10px;
+  text-align: left;
+}
+.event-edit{
+  cursor: pointer;
+}
+table.familias td{
+    max-width: 15ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.card-top .small-box p {
+    max-width: 28ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
