@@ -14,7 +14,7 @@ $config = [
     |
     */
 
-    'title' => 'Simulado Aviação 1.0',
+    'title' => 'Data Brasil 1.0',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -45,12 +45,13 @@ $config = [
     |
     */
 
-    'logo' => '<b>Simulado Aviação</b>SA',
+    'logo' => '<b>Data Brasil</b>DB',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    //'logo_img' => 'vendor/adminlte/dist/img/logo.jpeg',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'RelatorioBA',
+    'logo_img_alt' => 'DataBrasil',
 
     /*
     |--------------------------------------------------------------------------

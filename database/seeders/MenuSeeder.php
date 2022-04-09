@@ -17,57 +17,66 @@ class MenuSeeder extends Seeder
         DB::table('menus')->insert([
             [
                 'categoria'=>'CADASTROS',
-                'description'=>'Cursos',
+                'description'=>'Cadastro de Famílias',
                 'icon'=>'fas fa-copy',
                 'actived'=>true,
-                'url'=>'cad-cursos',
+                'url'=>'cad-familias',
                 'route'=>'',
                 'pai'=>''
             ],
             [
                 'categoria'=>'',
-                'description'=>'Todos Cursos',
+                'description'=>'Famílias',
                 'icon'=>'fas fa-list',
                 'actived'=>true,
-                'url'=>'cursos',
-                'route'=>'cursos.index',
-                'pai'=>'cad-cursos'
+                'url'=>'familias',
+                'route'=>'familias.index',
+                'pai'=>'cad-familias'
             ],
             [
                 'categoria'=>'',
-                'description'=>'Categoria',
+                'description'=>'Beneficiários',
                 'icon'=>'fas fa-list',
                 'actived'=>true,
-                'url'=>'categorias',
-                'route'=>'categorias.index',
-                'pai'=>'cad-cursos'
+                'url'=>'beneficiarios',
+                'route'=>'beneficiarios.index',
+                'pai'=>'cad-familias'
             ],
             [
                 'categoria'=>'',
-                'description'=>'Modulos',
+                'description'=>'Bairro',
                 'icon'=>'fas fa-list',
                 'actived'=>true,
-                'url'=>'modulos',
-                'route'=>'modulos.index',
-                'pai'=>'cad-cursos'
+                'url'=>'bairros',
+                'route'=>'bairros.index',
+                'pai'=>'cad-familias'
             ],
             [
                 'categoria'=>'',
-                'description'=>'Provas',
+                'description'=>'Etapas',
                 'icon'=>'fas fa-list',
                 'actived'=>true,
-                'url'=>'provas',
-                'route'=>'provas.index',
-                'pai'=>'cad-cursos'
+                'url'=>'etapas',
+                'route'=>'etapas.index',
+                'pai'=>'cad-familias'
             ],
             [
                 'categoria'=>'',
-                'description'=>'Questões',
+                'description'=>'Escolaridade',
                 'icon'=>'fas fa-list',
                 'actived'=>true,
-                'url'=>'questoes',
-                'route'=>'questoes.index',
-                'pai'=>'cad-cursos'
+                'url'=>'escolaridade',
+                'route'=>'escolaridades.index',
+                'pai'=>'cad-familias'
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Estado civil',
+                'icon'=>'fas fa-list',
+                'actived'=>true,
+                'url'=>'estado-civil',
+                'route'=>'estado-civil.index',
+                'pai'=>'cad-familias'
             ],
             [
                 'categoria'=>'',

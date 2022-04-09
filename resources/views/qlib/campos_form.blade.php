@@ -68,7 +68,6 @@
                 @if ($config['label'])
                     <label for="{{$config['campo']}}">{{$config['label']}}</label>
                 @endif
-
                 @foreach ($config['arr_opc'] as $k=>$v)
                 <label class="{{ $config['class'] }} @if(isset($config['value']) && $config['value'] == $k) active @endif ">
                     <input type="radio" name="{{ $config['campo']}}" {{$config['event']}} value="{{$k}}" id="" autocomplete="off" @if(isset($config['value']) && $config['value'] == $k) checked @endif > {{ $v }}

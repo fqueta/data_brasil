@@ -46,6 +46,7 @@
                     'cols'=>@$v['cols'],
                     'data_selector'=>@$v['data_selector'],
                     'script'=>@$v['script'],
+                    'valor_padrao'=>@$v['valor_padrao'],
                     'dados'=>@$v['dados'],
             ])}}
             @endforeach

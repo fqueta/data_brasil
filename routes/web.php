@@ -145,6 +145,13 @@ Route::prefix('teste')->group(function(){
 
 Route::post('/upload',[App\Http\Controllers\UploadFile::class,'upload'])->name('teste.upload');
 
+Route::resource('beneficiarios','\App\Http\Controllers\BeneficiariosController',['parameters' => [
+'beneficiarios' => 'id'
+]]);
+
+Route::resource('permissions','\App\Http\Controllers\admin\UserPermissions',['parameters' => [
+    'permissions' => 'id'
+]]);
 Auth::routes();
 
 Route::get('/',function(){
@@ -167,9 +174,6 @@ Route::prefix('admin')->group(function(){
     ]]);
     Route::resource('questoes','\App\Http\Controllers\admin\QuestoesController',['parameters' => [
         'questoes' => 'id'
-    ]]);
-    Route::resource('permissions','\App\Http\Controllers\admin\UserPermissions',['parameters' => [
-        'permissions' => 'id'
     ]]);
 });*/
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

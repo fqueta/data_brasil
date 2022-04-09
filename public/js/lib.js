@@ -933,8 +933,10 @@ function qFormCampos(config){
     const tl = '<label for="{campo}">{label}</label>';
     var tema = {
         text : '<div class="form-group col-{col}-{tam} {class_div}" div-id="{campo}" >{label}<input type="{type}" class="form-control {class}" id="inp-{campo}" name="{campo}" aria-describedby="{campo}" placeholder="{placeholder}" value="{value}" {event} /></div>',
+        tel : '<div class="form-group col-{col}-{tam} {class_div}" div-id="{campo}" >{label}<input type="{type}" class="form-control {class}" id="inp-{campo}" name="{campo}" aria-describedby="{campo}" placeholder="{placeholder}" value="{value}" {event} /></div>',
         number : '<div class="form-group col-{col}-{tam} {class_div}" div-id="{campo}" >{label}<input type="{type}" class="form-control {class}" id="inp-{campo}" name="{campo}" aria-describedby="{campo}" placeholder="{placeholder}" value="{value}" {event} /></div>',
         hidden : '<div class="form-group col-{col}-{tam} {class_div} d-none" div-id="{campo}" >{label}<input type="{type}" class="form-control {class}" id="inp-{campo}" name="{campo}" aria-describedby="{campo}" placeholder="{placeholder}" value="{value}" {event} /></div>',
+        textarea : '<div class="form-group col-{col}-{tam} {class_div}" div-id="{campo}" ><textarea name="{campo}" class="form-control {class}" rows="{rows}" cols="{cols}">{value}</textarea></div>',
         chave_checkbox : '<div class="form-group col-{col}-{tam}"><div class="custom-control custom-switch  {class}"><input type="checkbox" class="custom-control-input" {checked} value="{value}"  name="{campo}" id="{campo}"><label class="custom-control-label" for="{campo}">{label}</label></div></div>',
         select : {
             tm1 : '<div class="form-group col-{col}-{tam} {class_div}" div-id="{campo}" >{label}<select name="{campo}" {event} class="form-control custom-select {class}">{op}</select></div>',
@@ -969,6 +971,12 @@ function qFormCampos(config){
                     r = r.replaceAll('{op}',op);
                 }else{
                     var type = v.type;
+                    var checked = '';
+                    if(type == 'chave_checkbox'){
+                        if(v.valor_padrao==v.value){
+                            checked = 'checked';
+                        }
+                    }
                     r += tema[type].replaceAll('{type}',v.type);
                     var label = tl.replaceAll('{campo}',key);
                     label.replaceAll('{label}',);
@@ -981,6 +989,7 @@ function qFormCampos(config){
                     r = r.replaceAll('{tam}',v.tam);
                     r = r.replaceAll('{col}','md');
                     r = r.replaceAll('{class}',classe);
+                    r = r.replaceAll('{checked}',checked);
                     r = r.replaceAll('{placeholder}',v.placeholder);
                 }
             }
@@ -1075,3 +1084,4 @@ function carregaMascaraMoeda(s){
         decimal: ','
     });
 }
+function cursos_carregaUrl(){}

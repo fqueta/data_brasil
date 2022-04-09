@@ -268,6 +268,7 @@ class FamiliaController extends Controller
         $user = Auth::user();
         $bairro = new BairroController($user);
         $etapa = new EtapaController($user);
+        $beneficiario = new BeneficiariosController($user);
         $escolaridade = new EscolaridadeController($user);
         $estadocivil = new EstadocivilController($user);
         return [
@@ -293,15 +294,6 @@ class FamiliaController extends Controller
                 'label'=>'tipo de residência*',
                 'active'=>true,
                 'type'=>'select',
-                // 'data_selector'=>[
-                //     'campos'=>$bairro->campos(),
-                //     'route_index'=>route('bairros.index'),
-                //     'id_form'=>'frm-bairros',
-                //     'action'=>route('bairros.store'),
-                //     'campo_id'=>'id',
-                //     'campo_bus'=>'nome',
-                //     'label'=>'Bairro',
-                // ],
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='2'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
                 'tam'=>'6',
@@ -314,15 +306,6 @@ class FamiliaController extends Controller
                 'label'=>'Situação',
                 'active'=>true,
                 'type'=>'select_multiple',
-                // 'data_selector'=>[
-                //     'campos'=>$etapa->campos(),
-                //     'route_index'=>route('etapas.index'),
-                //     'id_form'=>'frm-etapas',
-                //     'action'=>route('etapas.store'),
-                //     'campo_id'=>'id',
-                //     'campo_bus'=>'nome',
-                //     'label'=>'Etapa',
-                // ],
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='1'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
                 'class'=>'',
@@ -331,7 +314,7 @@ class FamiliaController extends Controller
                 'cp_busca'=>'tags]['
             ],
             'etapa'=>[
-                'label'=>'Etapa de cadastro*',
+                'label'=>'Etapa',
                 'active'=>true,
                 'type'=>'selector',
                 'data_selector'=>[
@@ -344,7 +327,25 @@ class FamiliaController extends Controller
                     'label'=>'Etapa',
                 ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM etapas WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
-                'tam'=>'6',
+                'tam'=>'12',
+                'class'=>'select2'
+            ],
+            'proprietario_id'=>[
+                'label'=>'Beneficiário',
+                'active'=>true,
+                'type'=>'selector',
+                'data_selector'=>[
+                    'campos'=>$beneficiario->campos(),
+                    'route_index'=>route('beneficiarios.index'),
+                    'id_form'=>'frm-etapas',
+                    'action'=>route('beneficiarios.store'),
+                    'campo_id'=>'id',
+                    'campo_bus'=>'nome',
+                    'label'=>'Etapa',
+                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM beneficiarios WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'12',
+                'class'=>'select2'
             ],
             'area_alvo'=>['label'=>'Área Alvo*','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'2','placeholder'=>''],
             'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],

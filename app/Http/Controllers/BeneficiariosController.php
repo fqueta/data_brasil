@@ -1,16 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use stdClass;
-use App\Models\Estadocivil;
+use App\Models\Beneficiario;
 use Illuminate\Http\Request;
 use App\Qlib\Qlib;
 use App\Models\User;
 use App\Models\_upload;
 use Illuminate\Support\Facades\Auth;
 
-class EstadocivilController extends Controller
+
+class BeneficiariosController extends Controller
 {
     protected $user;
     public $routa;
@@ -20,11 +20,11 @@ class EstadocivilController extends Controller
     {
         $this->middleware('auth');
         $this->user = $user;
-        $this->routa = 'estado-civil';
-        $this->label = 'Estado civil';
+        $this->routa = 'beneficiarios';
+        $this->label = 'Beneficiario';
         $this->view = 'padrao';
     }
-    public function queryEstadocivil($get=false,$config=false)
+    public function queryBeneficiario($get=false,$config=false)
     {
         $ret = false;
         $get = isset($_GET) ? $_GET:[];
@@ -36,11 +36,11 @@ class EstadocivilController extends Controller
             'order'=>isset($get['order']) ? $get['order']: 'desc',
         ];
 
-        $estadocivil =  Estadocivil::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
-        //$estadocivil =  DB::table('estadocivils')->where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
+        $beneficiario =  Beneficiario::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
+        //$beneficiario =  DB::table('beneficiarios')->where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
 
-        $estadocivil_totais = new stdClass;
-        $campos = isset($_SESSION['campos_estadocivils_exibe']) ? $_SESSION['campos_estadocivils_exibe'] : $this->campos();
+        $beneficiario_totais = new stdClass;
+        $campos = isset($_SESSION['campos_beneficiarios_exibe']) ? $_SESSION['campos_beneficiarios_exibe'] : $this->campos();
         $tituloTabela = 'Lista de todos cadastros';
         $arr_titulo = false;
         if(isset($get['filter'])){
@@ -49,11 +49,11 @@ class EstadocivilController extends Controller
                 foreach ($get['filter'] as $key => $value) {
                     if(!empty($value)){
                         if($key=='id'){
-                            $estadocivil->where($key,'LIKE', $value);
+                            $beneficiario->where($key,'LIKE', $value);
                             $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                             $arr_titulo[$campos[$key]['label']] = $value;
                         }else{
-                            $estadocivil->where($key,'LIKE','%'. $value. '%');
+                            $beneficiario->where($key,'LIKE','%'. $value. '%');
                             if($campos[$key]['type']=='select'){
                                 $value = $campos[$key]['arr_opc'][$value];
                             }
@@ -67,76 +67,105 @@ class EstadocivilController extends Controller
                     $tituloTabela = 'Lista de: &'.$titulo_tab;
                                 //$arr_titulo = explode('&',$tituloTabela);
                 }
-                $fm = $estadocivil;
+                $fm = $beneficiario;
                 if($config['limit']=='todos'){
-                    $estadocivil = $estadocivil->get();
+                    $beneficiario = $beneficiario->get();
                 }else{
-                    $estadocivil = $estadocivil->paginate($config['limit']);
+                    $beneficiario = $beneficiario->paginate($config['limit']);
                 }
         }else{
-            $fm = $estadocivil;
+            $fm = $beneficiario;
             if($config['limit']=='todos'){
-                $estadocivil = $estadocivil->get();
+                $beneficiario = $beneficiario->get();
             }else{
-                $estadocivil = $estadocivil->paginate($config['limit']);
+                $beneficiario = $beneficiario->paginate($config['limit']);
             }
         }
-        $estadocivil_totais->todos = $fm->count();
-        $estadocivil_totais->esteMes = $fm->whereYear('created_at', '=', $ano)->whereMonth('created_at','=',$mes)->count();
-        $estadocivil_totais->ativos = $fm->where('ativo','=','s')->count();
-        $estadocivil_totais->inativos = $fm->where('ativo','=','n')->count();
-        $ret['estadocivil'] = $estadocivil;
-        $ret['estadocivil_totais'] = $estadocivil_totais;
+        $beneficiario_totais->todos = $fm->count();
+        $beneficiario_totais->esteMes = $fm->whereYear('created_at', '=', $ano)->whereMonth('created_at','=',$mes)->get()->count();
+        $beneficiario_totais->ativos = $fm->where('ativo','=','s')->get()->count();
+        $beneficiario_totais->inativos = $fm->where('ativo','=','n')->get()->count();
+
+        $ret['beneficiario'] = $beneficiario;
+        $ret['beneficiario_totais'] = $beneficiario_totais;
         $ret['arr_titulo'] = $arr_titulo;
         $ret['campos'] = $campos;
         $ret['config'] = $config;
         $ret['tituloTabela'] = $tituloTabela;
         $ret['config']['resumo'] = [
-            'todos_registro'=>['label'=>'Todos cadastros','value'=>$estadocivil_totais->todos,'icon'=>'fas fa-calendar'],
-            'todos_mes'=>['label'=>'Cadastros recentes','value'=>$estadocivil_totais->esteMes,'icon'=>'fas fa-calendar-times'],
-            'todos_ativos'=>['label'=>'Cadastros ativos','value'=>$estadocivil_totais->ativos,'icon'=>'fas fa-check'],
-            'todos_inativos'=>['label'=>'Cadastros inativos','value'=>$estadocivil_totais->inativos,'icon'=>'fas fa-archive'],
+            'todos_registro'=>['label'=>'Todos cadastros','value'=>$beneficiario_totais->todos,'icon'=>'fas fa-calendar'],
+            'todos_mes'=>['label'=>'Cadastros recentes','value'=>$beneficiario_totais->esteMes,'icon'=>'fas fa-calendar-times'],
+            'todos_ativos'=>['label'=>'Cadastros ativos','value'=>$beneficiario_totais->ativos,'icon'=>'fas fa-check'],
+            'todos_inativos'=>['label'=>'Cadastros inativos','value'=>$beneficiario_totais->inativos,'icon'=>'fas fa-archive'],
         ];
         return $ret;
     }
     public function campos(){
+        $user = Auth::user();
+        $estadocivil = new EstadocivilController($user);
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            'nome'=>['label'=>'Nome','active'=>true,'placeholder'=>'Ex.: Casado(a)','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
-            'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+            'nome'=>['label'=>'Nome da Beneficiario','active'=>true,'placeholder'=>'Ex.: Cadastrado','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
+            'config[nacionalidade]'=>['label'=>'Nacionalidade','active'=>false,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'config[estado_civil]'=>[
+                'label'=>'Estado Civil',
+                'active'=>false,
+                'type'=>'selector',
+                'data_selector'=>[
+                    'campos'=>$estadocivil->campos(),
+                    'route_index'=>route('estado-civil.index'),
+                    'id_form'=>'frm-estado-civil',
+                    'action'=>route('estado-civil.store'),
+                    'campo_id'=>'id',
+                    'campo_bus'=>'nome',
+                    'label'=>'Estado Civil',
+                ],
+                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM estadocivils WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'3',
+                'class'=>'select2',
+            ],
+            'config[rg]'=>['label'=>'RG','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'','cp_busca'=>'config][rg'],
+            'config[cpf]'=>['label'=>'CPF','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'','cp_busca'=>'config][cpf'],
+            'config[telefone]'=>['label'=>'Telefone','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'onblur=mask(this,clientes_mascaraTelefone); onkeypress=mask(this,clientes_mascaraTelefone);','cp_busca'=>'config][telefone'],
+            'config[profissao]'=>['label'=>'Profissão','active'=>true,'type'=>'text','tam'=>'3','exibe_busca'=>'d-block','event'=>'','cp_busca'=>'config][profissao'],
+            'config[nascimento]'=>['label'=>'Nascimento','cp_busca'=>'config][nascimento','active'=>true,'type'=>'text','tam'=>'3','exibe_busca'=>'d-block','event'=>''],
+            'config[mae]'=>['label'=>'Mãe','cp_busca'=>'config][mae','active'=>true,'type'=>'text','tam'=>'12','exibe_busca'=>'d-block','event'=>''],
+            'config[pai]'=>['label'=>'Pai','cp_busca'=>'config][pai','active'=>true,'type'=>'text','tam'=>'12','exibe_busca'=>'d-block','event'=>''],
             'obs'=>['label'=>'Observação','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
+            'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
         ];
     }
     public function index(User $user)
     {
-        $this->authorize('is_admin', $user);
-        $title = 'Cadastro de estadocivil';
+        $this->authorize('ler', $this->routa);
+        $title = 'Beneficiários Cadastrados';
         $titulo = $title;
-        $queryEstadocivil = $this->queryEstadocivil($_GET);
-        $queryEstadocivil['config']['exibe'] = 'html';
+        $queryBeneficiario = $this->queryBeneficiario($_GET);
+        $queryBeneficiario['config']['exibe'] = 'html';
         $routa = $this->routa;
         return view($this->view.'.index',[
-            'dados'=>$queryEstadocivil['estadocivil'],
+            'dados'=>$queryBeneficiario['beneficiario'],
             'title'=>$title,
             'titulo'=>$titulo,
-            'campos_tabela'=>$queryEstadocivil['campos'],
-            'estadocivil_totais'=>$queryEstadocivil['estadocivil_totais'],
-            'titulo_tabela'=>$queryEstadocivil['tituloTabela'],
-            'arr_titulo'=>$queryEstadocivil['arr_titulo'],
-            'config'=>$queryEstadocivil['config'],
+            'campos_tabela'=>$queryBeneficiario['campos'],
+            'beneficiario_totais'=>$queryBeneficiario['beneficiario_totais'],
+            'titulo_tabela'=>$queryBeneficiario['tituloTabela'],
+            'arr_titulo'=>$queryBeneficiario['arr_titulo'],
+            'config'=>$queryBeneficiario['config'],
             'routa'=>$routa,
             'i'=>0,
         ]);
     }
     public function create(User $user)
     {
-        $this->authorize('is_admin', $user);
-        $title = 'Cadastrar estado civil';
+        $this->authorize('create', $this->routa);
+        $title = 'Cadastrar beneficiario';
         $titulo = $title;
         $config = [
             'ac'=>'cad',
-            'frm_id'=>'frm-estadocivils',
+            'frm_id'=>'frm-beneficiarios',
             'route'=>$this->routa,
         ];
         $value = [
@@ -153,19 +182,18 @@ class EstadocivilController extends Controller
     }
     public function store(Request $request)
     {
-        $this->authorize('create', $this->routa);
         $validatedData = $request->validate([
-            'nome' => ['required','string','unique:estadocivils'],
+            'nome' => ['required','string','unique:beneficiarios'],
         ]);
         $dados = $request->all();
         $ajax = isset($dados['ajax'])?$dados['ajax']:'n';
         $dados['ativo'] = isset($dados['ativo'])?$dados['ativo']:'n';
 
         //dd($dados);
-        $salvar = Estadocivil::create($dados);
+        $salvar = Beneficiario::create($dados);
         $route = $this->routa.'.index';
         $ret = [
-            'mens'=>$this->label.' cadastrado com sucesso!',
+            'mens'=>$this->label.' cadastrada com sucesso!',
             'color'=>'success',
             'idCad'=>$salvar->id,
             'exec'=>true,
@@ -186,19 +214,25 @@ class EstadocivilController extends Controller
         //
     }
 
-    public function edit($estadocivil,User $user)
+    public function edit($beneficiario,User $user)
     {
-        $id = $estadocivil;
-        $dados = Estadocivil::where('id',$id)->get();
-        $routa = 'estadocivils';
+        $id = $beneficiario;
+        $dados = Beneficiario::where('id',$id)->get();
+        $routa = 'beneficiarios';
         $this->authorize('ler', $this->routa);
 
         if(!empty($dados)){
-            $title = 'Editar Cadastro de estadocivils';
+            $title = 'Editar Cadastro de beneficiarios';
             $titulo = $title;
             $dados[0]['ac'] = 'alt';
-            if(isset($dados[0]['config'])){
-                $dados[0]['config'] = Qlib::lib_json_array($dados[0]['config']);
+            if(isset($dados[0]['config']) && is_array($dados[0]['config'])){
+                foreach ($dados[0]['config'] as $key => $value) {
+                    if(is_array($value)){
+
+                    }else{
+                        $dados[0]['config['.$key.']'] = $value;
+                    }
+                }
             }
             $listFiles = false;
             $campos = $this->campos();
@@ -207,7 +241,7 @@ class EstadocivilController extends Controller
             }
             $config = [
                 'ac'=>'alt',
-                'frm_id'=>'frm-estadocivils',
+                'frm_id'=>'frm-beneficiarios',
                 'route'=>$this->routa,
                 'id'=>$id,
             ];
@@ -221,19 +255,17 @@ class EstadocivilController extends Controller
                 'campos'=>$campos,
                 'exec'=>true,
             ];
-
             return view($this->view.'.createedit',$ret);
         }else{
             $ret = [
                 'exec'=>false,
             ];
-            return redirect()->route($routa.'.index',$ret);
+            return redirect()->route($this->view.'.index',$ret);
         }
     }
 
     public function update(Request $request, $id)
     {
-        $this->authorize('update', $this->routa);
         $validatedData = $request->validate([
             'nome' => ['required'],
         ]);
@@ -263,7 +295,7 @@ class EstadocivilController extends Controller
         }
         $atualizar=false;
         if(!empty($data)){
-            $atualizar=Estadocivil::where('id',$id)->update($data);
+            $atualizar=Beneficiario::where('id',$id)->update($data);
             $route = $this->routa.'.index';
             $ret = [
                 'exec'=>$atualizar,
@@ -295,17 +327,17 @@ class EstadocivilController extends Controller
         $this->authorize('delete', $this->routa);
         $config = $request->all();
         $ajax =  isset($config['ajax'])?$config['ajax']:'n';
-        $routa = 'estadocivils';
-        if (!$post = Estadocivil::find($id)){
+        $routa = 'beneficiarios';
+        if (!$post = Beneficiario::find($id)){
             if($ajax=='s'){
-                $ret = response()->json(['mens'=>'Registro não encontrado!','color'=>'danger','return'=>route($this->routa.'.index')]);
+                $ret = response()->json(['mens'=>'Registro não encontrado!','color'=>'danger','return'=>route($this->view.'.index')]);
             }else{
-                $ret = redirect()->route($routa.'.index',['mens'=>'Registro não encontrado!','color'=>'danger']);
+                $ret = redirect()->route($this->view.'.index',['mens'=>'Registro não encontrado!','color'=>'danger']);
             }
             return $ret;
         }
 
-        Estadocivil::where('id',$id)->delete();
+        Beneficiario::where('id',$id)->delete();
         if($ajax=='s'){
             $ret = response()->json(['mens'=>__('Registro '.$id.' deletado com sucesso!'),'color'=>'success','return'=>route($this->routa.'.index')]);
         }else{
