@@ -15,6 +15,11 @@
         $('[selector-event]').on('change',function(){
             initSelector($(this));
         });
+        $('[vinculo-event]').on('click',function(){
+            var funCall = function(res){};
+            initSelector($(this));
+        });
+
         $('.select2').select2();
     });
 </script>

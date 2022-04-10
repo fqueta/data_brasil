@@ -117,6 +117,39 @@
                 @endif
             @endif
         </div>
+    @elseif ($config['type']=='html_vinculo')
+        @php
+           $config['script'] = isset($config['script'])?$config['script']:false;
+        @endphp
+        <div class="col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}">
+            <div class="card">
+                <div class="card-header">
+                    <h6>
+                        {{__($config['label'])}}
+                    </h6>
+                </div>
+                <div class="card-body">
+                   <div class="row">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-primary btn-block" data-ac="{{$config['ac']}}" data-selector="{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}" onclick="lib_vinculoCad($(this));" > <i class="fa fa-plus" aria-hidden="true"></i> Cadastrar</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-default btn-block" data-toggle="button" aria-pressed="false" autocomplete="off"> <i class="fa fa-search" aria-hidden="true"></i> Usar cadastrado</button>
+                        </div>
+                        @if ($config['script'])
+                            @if(isset($config['dados']))
+                                @include($config['script'],@$config['dados'])
+                            @else
+                                @include($config['script'])
+                            @endif
+                        @endif
+                   </div>
+                </div>
+                <div class="card-footer text-muted">
+                    {{@$footer}}
+                </div>
+            </div>
+        </div>
     @else
     <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}" >
         @if ($config['label'])

@@ -16,6 +16,7 @@ class CreateBeneficiariosTable extends Migration
         Schema::create('beneficiarios', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->integer('tipo')->nullable();
             $table->string('nome');
             $table->string('email')->nullable();
             $table->enum('sexo',['m','f']);

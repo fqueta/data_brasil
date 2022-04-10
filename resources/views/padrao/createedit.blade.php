@@ -62,11 +62,13 @@
 @section('js')
     @include('qlib.jslib')
     <script type="text/javascript">
-          $(function(){
+        $(function(){
             $('a.print-card').on('click',function(e){
                 openPageLink(e,$(this).attr('href'),"{{date('Y')}}");
             });
-          });
+            $('[mask-cpf]').inputmask('999.999.999-99');
+            $('[mask-data]').inputmask('99/99/9999');
+        });
 
     </script>
     @include('qlib.js_submit')

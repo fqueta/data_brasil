@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\_upload;
 use App\Models\User;
 use stdClass;
 use App\Qlib\Qlib;

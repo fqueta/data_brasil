@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header">
         <h6>
-            {{__('Lista de Residentes no imóvel')}}
+            {{__($config['label'])}}
         </h6>
     </div>
     @php

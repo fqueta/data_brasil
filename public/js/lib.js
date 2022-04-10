@@ -885,11 +885,11 @@ function modalGeral(id,titulo,conteudo){
     m.find('.conteudo').html(conteudo);
 
 }
-function initSelector(obj){
-    if(obj.val()!='cad'){
-        return
+function renderForm(config,alvo){
+    if(typeof config=='undefined'){
+        return ;
     }
-    var d = decodeArray(obj.data('selector'));
+    var d = config;
     if(d.campos){
         var f = qFormCampos(d.campos);
         if(f){
@@ -900,30 +900,55 @@ function initSelector(obj){
             tf = tf.replace('{conte}',f);
             tf = tf.replace('{action}',d.action);
             modalGeral(m,'Cadastrar '+d.label,tf);
-            //obj.find('option').attr('selected',false);
-            //obj.find('option[value=\'\']:first').attr('selected','selected');
-            obj.find('option[value=\'\']').attr('selected','selected');
             $('[f-submit]').remove();
             $(b).insertAfter(m+' .modal-footer button');
+            $('#'+d.id_form+' #inp-nome').focus();
             $('[f-submit]').on('click',function(){
-
-                submitFormularioCSRF($('#'+d.id_form),function(res){
-                    if(res.mens){
-                        lib_formatMensagem('.mens',res.mens,res.color);
+                if(typeof funCall=='undefined'){
+                    funCall = function(res){
+                        if(res.mens){
+                            lib_formatMensagem('.mens',res.mens,res.color);
+                        }
+                        if(res.exec){
+                            $(m).modal('hide');
+                            alvo.append($('<option>', {
+                                value: res.idCad,
+                                text: res.dados[d.campo_bus]
+                            }));
+                            alvo.find('option[value='+res.idCad+']').attr('selected','selected');
+                        }
                     }
-                    if(res.exec){
-                        $(m).modal('hide');
-                        obj.append($('<option>', {
-                            value: res.idCad,
-                            text: res.dados[d.campo_bus]
-                        }));
-                        obj.find('option[value='+res.idCad+']').attr('selected','selected');
-                    }
-                });
+                }
+                submitFormularioCSRF($('#'+d.id_form),funCall);
             });
         }
         //$('.mens').html(campo_nome);
     }
+}
+function initSelector(alvo,funCall){
+    if(alvo.val()!='cad'){
+        return
+    }
+    var d = decodeArray(alvo.data('selector'));
+    renderForm(d,alvo);
+    alvo.find('option[value=\'\']').attr('selected','selected');
+
+}
+function lib_vinculoCad(obj){
+    if(typeof obj == 'undefined'){
+        return;
+    }
+    var d = decodeArray(obj.data('selector')),ac = obj.data('ac');
+    if(ac == 'cad'){
+        var msg = '<div class="row"><div id="exibe_etapas" class="col-md-12 text-center"><h6>Antes de cadastrar um parceiro é necessário salvar este cadastro!</h6></div><div class="col-md-12 mt-3 text-center"><button type="button" class="btn btn-primary" salvar-agora>Salvar agora</button></div></div>';
+        alerta(msg,'modal-beneficiario','Atenção','',true,9000,true);
+        $('[salvar-agora]').on('click',function(){
+            $('[btn="permanecer"]').click();
+            $('#modal-beneficiario').modal('hide');
+        });
+        return;
+    }
+    renderForm(d,obj);
 }
 function qFormCampos(config){
     if(typeof config == 'undefined'){
@@ -934,6 +959,7 @@ function qFormCampos(config){
     var tema = {
         text : '<div class="form-group col-{col}-{tam} {class_div}" div-id="{campo}" >{label}<input type="{type}" class="form-control {class}" id="inp-{campo}" name="{campo}" aria-describedby="{campo}" placeholder="{placeholder}" value="{value}" {event} /></div>',
         tel : '<div class="form-group col-{col}-{tam} {class_div}" div-id="{campo}" >{label}<input type="{type}" class="form-control {class}" id="inp-{campo}" name="{campo}" aria-describedby="{campo}" placeholder="{placeholder}" value="{value}" {event} /></div>',
+        date : '<div class="form-group col-{col}-{tam} {class_div}" div-id="{campo}" >{label}<input type="{type}" class="form-control {class}" id="inp-{campo}" name="{campo}" aria-describedby="{campo}" placeholder="{placeholder}" value="{value}" {event} /></div>',
         number : '<div class="form-group col-{col}-{tam} {class_div}" div-id="{campo}" >{label}<input type="{type}" class="form-control {class}" id="inp-{campo}" name="{campo}" aria-describedby="{campo}" placeholder="{placeholder}" value="{value}" {event} /></div>',
         hidden : '<div class="form-group col-{col}-{tam} {class_div} d-none" div-id="{campo}" >{label}<input type="{type}" class="form-control {class}" id="inp-{campo}" name="{campo}" aria-describedby="{campo}" placeholder="{placeholder}" value="{value}" {event} /></div>',
         textarea : '<div class="form-group col-{col}-{tam} {class_div}" div-id="{campo}" ><textarea name="{campo}" class="form-control {class}" rows="{rows}" cols="{cols}">{value}</textarea></div>',
@@ -966,6 +992,7 @@ function qFormCampos(config){
                     r = r.replaceAll('{label}',v.label);
                     r = r.replaceAll('{value}',value);
                     r = r.replaceAll('{tam}',v.tam);
+                    r = r.replaceAll('{event}',v.event);
                     r = r.replaceAll('{col}','md');
                     r = r.replaceAll('{class}',classe);
                     r = r.replaceAll('{op}',op);
@@ -987,6 +1014,7 @@ function qFormCampos(config){
                     r = r.replaceAll('{label}',v.label);
                     r = r.replaceAll('{value}',value);
                     r = r.replaceAll('{tam}',v.tam);
+                    r = r.replaceAll('{event}',v.event);
                     r = r.replaceAll('{col}','md');
                     r = r.replaceAll('{class}',classe);
                     r = r.replaceAll('{checked}',checked);
@@ -1083,5 +1111,11 @@ function carregaMascaraMoeda(s){
         thousands: '.',
         decimal: ','
     });
+}
+function lib_carregaConjuge(frmParce,frmBene){
+    var formParce = $(frmParce);
+    var formBenef = $(frmBene);
+    var idBenef = formBenef.find('[name="id"]').val();
+    formParce.find('[name="conjuge"]').val(idBenef);
 }
 function cursos_carregaUrl(){}
