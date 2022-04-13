@@ -85,6 +85,19 @@
                 <div class="alert alert-danger">{{ $message }}</div>
             @enderror
         </div>
+    @elseif ($config['type']=='hidden_text')
+        <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}} d-none" div-id="{{$config['campo']}}" >
+            @if ($config['label'])
+                <label for="{{$config['campo']}}">{{$config['label']}}</label>
+            @endif
+            <span class="{{$config['campo']}}">
+                {{$config['value']}}
+            </span>
+            <input type="{{$config['type']}}" class="form-control @error($config['campo']) is-invalid @enderror {{$config['class']}}" id="inp-{{$config['campo']}}" name="{{$config['campo']}}" aria-describedby="{{$config['campo']}}" placeholder="{{$config['placeholder']}}" value="@if(isset($config['value'])){{$config['value']}}@elseif($config['ac']=='cad'){{old($config['campo'])}}@endif" {{$config['event']}} />
+            @error($config['campo'])
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+        </div>
     @elseif ($config['type']=='chave_checkbox')
         <!--config['checked'] é o gravado no bando do dedos e o value é o valor para ficar checado-->
         <div class="form-group col-{{$config['col']}}-{{$config['tam']}}">
@@ -129,13 +142,29 @@
                     </h6>
                 </div>
                 <div class="card-body">
-                   <div class="row">
-                        <div class="col-6">
-                            <button type="button" class="btn btn-outline-primary btn-block" data-ac="{{$config['ac']}}" data-selector="{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}" onclick="lib_vinculoCad($(this));" > <i class="fa fa-plus" aria-hidden="true"></i> Cadastrar</button>
+                   <div class="row" id="row-{{$config['data_selector']['campo']}}">
+                        <div class="col-6 mb-2 btn-consulta-vinculo">
+                            <button type="button" class="btn btn-default btn-block" data-toggle="button" aria-pressed="false" autocomplete="off" onclick="lib_abrirModalConsultaVinculo('{{@$config['data_selector']['campo']}}','abrir');"> <i class="fa fa-search" aria-hidden="true"></i> {{__('Usar cadastrado')}}</button>
                         </div>
-                        <div class="col-6">
-                            <button type="button" class="btn btn-default btn-block" data-toggle="button" aria-pressed="false" autocomplete="off"> <i class="fa fa-search" aria-hidden="true"></i> Usar cadastrado</button>
+                        <div class="col-6 mb-2 btn-voltar-vinculo" style="display: none">
+                            <button type="button" class="btn btn-default btn-block" data-toggle="button" aria-pressed="false" autocomplete="off" onclick="lib_abrirModalConsultaVinculo('{{@$config['data_selector']['campo']}}','fechar');">
+                                <span class="pull-left">
+                                    <i class="fa fa-chevron-left " aria-hidden="true"></i> {{__('Voltar')}}
+                                </span>
+                            </button>
                         </div>
+                        <div class="col-6 mb-2">
+                            <button type="button" class="btn btn-outline-primary btn-block" data-ac="{{$config['ac']}}" data-selector="{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}" onclick="lib_vinculoCad($(this));" > <i class="fa fa-plus" aria-hidden="true"></i> {{__('Cadastrar')}}</button>
+                        </div>
+                        <div class="col-md-12 mb-2" style="display: none;" id="inp-cad-{{$config['data_selector']['campo']}}">
+                            <input type="text"
+                                url="{{$config['data_selector']['route_index']}}"
+                                class="autocomplete form-control"
+                                data-selector="{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}"
+                                placeholder="{{__('Digite para iniciar a consulta...')}}"
+                                />
+                        </div>
+
                         @if ($config['script'])
                             @if(isset($config['dados']))
                                 @include($config['script'],@$config['dados'])
@@ -143,6 +172,37 @@
                                 @include($config['script'])
                             @endif
                         @endif
+                        @if (isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
+                        <div class="col-md-12 ">
+                            @php
+                                $tema = '<td id="td-{k}">{v}</td>';
+                                @endphp
+                            <tm class="d-none">{{$tema}}</tm>
+                            <table class="table table-hover" id="table-{{$config['type']}}-{{$config['data_selector']['campo']}}">
+                                <thead>
+                                    <tr>
+                                        @foreach ($config['data_selector']['table'] as $kh=>$vh)
+                                        <th>{{$vh['label']}}</th>
+                                        @endforeach
+                                        <th class="text-right">{{__('Ação')}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (isset($config['data_selector']['list']) && is_array($config['data_selector']['list']) && isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
+                                    <tr id="tr-{{$config['data_selector']['list']['id']}}"><input type="hidden" name="{{$config['campo']}}" value="{{$config['data_selector']['list']['id']}}">
+                                        @foreach ($config['data_selector']['table'] as $kb=>$vb)
+                                            <td id="td-{{$kb}}">{{$config['data_selector']['list'][$kb]}}</td>
+                                        @endforeach
+                                        <td class="text-right">
+                                            <button type="button" btn-alt onclick="lib_htmlVinculo('alt','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}')" title="{{__('Editar')}}" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button>
+                                            <button type="button" onclick="lib_htmlVinculo('del','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}')" class="btn btn-outline-danger" title="{{__('Remover')}}" > <i class="fa fa-trash" aria-hidden="true"></i> </button>
+                                        </td>
+                                    </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                            @endif
+                        </div>
                    </div>
                 </div>
                 <div class="card-footer text-muted">

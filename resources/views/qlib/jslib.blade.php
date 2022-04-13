@@ -7,6 +7,7 @@
     'tam'=>'modal-lg',
 ]])
 <script src="{{url('/')}}/js/jquery.maskMoney.min.js"></script>
+<script src="{{url('/')}}/js/jquery-ui.min.js"></script>
 <script src="{{url('/')}}/js/jquery.inputmask.bundle.min.js"></script>
 <script src=" {{url('/')}}/js/lib.js"></script>
 <script>
@@ -21,5 +22,13 @@
         });
 
         $('.select2').select2();
+        var urlAuto = $('.autocomplete').attr('url');
+        $( ".autocomplete" ).autocomplete({
+            source: urlAuto,
+            select: function (event, ui) {
+                //var sec = $(this).attr('sec');
+                lib_listarCadastro(ui.item,$(this));
+            }
+        });
     });
 </script>

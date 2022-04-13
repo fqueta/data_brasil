@@ -140,7 +140,12 @@ class Qlib
             $config['class_div'] = isset($config['class_div']) ? $config['class_div'] : false;
             if(@$config['type']=='chave_checkbox' && @$config['ac']=='cad'){
                 if(@$config['checked'] == null && isset($config['valor_padrao']))
-                    $config['checked'] = $config['valor_padrao'];
+                $config['checked'] = $config['valor_padrao'];
+            }
+            if(@$config['type']=='html_vinculo' && @$config['ac']=='alt'){
+                $tab = $config['data_selector']['tab'];
+                $id = $config['value'];
+                $config['data_selector']['list'] = Qlib::dados_tab($tab,['id'=>$id]);
             }
             return view('qlib.campos_form',['config'=>$config]);
         }else{
@@ -257,6 +262,55 @@ class Qlib
                 if(isset($arr_permissions[$perm][$url])){
                     $ret = true;
                 }
+            }
+        }
+        return $ret;
+    }
+    static public function html_vinculo($config = null)
+    {
+        /**
+        Qlib::html_vinculo([
+            'campos'=>'',
+            'type'=>'html_vinculo',
+            'dados'=>'',
+        ]);
+         */
+
+        $ret = false;
+        $campos = isset($config['campos'])?$config['campos']:false;
+        $type = isset($config['type'])?$config['type']:false;
+        $dados = isset($config['dados'])?$config['dados']:false;
+        if(!$campos)
+            return $ret;
+        if(is_array($campos) && $dados){
+            foreach ($campos as $key => $value) {
+                if($value['type']==$type){
+                    $id = $dados[$key];
+                    $tab = $value['data_selector']['tab'];
+                    $d_tab = DB::table($tab)->find($id);
+                    if($d_tab){
+                        $ret[$key] = (array)$d_tab;
+                    }
+                }
+            }
+        }
+        return $ret;
+    }
+    static public function dados_tab($tab = null,$config)
+    {
+        $ret = false;
+        if($tab){
+            $id = isset($config['id']) ? $config['id']:false;
+            $obj_list = DB::table($tab)->find($id);
+            if($list=(array)$obj_list){
+                    if(is_array($list)){
+                        foreach ($list as $k => $v) {
+                            if(Qlib::isJson($v)){
+                                $list[$k] = Qlib::lib_json_array($v);
+                            }
+                        }
+                    }
+                    $ret = $list;
             }
         }
         return $ret;

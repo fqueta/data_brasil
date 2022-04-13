@@ -22,6 +22,8 @@ class CreateFamiliasTable extends Migration
             $table->integer('tipo_residencia')->nullable();
             $table->integer('etapa')->nullable();
             $table->integer('id_loteamento')->nullable();
+            $table->integer('id_beneficiario')->nullable();
+            $table->integer('id_conjuge')->nullable();
             $table->string('matricula','100')->nullable();
             $table->string('quadra','50')->nullable();
             $table->string('lote','100')->nullable();

@@ -59,8 +59,9 @@ function redirect_blank(url) {
   a.click();
 }
 function encodeArray(arr){
-	var encode = JSON.stringify(btoa(arr));
-	return encode
+    var ar = JSON.stringify(arr);
+    var encode = btoa(ar);
+    return encode
 }
 function decodeArray(arr){
 	var decode = JSON.parse(atob(arr));
@@ -227,7 +228,7 @@ function cancelEdit(id,ac){
 }
 function delRegistro(id){
   var don = $('#'+id+' input');
-  console.log(don);
+  //console.log(don);
   var arr = [];
   var seriali = '';
   $.each(don,function(i,k){
@@ -885,7 +886,7 @@ function modalGeral(id,titulo,conteudo){
     m.find('.conteudo').html(conteudo);
 
 }
-function renderForm(config,alvo){
+function renderForm(config,alvo,funCall){
     if(typeof config=='undefined'){
         return ;
     }
@@ -940,21 +941,31 @@ function lib_vinculoCad(obj){
     }
     var d = decodeArray(obj.data('selector')),ac = obj.data('ac');
     if(ac == 'cad'){
-        var msg = '<div class="row"><div id="exibe_etapas" class="col-md-12 text-center"><h6>Antes de cadastrar um parceiro é necessário salvar este cadastro!</h6></div><div class="col-md-12 mt-3 text-center"><button type="button" class="btn btn-primary" salvar-agora>Salvar agora</button></div></div>';
-        alerta(msg,'modal-beneficiario','Atenção','',true,9000,true);
+        var msg = '<div class="row"><div id="exibe_etapas" class="col-md-12 text-center"><h6>Antes de cadastrar um parceiro é necessário salvar este cadastro!</h6></div><div class="col-md-12 mt-3 text-center"></div></div>';
+        var btns = '<button type="button" class="btn btn-primary" salvar-agora>Salvar agora</button>';
+        alerta(msg,'modal-cad-vinculo','Atenção','',true,9000,true);
+        $(btns).insertAfter('#modal-cad-vinculo .modal-footer button');
         $('[salvar-agora]').on('click',function(){
             $('[btn="permanecer"]').click();
-            $('#modal-beneficiario').modal('hide');
+            $('#modal-cad-vinculo').modal('hide');
         });
         return;
     }
-    renderForm(d,obj);
+    renderForm(d,obj,function(res){
+        if(res.mens){
+            lib_formatMensagem('.mens',res.mens,res.color);
+        }
+        if(res.exec){
+            var mod = '#modal-geral';
+            $(mod).modal('hide');
+            lib_listDadosHtmlVinculo(res,obj.data('selector'),'cad');
+        }
+    });
 }
 function qFormCampos(config){
     if(typeof config == 'undefined'){
         return false;
     }
-    //console.log(config);
     const tl = '<label for="{campo}">{label}</label>';
     var tema = {
         text : '<div class="form-group col-{col}-{tam} {class_div}" div-id="{campo}" >{label}<input type="{type}" class="form-control {class}" id="inp-{campo}" name="{campo}" aria-describedby="{campo}" placeholder="{placeholder}" value="{value}" {event} /></div>',
@@ -973,19 +984,23 @@ function qFormCampos(config){
     var ret = '';
     if(Object.entries(config).length>0){
         Object.entries(config).forEach(([key, v]) => {
-            if(v.type!='hidder' && v.active==true){
+            if(v.js || v.active){
                 if(v.type == 'selector' || v.type == 'select'){
                     let op='',arr = v.arr_opc,tm1 = tema['select'].tm1,tm2 = tema['select'].tm2;
-                    //console.log(arr);return;
+                    var value = v.value?v.value:'';
                     Object.entries(arr).forEach(([i, el]) => {
                         op += tm2.replace('{k}',i);
+                        var selected = '';
+                        if(value==i){
+                            var selected = 'selected';
+                        }
+                        op = op.replaceAll('{selected}',selected);
                         op = op.replace('{v}',el);
                     });
                     var type = v.type;
                     r += tm1.replaceAll('{type}',v.type);
                     var label = tl.replaceAll('{campo}',key);
                     label.replaceAll('{label}',);
-                    var value = v.value?v.value:'';
                     var classe = v.class?v.class:'';
                     var placeholder = v.placeholder?v.placeholder:'';
                     r = r.replaceAll('{campo}',key);
@@ -996,6 +1011,7 @@ function qFormCampos(config){
                     r = r.replaceAll('{col}','md');
                     r = r.replaceAll('{class}',classe);
                     r = r.replaceAll('{op}',op);
+                    r = r.replaceAll('{placeholder}',v.placeholder);
                 }else{
                     var type = v.type;
                     var checked = '';
@@ -1119,3 +1135,133 @@ function lib_carregaConjuge(frmParce,frmBene){
     formParce.find('[name="conjuge"]').val(idBenef);
 }
 function cursos_carregaUrl(){}
+function lib_htmlVinculo(ac,campos){
+    var c = decodeArray(campos),idf='#'+c.id_form,arr=c.campos;
+    if(ac=='del'){
+        if(id = c.list.id){
+            var msg = '<div class="row"><div id="mens-id" class="col-md-12 text-center"><h5>Deseja Remover da lista?</h5><p>Para completar é necessário salvar</p><p>Remover da lista não exclui o cadastro</p></div><div class="col-md-12 mt-3 text-center"></div></div>';
+            var btnr = '<button type="button" class="btn btn-danger" deletar>Remover Agora!</button>';
+            alerta(msg,'modal-del-html_vinculo','Atenção','',true);
+            $(btnr).insertAfter('#modal-del-html_vinculo .modal-footer button');
+            $('[deletar]').on('click',function(){
+                $('#table-html_vinculo-'+c.campo+' #tr-'+id+' td').html('');
+                $('#modal-del-html_vinculo').modal('hide');
+                $('[name="'+c.campo+'"]').val('');
+            });
+        }
+    }
+    if(ac=='alt'){
+        if(Object.entries(arr).length>0){
+            Object.entries(arr).forEach(([k, v]) => {
+                if(c.list[k]){
+                    c.campos[k].value = c.list[k];
+                }else{
+                    if(cp=c.campos[k].cp_busca){
+                        let ar = cp.split('][');
+                        if(ar[1]){
+                            c.campos[k].value = c.list[ar[0]][ar[1]];
+                        }
+                    }
+                }
+            });
+
+            renderForm(c,campos,function(res){
+                if(res.mens){
+                    lib_formatMensagem('.mens',res.mens,res.color);
+                }
+                if(res.exec){
+                    var mod = '#modal-geral';
+                    $(mod).modal('hide');
+                    lib_listDadosHtmlVinculo(res,campos);
+                }
+            });
+            if(c.list.id){
+                frm = $(idf)
+                var m = '<input type="hidden" name="_method" value="PUT">';
+                frm.attr('action',c.action+'/'+c.list.id);
+                frm.find('[name="_method"]').remove();
+                frm.append(m);
+            }
+        }
+    }
+}
+function lib_listDadosHtmlVinculo(res,campos,ac){
+    if(typeof ac=='undefined'){
+        ac = 'alt';
+    }
+    var dt = decodeArray(campos);
+    if((d=res.dados) && ac =='cad'){
+        var table = $('#table-html_vinculo-'+dt.campo);
+        var tm = $('tm').html();
+        var tm0 = '<tr id="tr-{id}">{td}</tr>';
+        var tm = '<td id="td-{k}" class="{class}">{v}</td>';
+        if(t = dt.table){
+            var td = '';
+            $.each(t,function(k,v){
+                td += tm.replaceAll('{k}',k);
+                td = td.replaceAll('{v}',d[k]);
+                td = td.replaceAll('{class}','');
+            });
+
+            table.find('tbody tr').remove();
+            var tr = tm0.replaceAll('{id}',d.id);
+            dt.list = d;
+            var e = encodeArray(dt);
+            var btnsAc = '<button type="button" btn-alt="" onclick="lib_htmlVinculo(\'alt\',\''+e+'\')" title="Editar" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button> '+
+            '<button type="button" onclick="lib_htmlVinculo(\'del\',\''+e+'\')" class="btn btn-outline-danger" title="Remover"> <i class="fa fa-trash" aria-hidden="true"></i> </button>';
+            var tdacao = tm.replaceAll('{k}','tr-acao');
+            tdacao = tdacao.replaceAll('{v}',btnsAc);
+            tdacao = tdacao.replaceAll('{class}','text-right');
+            var tr = tr.replaceAll('{td}',td+tdacao);
+            table.find('tbody').html(tr);
+            if(dt.campo){
+                $('[name="'+dt.campo+'"]').remove();
+                var selInp = table.find('tbody');
+                $('<input type="hidden" name="'+dt.campo+'" value="'+d.id+'" />').insertBefore(selInp);
+            }
+        }
+    }
+    if((d=res.dados) && ac =='alt'){
+        var table = $('#table-html_vinculo-'+dt.campo);
+        $.each(d,function(k,v){
+            table.find('#tr-'+d.id+' #td-'+k).html(v);
+        });
+        dt.list = d;
+        var e = encodeArray(dt);
+
+        table.find('#tr-'+d.id+' [btn-alt]').attr('data_selector',e);
+        table.find('#tr-'+d.id+' [btn-alt]').attr('onclick','lib_htmlVinculo(\'alt\',"'+e+'")');
+        console.log(dt);
+
+    }
+}
+function lib_listarCadastro(res,obj){
+    if(typeof obj == 'undefined')
+    {
+        return;
+    }
+    if(res.dados){
+        lib_listDadosHtmlVinculo(res,obj.data('selector'),'cad');
+        obj.val('');
+    }
+}
+function lib_abrirModalConsultaVinculo(campo,ac){
+    //var dt = decodeArray(obj);
+    //var btns = '<button type="button" class="btn btn-primary btn-block" voltar>Voltar</button>';
+    //var msg = '<div class="row"><div id="exibe_vinculo" class="col-md-12 text-center"><h6>Antes de cadastrar um parceiro é necessário salvar este cadastro!</h6></div><div class="col-md-12 mt-3 text-center"></div></div>';
+
+    var btnAbrir = $('#row-'+campo+' .btn-consulta-vinculo'),btnFechar = $('#row-'+campo+' .btn-voltar-vinculo'),ef='slow';
+    if(ac=='abrir'){
+        btnAbrir.hide(ef);
+        btnFechar.show(ef);
+        $('#inp-cad-'+campo).show(ef);
+        $('#inp-cad-'+campo+' input').val('');
+        $('#inp-cad-'+campo+' input').focus();
+    }
+    if(ac=='fechar'){
+        btnAbrir.show(ef);
+        btnFechar.hide(ef);
+        $('#inp-cad-'+campo).hide(ef);
+        $('#inp-cad-'+campo+' input').val('');
+    }
+}

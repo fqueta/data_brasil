@@ -30,12 +30,16 @@ class FamiliaController extends Controller
 {
     protected $user;
     public $routa;
-
+    public $view;
+    public $tab;
     public function __construct(User $user)
     {
         $this->middleware('auth');
         $this->user = $user;
         $this->routa = 'familias';
+        $this->label = 'Familia';
+        $this->view = $this->routa;
+        $this->tab = $this->routa;
     }
     public function queryFamilias($get=false,$config=false)
     {
@@ -330,22 +334,57 @@ class FamiliaController extends Controller
                 'tam'=>'12',
                 'class'=>'select2'
             ],
-            'proprietario_id'=>[
-                'label'=>'Beneficiário',
-                'active'=>true,
-                'type'=>'selector',
+            'id_beneficiario'=>[
+                'label'=>'Prorietário',
+                'active'=>false,
+                'type'=>'html_vinculo',
+                'exibe_busca'=>'d-none',
+                'event'=>'',
+                'tam'=>'12',
+                'script'=>'',
                 'data_selector'=>[
                     'campos'=>$beneficiario->campos(),
                     'route_index'=>route('beneficiarios.index'),
-                    'id_form'=>'frm-etapas',
+                    'id_form'=>'frm-conjuge',
                     'action'=>route('beneficiarios.store'),
                     'campo_id'=>'id',
                     'campo_bus'=>'nome',
-                    'label'=>'Etapa',
-                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM beneficiarios WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                    'campo'=>'id_beneficiario',
+                    'value'=>['tipo'=>1],
+                    'label'=>'Proprietário',
+                    'table'=>[
+                        'id'=>['label'=>'Id','type'=>'text'],
+                        'nome'=>['label'=>'Nome','type'=>'text'],
+                        'cpf'=>['label'=>'CPF','type'=>'text']
+                    ],
+                    'tab' =>'beneficiarios',
+                ],
+            ],
+            'id_conjuge'=>[
+                'label'=>'Cônjuge ou Parceiro(a)',
+                'active'=>false,
+                'type'=>'html_vinculo',
+                'exibe_busca'=>'d-none',
                 'event'=>'',
                 'tam'=>'12',
-                'class'=>'select2'
+                'script'=>'',
+                'data_selector'=>[
+                    'campos'=>$beneficiario->campos_parceiro(),
+                    'route_index'=>route('beneficiarios.index'),
+                    'id_form'=>'frm-conjuge',
+                    'action'=>route('beneficiarios.store'),
+                    'campo_id'=>'id',
+                    'campo_bus'=>'nome',
+                    'campo'=>'id_conjuge',
+                    'value'=>['tipo'=>2],
+                    'label'=>'Cônjuge ou Parceiro(a)',
+                    'table'=>[
+                        'id'=>['label'=>'Id','type'=>'text'],
+                        'nome'=>['label'=>'Nome','type'=>'text'],
+                        'cpf'=>['label'=>'CPF','type'=>'text']
+                    ],
+                    'tab' =>'beneficiarios',
+                ],
             ],
             'area_alvo'=>['label'=>'Área Alvo*','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'2','placeholder'=>''],
             'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],

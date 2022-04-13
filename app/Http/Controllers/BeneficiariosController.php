@@ -17,6 +17,7 @@ class BeneficiariosController extends Controller
     public $routa;
     public $label;
     public $view;
+    public $tab;
     public function __construct(User $user)
     {
         $this->middleware('auth');
@@ -24,6 +25,7 @@ class BeneficiariosController extends Controller
         $this->routa = 'beneficiarios';
         $this->label = 'Beneficiario';
         $this->view = 'padrao';
+        $this->tab = $this->routa;
     }
     public function queryBeneficiario($get=false,$config=false)
     {
@@ -44,6 +46,10 @@ class BeneficiariosController extends Controller
         $campos = isset($_SESSION['campos_beneficiarios_exibe']) ? $_SESSION['campos_beneficiarios_exibe'] : $this->campos();
         $tituloTabela = 'Lista de todos cadastros';
         $arr_titulo = false;
+        if(isset($get['term'])){
+            //Autocomplete
+            $get['filter']['nome'] = $get['term'];
+        }
         if(isset($get['filter'])){
                 $titulo_tab = false;
                 $i = 0;
@@ -54,12 +60,24 @@ class BeneficiariosController extends Controller
                             $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                             $arr_titulo[$campos[$key]['label']] = $value;
                         }else{
-                            $beneficiario->where($key,'LIKE','%'. $value. '%');
-                            if($campos[$key]['type']=='select'){
-                                $value = $campos[$key]['arr_opc'][$value];
+                            if(is_array($value)){
+                                //dd($campos);
+                                foreach ($value as $kv => $vv) {
+                                    $beneficiario->where($key,'LIKE','%"'. $kv. '":"'.$vv.'"%');
+                                    if($campos[$key]['type']=='select'){
+                                        $value = $campos[$key]['arr_opc'][$value];
+                                    }
+                                    $arr_titulo[$campos[$key]['label']] = $value;
+                                    $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
+                                }
+                            }else{
+                                $beneficiario->where($key,'LIKE','%'. $value. '%');
+                                if($campos[$key]['type']=='select'){
+                                    $value = $campos[$key]['arr_opc'][$value];
+                                }
+                                $arr_titulo[$campos[$key]['label']] = $value;
+                                $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                             }
-                            $arr_titulo[$campos[$key]['label']] = $value;
-                            $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                         }
                         $i++;
                     }
@@ -119,9 +137,10 @@ class BeneficiariosController extends Controller
                 'option_select'=>false,
             ],
             'nome'=>['label'=>'Nome da Beneficiario','active'=>true,'placeholder'=>'Ex.: Cadastrado','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
-            'config[nacionalidade]'=>['label'=>'Nacionalidade','active'=>false,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'config[nacionalidade]'=>['label'=>'Nacionalidade','active'=>false,'js'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
             'config[estado_civil]'=>[
                 'label'=>'Estado Civil',
+                'js'=>true,
                 'active'=>false,
                 'type'=>'selector',
                 'data_selector'=>[
@@ -135,6 +154,7 @@ class BeneficiariosController extends Controller
                 ],
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM estadocivils WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
+                'cp_busca'=>'config][estado_civil',
                 'tam'=>'3',
                 'class'=>'select2',
             ],
@@ -159,11 +179,20 @@ class BeneficiariosController extends Controller
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM escolaridades WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
                 'tam'=>'3',
+                'option_select'=>true,
+                'cp_busca'=>'config][escolaridade',
                 'class'=>'select2',
             ],
             'config[mae]'=>['label'=>'Mãe','cp_busca'=>'config][mae','active'=>true,'type'=>'text','tam'=>'12','exibe_busca'=>'d-block','event'=>''],
             'config[pai]'=>['label'=>'Pai','cp_busca'=>'config][pai','active'=>true,'type'=>'text','tam'=>'12','exibe_busca'=>'d-block','event'=>''],
-            'conjuge'=>['label'=>'Cônjuge ou parceiro','active'=>false,'type'=>'html_vinculo','exibe_busca'=>'d-none','event'=>'','tam'=>'12','script'=>'beneficiarios.conjuge',
+            'conjuge'=>[
+                'label'=>'Cônjuge ou parceiro',
+                'active'=>false,
+                'type'=>'html_vinculo',
+                'exibe_busca'=>'d-none',
+                'event'=>'',
+                'tam'=>'12',
+                'script'=>'beneficiarios.conjuge',
                 'data_selector'=>[
                     'campos'=>$this->campos_parceiro(),
                     'route_index'=>route('beneficiarios.index'),
@@ -171,8 +200,15 @@ class BeneficiariosController extends Controller
                     'action'=>route('beneficiarios.store'),
                     'campo_id'=>'id',
                     'campo_bus'=>'nome',
+                    'campo'=>'conjuge',
                     'value'=>['tipo'=>2],
                     'label'=>'Cônjuge ou parceiro',
+                    'table'=>[
+                        'id'=>['label'=>'Id','type'=>'text'],
+                        'nome'=>['label'=>'Nome','type'=>'text'],
+                        'cpf'=>['label'=>'CPF','type'=>'text']
+                    ],
+                    'tab' =>$this->tab,
                 ],
             ],
             'obs'=>['label'=>'Observação','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
@@ -199,7 +235,7 @@ class BeneficiariosController extends Controller
             'conjuge'=>[
                 'label'=>'cônjuge',
                 'active'=>true,
-                'type'=>'text',
+                'type'=>'hidden',
                 'event'=>'',
                 'tam'=>'12',
                 'class'=>'',
@@ -208,10 +244,11 @@ class BeneficiariosController extends Controller
                 'value'=>'',
             ],
             'nome'=>['label'=>'Nome completo','active'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-block','event'=>"onclick=lib_carregaConjuge('#frm-conjuge','#frm-beneficiarios')",'tam'=>'12'],
-            'config[nacionalidade]'=>['label'=>'Nacionalidade','active'=>false,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
+            'config[nacionalidade]'=>['label'=>'Nacionalidade','js'=>true,'active'=>false,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][nacionalidade',],
             'config[estado_civil]'=>[
                 'label'=>'Estado Civil',
-                'active'=>false,
+                'active'=>true,
+                'js'=>true,
                 'type'=>'selector',
                 'data_selector'=>[
                     'campos'=>$estadocivil->campos(),
@@ -225,6 +262,7 @@ class BeneficiariosController extends Controller
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM estadocivils WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
                 'tam'=>'3',
+                'cp_busca'=>'config][estado_civil',
                 'class'=>'select2',
             ],
             'config[rg]'=>['label'=>'RG','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'','cp_busca'=>'config][rg','placeholder'=>''],
@@ -248,6 +286,7 @@ class BeneficiariosController extends Controller
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM escolaridades WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
                 'tam'=>'3',
+                'cp_busca'=>'config][escolaridade',
                 'class'=>'select2',
             ],
             'config[mae]'=>['label'=>'Mãe','cp_busca'=>'config][mae','active'=>true,'type'=>'text','tam'=>'12','exibe_busca'=>'d-block','event'=>'','placeholder'=>''],
@@ -258,24 +297,43 @@ class BeneficiariosController extends Controller
     }
     public function index(User $user)
     {
+        $ajax = isset($_GET['ajax'])?$_GET['ajax']:'n';
         $this->authorize('ler', $this->routa);
         $title = 'Beneficiários Cadastrados';
         $titulo = $title;
         $queryBeneficiario = $this->queryBeneficiario($_GET);
         $queryBeneficiario['config']['exibe'] = 'html';
         $routa = $this->routa;
-        return view($this->view.'.index',[
-            'dados'=>$queryBeneficiario['beneficiario'],
-            'title'=>$title,
-            'titulo'=>$titulo,
-            'campos_tabela'=>$queryBeneficiario['campos'],
-            'beneficiario_totais'=>$queryBeneficiario['beneficiario_totais'],
-            'titulo_tabela'=>$queryBeneficiario['tituloTabela'],
-            'arr_titulo'=>$queryBeneficiario['arr_titulo'],
-            'config'=>$queryBeneficiario['config'],
-            'routa'=>$routa,
-            'i'=>0,
-        ]);
+        if(isset($_GET['term'])){
+            $ret = false;
+            $ajax = 's';
+            if($queryBeneficiario['beneficiario']){
+                foreach ($queryBeneficiario['beneficiario'] as $key => $v) {
+                    $ret[$key]['value'] = $v['nome'];
+                    $ret[$key]['id'] = $v['id'];
+                    $ret[$key]['dados'] = $v;
+                    //$ret[$v['id']]['dados'] = $v;
+                }
+            }
+        }else{
+            $ret = [
+                'dados'=>$queryBeneficiario['beneficiario'],
+                'title'=>$title,
+                'titulo'=>$titulo,
+                'campos_tabela'=>$queryBeneficiario['campos'],
+                'beneficiario_totais'=>$queryBeneficiario['beneficiario_totais'],
+                'titulo_tabela'=>$queryBeneficiario['tituloTabela'],
+                'arr_titulo'=>$queryBeneficiario['arr_titulo'],
+                'config'=>$queryBeneficiario['config'],
+                'routa'=>$routa,
+                'i'=>0,
+            ];
+        }
+        if($ajax=='s'){
+            return response()->json($ret);
+        }else{
+            return view($this->view.'.index',$ret);
+        }
     }
     public function create(User $user)
     {
@@ -315,8 +373,8 @@ class BeneficiariosController extends Controller
         /** criar vinculo com  **/
         $verificaCriaVinculo = false;
         if($salvar->id)
-            $verificaCriaVinculo = $this->verificaCriaVinculo($dados,$salvar->id);
-
+            $verificaCriaVinculo = $this->verificaCriaVinculo($dados,$salvar->id,'cad');
+        $dados['id'] = $salvar->id;
         $ret = [
             'mens'=>$this->label.' cadastrada com sucesso!',
             'color'=>'success',
@@ -334,11 +392,16 @@ class BeneficiariosController extends Controller
             return redirect()->route($route,$ret);
         }
     }
-    public function verificaCriaVinculo($dados = null,$conjuge=false)
+    public function verificaCriaVinculo($dados = null,$conjuge=false,$ac='cad')
     {
         $ret = false;
         if(isset($dados['tipo']) && $dados['tipo'] == 2 && isset($dados['conjuge']) && !empty($dados['conjuge'])){
             $ret = Beneficiario::where('id',$dados['conjuge'])->update([
+                'conjuge'=>$conjuge,
+            ]);
+        }
+        if(isset($dados['tipo']) && $dados['tipo'] == 1 && isset($dados['id']) && empty($dados['id'])){
+            $ret = Beneficiario::where('conjuge',$dados['id'])->update([
                 'conjuge'=>$conjuge,
             ]);
         }
@@ -348,7 +411,6 @@ class BeneficiariosController extends Controller
     {
         //
     }
-
     public function edit($beneficiario,User $user)
     {
         $id = $beneficiario;
@@ -380,7 +442,14 @@ class BeneficiariosController extends Controller
                 'route'=>$this->routa,
                 'id'=>$id,
             ];
-
+            /*
+            $d_tab = Qlib::html_vinculo([
+                'campos'=>$campos,
+                'type'=>'html_vinculo',
+                'dados'=>$dados[0],
+            ]);
+            $dados[0]['html_vinculo'] = $d_tab;
+            */
             $ret = [
                 'value'=>$dados[0],
                 'config'=>$config,
@@ -431,6 +500,8 @@ class BeneficiariosController extends Controller
         $atualizar=false;
         if(!empty($data)){
             $atualizar=Beneficiario::where('id',$id)->update($data);
+            $dadosAtualizados = Qlib::dados_tab($this->tab,['id'=>$id]);
+            $verificaCriaVinculo = $this->verificaCriaVinculo($data,@$data['conjuge'],'alt');
             $route = $this->routa.'.index';
             $ret = [
                 'exec'=>$atualizar,
@@ -439,6 +510,7 @@ class BeneficiariosController extends Controller
                 'color'=>'success',
                 'idCad'=>$id,
                 'return'=>$route,
+                'dados'=>$dadosAtualizados,
             ];
         }else{
             $route = $this->routa.'.edit';
