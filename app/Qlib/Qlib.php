@@ -150,7 +150,7 @@ class Qlib
                 if($config['data_selector']['list'] && isset($config['data_selector']['table']) && is_array($config['data_selector']['table'])){
                     foreach ($config['data_selector']['table'] as $key => $v) {
                         if(isset($v['type']) && $v['type']=='arr_tab' && isset($config['data_selector']['list'][$key]) && isset($v['conf_sql'])){
-                            $config['data_selector']['list'][$key] = Qlib::buscaValorDb([
+                            $config['data_selector']['list'][$key.'_valor'] = Qlib::buscaValorDb([
                                 'tab'=>$v['conf_sql']['tab'],
                                 'campo_bus'=>$v['conf_sql']['campo_bus'],
                                 'select'=>$v['conf_sql']['select'],

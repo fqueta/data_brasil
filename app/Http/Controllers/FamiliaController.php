@@ -292,7 +292,7 @@ class FamiliaController extends Controller
                     'campo_bus'=>'nome',
                     'label'=>'Etapa',
                 ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
+                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\');',
                 'tam'=>'6',
                 'class'=>'select2'
             ],
@@ -332,21 +332,22 @@ class FamiliaController extends Controller
                     'value'=>[],
                     'label'=>'Informações do lote',
                     'table'=>[
-                        'id'=>['label'=>'Id','type'=>'text'],
+                        //'id'=>['label'=>'Id','type'=>'text'],
                         'quadra'=>['label'=>'Quadra','type'=>'arr_tab',
-                            'conf_sql'=>[
-                                'tab'=>'quadras',
-                                'campo_bus'=>'id',
-                                'select'=>'nome',
+                        'conf_sql'=>[
+                            'tab'=>'quadras',
+                            'campo_bus'=>'id',
+                            'select'=>'nome',
+                            'param'=>['bairro','etapa'],
                             ]
                         ],
-                        'nome'=>['label'=>'Número','type'=>'text'],
+                        'nome'=>['label'=>'Lote','type'=>'text'],
                     ],
                     'tab' =>'lotes',
                     'placeholder' =>'Digite somente o número do Lote...',
                     'janela'=>[
                         'url'=>route('lotes.create').'',
-                        'param'=>'',
+                        'param'=>['bairro','etapa'],
                         'form-param'=>'',
                     ],
                     'salvar_primeiro' =>false,//exigir cadastro do vinculo antes de cadastrar este
@@ -429,8 +430,8 @@ class FamiliaController extends Controller
             ],
             //'area_alvo'=>['label'=>'Área Alvo*','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'2','placeholder'=>''],
             //'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
-            'config[registro]'=>['label'=>'Registro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>'','cp_busca'=>'config][registro'],
-            'config[livro]'=>['label'=>'Livro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>'','cp_busca'=>'config][livro'],
+            'config[registro]'=>['label'=>'Registro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][registro'],
+            'config[livro]'=>['label'=>'Livro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][livro'],
             //'quadra'=>['label'=>'Quadra*','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             //'lote'=>['label'=>'Lote*','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             //'nome_completo'=>['label'=>'Proprietário','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
@@ -477,9 +478,9 @@ class FamiliaController extends Controller
                 'class'=>'select2',
             ],*/
             //'situacao_profissional'=>['label'=>'Situação Profissional','type'=>'text','active'=>true,'exibe_busca'=>'d-block','event'=>'','tam'=>'4'],
-            'bcp_bolsa_familia'=>['label'=>'BPC ou Bolsa Família','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4'],
-            'renda_familiar'=>['label'=>'Renda Fam.','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2','class'=>'moeda'],
-            'qtd_membros'=>['label'=>'Membros','active'=>true,'type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'bcp_bolsa_familia'=>['label'=>'BPC ou Bolsa Família','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
+            'renda_familiar'=>['label'=>'Renda Fam.','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6','class'=>'moeda'],
+            'qtd_membros'=>['label'=>'Membros','active'=>true,'type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
             'membros'=>['label'=>'lista de Membros','active'=>false,'type'=>'html','exibe_busca'=>'d-none','event'=>'','tam'=>'12','script'=>'familias.lista_membros'],
             'idoso'=>['label'=>'Idoso','active'=>true,'type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-none','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             'crianca_adolescente'=>['label'=>'Criança e Adolescente','active'=>true,'exibe_busca'=>'d-none','event'=>'','type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
@@ -601,9 +602,8 @@ class FamiliaController extends Controller
                 'id'=>$id,
             ];
             if($dados[0]['loteamento']>0){
-                $bairro = Bairro::find($dados[0]['loteamento']);
-                $dados[0]['matricula'] = $bairro['matricula'];
-                //dd($dados[0]['matricula']);
+                $bairro = Bairro::find($dados[0]['bairro']);
+                $dados[0]['matricula'] = isset($bairro['matricula'])?$bairro['matricula']:false;
             }
             if(!$dados[0]['matricula'])
                 $config['display_matricula'] = 'd-none';

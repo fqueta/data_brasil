@@ -42,12 +42,20 @@ class LotesController extends Controller
 
         if(isset($get['term'])){
             //Autocomplete
-            //$get['filter']['nome'] = $get['term'];
-            //$lote =  Lote::join('quadras','quadras.id','=','lotes.quadra')->where('lotes.excluido','=','n')->where('lotes.deletado','=','n')->orderBy('id',$config['order'])->select('lotes.nome');
-            $lote = DB::select("SELECT l.*,q.nome quadra FROM lotes as l
-            JOIN quadras as q ON q.id=l.quadra
-            WHERE (l.nome LIKE '%".$get['term']."%' OR quadra LIKE '%".$get['term']."%' ) AND l.excluido !='s' AND l.deletado
-            ");
+            if(isset($get['bairro']) && !empty($get['bairro'])){
+                $sql = "SELECT l.*,q.nome quadra_valor,b.nome nome_bairro,b.matricula FROM lotes as l
+                JOIN quadras as q ON q.id=l.quadra
+                JOIN bairros as b ON b.id=q.id
+                WHERE (l.nome LIKE '%".$get['term']."%' OR q.nome LIKE '%".$get['term']."%' ) AND (l.bairro='".$get['bairro']."') AND l.excluido !='s' AND l.deletado
+                ";
+            }else{
+                //$lote =  Lote::join('quadras','quadras.id','=','lotes.quadra')->where('lotes.excluido','=','n')->where('lotes.deletado','=','n')->orderBy('id',$config['order'])->select('lotes.nome');
+                $sql = "SELECT l.*,q.nome quadra_valor FROM lotes as l
+                JOIN quadras as q ON q.id=l.quadra
+                WHERE (l.nome LIKE '%".$get['term']."%' OR q.nome LIKE '%".$get['term']."%' ) AND l.excluido !='s' AND l.deletado
+                ";
+            }
+            $lote = DB::select($sql);
             $ret['lote'] = $lote;
             return $ret;
         }else{
@@ -124,6 +132,7 @@ class LotesController extends Controller
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            //'bairro'=>['label'=>'Bairro','active'=>false,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'quadra'=>[
                 'label'=>'Quadra',
                 'active'=>true,
@@ -142,7 +151,7 @@ class LotesController extends Controller
                 'class'=>'select2'
             ],
             'nome'=>['label'=>'N. do Lote (Somente número)','active'=>true,'placeholder'=>'Ex.: 14','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'4'],
-            'config[nome]'=>['label'=>'Complemento','active'=>true,'placeholder'=>'Ex.: A','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'config[complemento]'=>['label'=>'Complemento','active'=>true,'placeholder'=>'Ex.: A','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','cp_busca'=>'config][complemento'],
             'cep'=>['label'=>'CEP','active'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-block','event'=>'mask-cep onchange=buscaCep1_0(this.value)','tam'=>'3'],
             'endereco'=>['label'=>'Endereço','active'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'7'],
             'numero'=>['label'=>'Numero','active'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
@@ -175,7 +184,7 @@ class LotesController extends Controller
             if($queryLote['lote']){
                //$ret = $queryLote['lote'];
                 foreach ($queryLote['lote'] as $key => $v) {
-                    $ret[$key]['value'] = ' Lote: '.$v->nome.' | quadra: '.$v->quadra;
+                    $ret[$key]['value'] = ' Lote: '.$v->nome.' | quadra: '.$v->quadra_valor;
                     //$ret[$key]['id'] = $v['id'];
                     $ret[$key]['dados'] = $v;
                     //if(id_array($v))
@@ -230,15 +239,38 @@ class LotesController extends Controller
         $ajax = isset($dados['ajax'])?$dados['ajax']:'n';
         $dados['ativo'] = isset($dados['ativo'])?$dados['ativo']:'n';
         $dados['token'] = isset($dados['token'])?$dados['token']:uniqid();
+        if (isset($dados['quadra']) && !empty($dados['quadra'])) {
+            /**adicionar o bairro ao lote */
+            $dados['bairro'] = Qlib::buscaValorDb([
+                'tab'=>'quadras',
+                'campo_bus'=>'id',
+                'valor'=>$dados['quadra'],
+                'select'=>'bairro',
+            ]);
+        }
         $salvar = Lote::create($dados);
         $dados['id'] = $salvar->id;
+
+        $sql = "SELECT l.*,q.nome quadra_valor FROM lotes as l
+            JOIN quadras as q ON q.id=l.quadra
+            WHERE l.id = '".$dados['id']."' AND l.excluido !='s' AND l.deletado
+            ";
+        $dadosAtualizados = Qlib::dados_tab($this->tab,[
+            'sql'=>$sql,
+            'id'=>$dados['id'],
+        ]);
+        if(!$sql){
+            $d = $dadosAtualizados;
+        }else{
+            $d = $dadosAtualizados[0];
+        }
         $route = $this->routa.'.index';
         $ret = [
             'mens'=>$this->label.' cadastrada com sucesso!',
             'color'=>'success',
             'idCad'=>$salvar->id,
             'exec'=>true,
-            'dados'=>$dados
+            'dados'=>$d,
         ];
         if($ajax=='s'){
             $ret['return'] = route($route).'?idCad='.$salvar->id;
@@ -330,12 +362,20 @@ class LotesController extends Controller
         }
         $atualizar=false;
         if(!empty($data)){
+            if (isset($data['quadra']) && !empty($data['quadra'])) {
+                /**adicionar o bairro ao lote */
+                $data['bairro'] = Qlib::buscaValorDb([
+                    'tab'=>'quadras',
+                    'campo_bus'=>'id',
+                    'valor'=>$data['quadra'],
+                    'select'=>'bairro',
+                ]);
+            }
             $atualizar=Lote::where('id',$id)->update($data);
-            $sql = "SELECT l.*,q.nome quadra FROM lotes as l
+            $sql = "SELECT l.*,q.nome quadra_valor FROM lotes as l
             JOIN quadras as q ON q.id=l.quadra
             WHERE l.id = '$id' AND l.excluido !='s' AND l.deletado
             ";
-            $sql = false;
             $dadosAtualizados = Qlib::dados_tab($this->tab,[
                 'sql'=>$sql,
                 'id'=>$id

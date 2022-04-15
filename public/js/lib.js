@@ -966,7 +966,17 @@ function lib_vinculoCad(obj){
         d.janela = '';
     }
     if(d.janela.url){
-        var url = d.janela.url+d.janela.param+'?popup=true';
+        var url = d.janela.url+'?popup=true';
+        try {
+            if(pr=d.janela.param){
+                for (let i = 0; i < pr.length; i++) {
+                    const el = pr[i];
+                    url += '&'+el+'='+$('[name="'+el+'"]').val();
+                }
+            }
+        } catch (e) {
+            console.log(e);
+        }
         var tag_obj = '<obj class="d-none">'+obj.data('selector')+'</obj>';
         $('obj').remove();
         $(tag_obj).insertBefore('body');
@@ -1224,9 +1234,17 @@ function lib_listDadosHtmlVinculo(res,campos,ac){
         if(t = dt.table){
             var td = '';
             $.each(t,function(k,v){
-                td += tm.replaceAll('{k}',k);
-                td = td.replaceAll('{v}',d[k]);
-                td = td.replaceAll('{class}','');
+                if(v.type=='text'){
+                    td += tm.replaceAll('{k}',k);
+                    td = td.replaceAll('{v}',d[k]);
+                    td = td.replaceAll('{class}','');
+                }else if(v.type=='arr_tab'){
+                    var kv = k+'_valor';
+                    //console.log(d);
+                    td += tm.replaceAll('{k}',kv);
+                    td = td.replaceAll('{v}',d[kv]);
+                    td = td.replaceAll('{class}','');
+                }
             });
 
             table.find('tbody tr').remove();
@@ -1272,9 +1290,6 @@ function lib_listarCadastro(res,obj){
     }
 }
 function lib_abrirModalConsultaVinculo(campo,ac){
-    //var dt = decodeArray(obj);
-    //var btns = '<button type="button" class="btn btn-primary btn-block" voltar>Voltar</button>';
-    //var msg = '<div class="row"><div id="exibe_vinculo" class="col-md-12 text-center"><h6>Antes de cadastrar um parceiro é necessário salvar este cadastro!</h6></div><div class="col-md-12 mt-3 text-center"></div></div>';
 
     var btnAbrir = $('#row-'+campo+' .btn-consulta-vinculo'),btnFechar = $('#row-'+campo+' .btn-voltar-vinculo'),ef='slow';
     if(ac=='abrir'){
@@ -1294,7 +1309,29 @@ function lib_abrirModalConsultaVinculo(campo,ac){
 }
 function lib_autocomplete(obs){
     var urlAuto = obs.attr('url');
-    obs.autocomplete({
+    var data_selector = obs.data('selector'),d=decodeArray(data_selector);
+    try {
+        //callYourLibHere();
+        if(typeof d.janela != 'undefined'){
+            //d.janela='';
+            if(pr=d.janela.param){
+                //console.log(d.janela.param);
+                for (let i = 0; i < pr.length; i++) {
+                    const el = pr[i];
+                    if(i==0){
+                        urlAuto += '?'+el+'='+$('[name="'+el+'"]').val();
+                    }else{
+                        urlAuto += '&'+el+'='+$('[name="'+el+'"]').val();
+                    }
+                }
+            }
+        }
+    }
+    catch (e) {
+        console.log(e);
+    }
+    console.log(urlAuto);
+     obs.autocomplete({
         source: urlAuto,
         select: function (event, ui) {
             //var sec = $(this).attr('sec');

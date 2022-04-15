@@ -184,7 +184,7 @@
                                 <thead>
                                     <tr>
                                         @foreach ($config['data_selector']['table'] as $kh=>$vh)
-                                        <th>{{$vh['label']}}</th>
+                                        <th id="th-{{$kh}}">{{$vh['label']}}</th>
                                         @endforeach
                                         <th class="text-right">{{__('Ação')}}</th>
                                     </tr>
@@ -193,8 +193,11 @@
                                     @if (isset($config['data_selector']['list']) && is_array($config['data_selector']['list']) && isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
                                     <tr id="tr-{{$config['data_selector']['list']['id']}}"><input type="hidden" name="{{$config['campo']}}" value="{{$config['data_selector']['list']['id']}}">
                                         @foreach ($config['data_selector']['table'] as $kb=>$vb)
+                                            @if ($vb['type']=='text')
                                                 <td id="td-{{$kb}}">{{$config['data_selector']['list'][$kb]}}</td>
-
+                                            @elseif ($vb['type']=='arr_tab')
+                                                <td id="td-{{$kb}}_valor">{{$config['data_selector']['list'][$kb.'_valor']}}</td>
+                                            @endif
                                         @endforeach
                                         <td class="text-right">
                                             <button type="button" btn-alt onclick="lib_htmlVinculo('alt','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}')" title="{{__('Editar')}}" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button>
