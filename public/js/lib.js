@@ -967,6 +967,9 @@ function lib_vinculoCad(obj){
     }
     if(d.janela.url){
         var url = d.janela.url+d.janela.param+'?popup=true';
+        var tag_obj = '<obj class="d-none">'+obj.data('selector')+'</obj>';
+        $('obj').remove();
+        $(tag_obj).insertBefore('body');
         abrirjanelaPadrao(url);
     }else{
         renderForm(d,obj,function(res){
@@ -1341,13 +1344,16 @@ function buscaCep1_0(cep_code){
           $('#numero,#Numero,[q-inp="numero"],[name="numero"],[numero="cep"]').select();
        });
 }
-function popupCallback(funcCall){
-    if(typeof funcCall=='undefined'){
-        funcCall = function(res){
-            console.log(res);
-        }
+function popupCallback_vinculo(res){
+    var obj = $('obj').html();
+    var d = decodeArray(obj);
+    console.log(d);
+    if(res.mens){
+        lib_formatMensagem('.mens',res.mens,res.color);
     }
-    funcCall;
+    if(res.exec){
+        lib_listDadosHtmlVinculo(res,obj,'cad');
+    }
 }
 function btVoltar(obj){
     var href = obj.attr('href'),redirect = obj.attr('redirect');

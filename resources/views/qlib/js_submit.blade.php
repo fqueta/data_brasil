@@ -10,9 +10,7 @@
                 }
                 if(btn_press=='sair'){
                     if(pop){
-                            window.opener.popupCallback(function(){
-                                alert('pop some data '+btn_press);
-                            }); //Call callback function
+                            window.opener.popupCallback_vinculo(res); //Call callback function
                             window.close(); // Close the current popup
                             return;
                     }

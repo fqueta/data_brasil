@@ -20,6 +20,8 @@ class Familia extends Model
         'etapa',
         'loteamento',
         'id_loteamento',
+        'id_beneficiario',
+        'id_conjuge',
         'matricula',
         'quadra',
         'lote',

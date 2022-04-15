@@ -344,11 +344,11 @@ class FamiliaController extends Controller
                     ],
                     'tab' =>'lotes',
                     'placeholder' =>'Digite somente o número do Lote...',
-                    /*'janela'=>[
+                    'janela'=>[
                         'url'=>route('lotes.create').'',
                         'param'=>'',
                         'form-param'=>'',
-                    ],*/
+                    ],
                     'salvar_primeiro' =>false,//exigir cadastro do vinculo antes de cadastrar este
                 ],
             ],
@@ -494,7 +494,7 @@ class FamiliaController extends Controller
     public function create(User $user)
     {
         $this->authorize('create', $this->routa);
-        $title = 'Cadastrar Lote';
+        $title = __('Cadastrar Família');
         $titulo = $title;
         //$Users = Users::all();
         //$roles = DB::select("SELECT * FROM roles ORDER BY id ASC");

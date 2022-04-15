@@ -108,7 +108,7 @@ class QuadrasController extends Controller
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'matricula'=>['label'=>'Matricula','value'=>'','active'=>false,'type'=>'hidden_text','exibe_busca'=>'d-none','event'=>'','tam'=>'12'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            'nome'=>['label'=>'Nome da Quadra','active'=>true,'placeholder'=>'Ex.: 14','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
+            'nome'=>['label'=>'Numero da Quadra','active'=>true,'placeholder'=>'Ex.: 14','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             'bairro'=>[
                 'label'=>'Bairro ou distrito*',
                 'active'=>true,
