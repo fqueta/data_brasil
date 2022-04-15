@@ -1,8 +1,8 @@
-<div class="card">
+<div class="card card-secondary">
     <div class="card-header">
-        <h6>
+        <h3 class="card-title">
             {{__($config['label'])}}
-        </h6>
+        </h3>
     </div>
     @php
         $tema = '<td><input type="text" name="nome" value="{nome}" class="form-control" /></td>

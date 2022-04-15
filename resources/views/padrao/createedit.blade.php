@@ -68,6 +68,7 @@
             });
             $('[mask-cpf]').inputmask('999.999.999-99');
             $('[mask-data]').inputmask('99/99/9999');
+            $('[mask-cep]').inputmask('99.999-999');
         });
 
     </script>

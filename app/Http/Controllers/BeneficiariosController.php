@@ -61,14 +61,18 @@ class BeneficiariosController extends Controller
                             $arr_titulo[$campos[$key]['label']] = $value;
                         }else{
                             if(is_array($value)){
-                                //dd($campos);
                                 foreach ($value as $kv => $vv) {
-                                    $beneficiario->where($key,'LIKE','%"'. $kv. '":"'.$vv.'"%');
-                                    if($campos[$key]['type']=='select'){
-                                        $value = $campos[$key]['arr_opc'][$value];
+                                    $i = $key."[$kv]";
+                                    if(!empty($vv)){
+
+                                        $beneficiario->where($key,'LIKE','%"'. $kv. '":"'.$vv.'"%');
+                                        //dd($campos[$key.[$kv]]);
+                                        if($campos[$i]['type']=='select'){
+                                            $vv = $campos[$i]['arr_opc'][$vv];
+                                        }
+                                        $arr_titulo[$campos[$i]['label']] = $vv;
+                                        $titulo_tab .= 'Todos com *'. $campos[$i]['label'] .'% = '.$vv.'& ';
                                     }
-                                    $arr_titulo[$campos[$key]['label']] = $value;
-                                    $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                                 }
                             }else{
                                 $beneficiario->where($key,'LIKE','%'. $value. '%');
@@ -230,7 +234,7 @@ class BeneficiariosController extends Controller
                 'tam'=>'12',
                 'class'=>'',
                 'option_select'=>false,
-                'value'=>2,
+                'value'=>'2',
             ],
             'conjuge'=>[
                 'label'=>'cônjuge',
@@ -326,6 +330,7 @@ class BeneficiariosController extends Controller
                 'arr_titulo'=>$queryBeneficiario['arr_titulo'],
                 'config'=>$queryBeneficiario['config'],
                 'routa'=>$routa,
+                'view'=>$this->view,
                 'i'=>0,
             ];
         }

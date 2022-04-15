@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use stdClass;
-use App\Models\Etapa;
+use App\Models\Quadra;
 use Illuminate\Http\Request;
 use App\Qlib\Qlib;
 use App\Models\User;
 use App\Models\_upload;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
-class EtapaController extends Controller
+class QuadrasController extends Controller
 {
     protected $user;
     public $routa;
@@ -20,11 +21,11 @@ class EtapaController extends Controller
     {
         $this->middleware('auth');
         $this->user = $user;
-        $this->routa = 'etapas';
-        $this->label = 'Etapa';
+        $this->routa = 'quadras';
+        $this->label = 'Quadra';
         $this->view = 'padrao';
     }
-    public function queryEtapa($get=false,$config=false)
+    public function queryQuadra($get=false,$config=false)
     {
         $ret = false;
         $get = isset($_GET) ? $_GET:[];
@@ -36,11 +37,11 @@ class EtapaController extends Controller
             'order'=>isset($get['order']) ? $get['order']: 'desc',
         ];
 
-        $etapa =  Etapa::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
-        //$etapa =  DB::table('etapas')->where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
+        $quadra =  Quadra::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
+        //$quadra =  DB::table('quadras')->where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
 
-        $etapa_totais = new stdClass;
-        $campos = isset($_SESSION['campos_etapas_exibe']) ? $_SESSION['campos_etapas_exibe'] : $this->campos();
+        $quadra_totais = new stdClass;
+        $campos = isset($_SESSION['campos_quadras_exibe']) ? $_SESSION['campos_quadras_exibe'] : $this->campos();
         $tituloTabela = 'Lista de todos cadastros';
         $arr_titulo = false;
         if(isset($get['filter'])){
@@ -49,11 +50,11 @@ class EtapaController extends Controller
                 foreach ($get['filter'] as $key => $value) {
                     if(!empty($value)){
                         if($key=='id'){
-                            $etapa->where($key,'LIKE', $value);
+                            $quadra->where($key,'LIKE', $value);
                             $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                             $arr_titulo[$campos[$key]['label']] = $value;
                         }else{
-                            $etapa->where($key,'LIKE','%'. $value. '%');
+                            $quadra->where($key,'LIKE','%'. $value. '%');
                             if($campos[$key]['type']=='select'){
                                 $value = $campos[$key]['arr_opc'][$value];
                             }
@@ -67,65 +68,86 @@ class EtapaController extends Controller
                     $tituloTabela = 'Lista de: &'.$titulo_tab;
                                 //$arr_titulo = explode('&',$tituloTabela);
                 }
-                $fm = $etapa;
+                $fm = $quadra;
                 if($config['limit']=='todos'){
-                    $etapa = $etapa->get();
+                    $quadra = $quadra->get();
                 }else{
-                    $etapa = $etapa->paginate($config['limit']);
+                    $quadra = $quadra->paginate($config['limit']);
                 }
         }else{
-            $fm = $etapa;
+            $fm = $quadra;
             if($config['limit']=='todos'){
-                $etapa = $etapa->get();
+                $quadra = $quadra->get();
             }else{
-                $etapa = $etapa->paginate($config['limit']);
+                $quadra = $quadra->paginate($config['limit']);
             }
         }
-        $etapa_totais->todos = $fm->count();
-        $etapa_totais->esteMes = $fm->whereYear('created_at', '=', $ano)->whereMonth('created_at','=',$mes)->get()->count();
-        $etapa_totais->ativos = $fm->where('ativo','=','s')->get()->count();
-        $etapa_totais->inativos = $fm->where('ativo','=','n')->get()->count();
+        $quadra_totais->todos = $fm->count();
+        $quadra_totais->esteMes = $fm->whereYear('created_at', '=', $ano)->whereMonth('created_at','=',$mes)->get()->count();
+        $quadra_totais->ativos = $fm->where('ativo','=','s')->get()->count();
+        $quadra_totais->inativos = $fm->where('ativo','=','n')->get()->count();
 
-        $ret['etapa'] = $etapa;
-        $ret['etapa_totais'] = $etapa_totais;
+        $ret['quadra'] = $quadra;
+        $ret['quadra_totais'] = $quadra_totais;
         $ret['arr_titulo'] = $arr_titulo;
         $ret['campos'] = $campos;
         $ret['config'] = $config;
         $ret['tituloTabela'] = $tituloTabela;
         $ret['config']['resumo'] = [
-            'todos_registro'=>['label'=>'Todos cadastros','value'=>$etapa_totais->todos,'icon'=>'fas fa-calendar'],
-            'todos_mes'=>['label'=>'Cadastros recentes','value'=>$etapa_totais->esteMes,'icon'=>'fas fa-calendar-times'],
-            'todos_ativos'=>['label'=>'Cadastros ativos','value'=>$etapa_totais->ativos,'icon'=>'fas fa-check'],
-            'todos_inativos'=>['label'=>'Cadastros inativos','value'=>$etapa_totais->inativos,'icon'=>'fas fa-archive'],
+            'todos_registro'=>['label'=>'Todos cadastros','value'=>$quadra_totais->todos,'icon'=>'fas fa-calendar'],
+            'todos_mes'=>['label'=>'Cadastros recentes','value'=>$quadra_totais->esteMes,'icon'=>'fas fa-calendar-times'],
+            'todos_ativos'=>['label'=>'Cadastros ativos','value'=>$quadra_totais->ativos,'icon'=>'fas fa-check'],
+            'todos_inativos'=>['label'=>'Cadastros inativos','value'=>$quadra_totais->inativos,'icon'=>'fas fa-archive'],
         ];
         return $ret;
     }
     public function campos(){
+        $user = Auth::user();
+        $bairro = new BairroController($user);
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'matricula'=>['label'=>'Matricula','value'=>'','active'=>false,'type'=>'hidden_text','exibe_busca'=>'d-none','event'=>'','tam'=>'12'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            'nome'=>['label'=>'Nome da Etapa','active'=>true,'placeholder'=>'Ex.: Cadastrado','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
-            'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+            'nome'=>['label'=>'Nome da Quadra','active'=>true,'placeholder'=>'Ex.: 14','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
+            'bairro'=>[
+                'label'=>'Bairro ou distrito*',
+                'active'=>true,
+                'type'=>'selector',
+                'data_selector'=>[
+                    'campos'=>$bairro->campos(),
+                    'route_index'=>route('bairros.index'),
+                    'id_form'=>'frm-bairros',
+                    'action'=>route('bairros.store'),
+                    'campo_id'=>'id',
+                    'campo_bus'=>'nome',
+                    'label'=>'Bairro',
+                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                'event'=>'onchange=carregaMatricula(this.value)',
+                'tam'=>'12',
+                'class'=>'select2'
+            ],
             'obs'=>['label'=>'Observação','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
+            'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'12','arr_opc'=>['s'=>'Sim','n'=>'Não']],
         ];
     }
+
     public function index(User $user)
     {
         $this->authorize('ler', $this->routa);
-        $title = 'Etapas Cadastradas';
+        $title = 'Quadras Cadastradas';
         $titulo = $title;
-        $queryEtapa = $this->queryEtapa($_GET);
-        $queryEtapa['config']['exibe'] = 'html';
+        $queryQuadra = $this->queryQuadra($_GET);
+        $queryQuadra['config']['exibe'] = 'html';
         $routa = $this->routa;
         return view($this->view.'.index',[
-            'dados'=>$queryEtapa['etapa'],
+            'dados'=>$queryQuadra['quadra'],
             'title'=>$title,
             'titulo'=>$titulo,
-            'campos_tabela'=>$queryEtapa['campos'],
-            'etapa_totais'=>$queryEtapa['etapa_totais'],
-            'titulo_tabela'=>$queryEtapa['tituloTabela'],
-            'arr_titulo'=>$queryEtapa['arr_titulo'],
-            'config'=>$queryEtapa['config'],
+            'campos_tabela'=>$queryQuadra['campos'],
+            'quadra_totais'=>$queryQuadra['quadra_totais'],
+            'titulo_tabela'=>$queryQuadra['tituloTabela'],
+            'arr_titulo'=>$queryQuadra['arr_titulo'],
+            'config'=>$queryQuadra['config'],
             'routa'=>$routa,
             'view'=>$this->view,
             'i'=>0,
@@ -134,11 +156,11 @@ class EtapaController extends Controller
     public function create(User $user)
     {
         $this->authorize('create', $this->routa);
-        $title = 'Cadastrar etapa';
+        $title = 'Cadastrar quadra';
         $titulo = $title;
         $config = [
             'ac'=>'cad',
-            'frm_id'=>'frm-etapas',
+            'frm_id'=>'frm-quadras',
             'route'=>$this->routa,
         ];
         $value = [
@@ -156,14 +178,16 @@ class EtapaController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'nome' => ['required','string','unique:etapas'],
+            'nome' => ['required','string','unique:quadras'],
         ]);
+
+        //$valida
         $dados = $request->all();
         $ajax = isset($dados['ajax'])?$dados['ajax']:'n';
         $dados['ativo'] = isset($dados['ativo'])?$dados['ativo']:'n';
 
         //dd($dados);
-        $salvar = Etapa::create($dados);
+        $salvar = Quadra::create($dados);
         $route = $this->routa.'.index';
         $ret = [
             'mens'=>$this->label.' cadastrada com sucesso!',
@@ -187,15 +211,15 @@ class EtapaController extends Controller
         //
     }
 
-    public function edit($etapa,User $user)
+    public function edit($quadra,User $user)
     {
-        $id = $etapa;
-        $dados = Etapa::where('id',$id)->get();
-        $routa = 'etapas';
+        $id = $quadra;
+        $dados = Quadra::where('id',$id)->get();
+        $routa = 'quadras';
         $this->authorize('ler', $this->routa);
 
         if(!empty($dados)){
-            $title = 'Editar Cadastro de etapas';
+            $title = 'Editar Cadastro de quadras';
             $titulo = $title;
             $dados[0]['ac'] = 'alt';
             if(isset($dados[0]['config'])){
@@ -208,7 +232,7 @@ class EtapaController extends Controller
             }
             $config = [
                 'ac'=>'alt',
-                'frm_id'=>'frm-etapas',
+                'frm_id'=>'frm-quadras',
                 'route'=>$this->routa,
                 'id'=>$id,
             ];
@@ -263,7 +287,7 @@ class EtapaController extends Controller
         }
         $atualizar=false;
         if(!empty($data)){
-            $atualizar=Etapa::where('id',$id)->update($data);
+            $atualizar=Quadra::where('id',$id)->update($data);
             $route = $this->routa.'.index';
             $ret = [
                 'exec'=>$atualizar,
@@ -295,8 +319,8 @@ class EtapaController extends Controller
         $this->authorize('delete', $this->routa);
         $config = $request->all();
         $ajax =  isset($config['ajax'])?$config['ajax']:'n';
-        $routa = 'etapas';
-        if (!$post = Etapa::find($id)){
+        $routa = 'quadras';
+        if (!$post = Quadra::find($id)){
             if($ajax=='s'){
                 $ret = response()->json(['mens'=>'Registro não encontrado!','color'=>'danger','return'=>route($this->view.'.index')]);
             }else{
@@ -305,7 +329,7 @@ class EtapaController extends Controller
             return $ret;
         }
 
-        Etapa::where('id',$id)->delete();
+        Quadra::where('id',$id)->delete();
         if($ajax=='s'){
             $ret = response()->json(['mens'=>__('Registro '.$id.' deletado com sucesso!'),'color'=>'success','return'=>route($this->routa.'.index')]);
         }else{

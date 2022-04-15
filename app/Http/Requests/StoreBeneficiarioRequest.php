@@ -24,7 +24,6 @@ class StoreBeneficiarioRequest extends FormRequest
     {
         return [
             'nome.required' => 'O Nome é obrigatório',
-            'tel.required' => 'O Telefone é obrigatório',
             'cpf.unique' => 'Este CPF já está sendo utilizado',
             'cpf.required' => 'O CPF é obrigatório',
         ];

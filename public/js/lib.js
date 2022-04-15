@@ -1,3 +1,6 @@
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const pop = urlParams.get('popup');
 function uniqid(prefix, more_entropy) {
   // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
   // +    revised by: Kankrelune (http://www.webfaktory.info/)
@@ -903,6 +906,10 @@ function renderForm(config,alvo,funCall){
             modalGeral(m,'Cadastrar '+d.label,tf);
             $('[f-submit]').remove();
             $(b).insertAfter(m+' .modal-footer button');
+            $('[mask-cpf]').inputmask('999.999.999-99');
+            $('[mask-data]').inputmask('99/99/9999');
+            $('[mask-cep]').inputmask('99.999-999');
+            carregaMascaraMoeda(".moeda");
             $('#'+d.id_form+' #inp-nome').focus();
             $('[f-submit]').on('click',function(){
                 if(typeof funCall=='undefined'){
@@ -927,12 +934,16 @@ function renderForm(config,alvo,funCall){
     }
 }
 function initSelector(alvo,funCall){
-    if(alvo.val()!='cad'){
-        return
+    if(alvo.val()=='cad'){
+        var d = decodeArray(alvo.data('selector'));
+        renderForm(d,alvo);
+        alvo.find('option[value=\'\']').attr('selected','selected');
     }
-    var d = decodeArray(alvo.data('selector'));
-    renderForm(d,alvo);
-    alvo.find('option[value=\'\']').attr('selected','selected');
+    if(alvo.val()=='ger'){
+        var d = decodeArray(alvo.data('selector'));
+        window.open(d.route_index,'_blank');
+        console.log(d);
+    }
 
 }
 function lib_vinculoCad(obj){
@@ -940,7 +951,7 @@ function lib_vinculoCad(obj){
         return;
     }
     var d = decodeArray(obj.data('selector')),ac = obj.data('ac');
-    if(ac == 'cad'){
+    if(ac == 'cad' && d.salvar_primeiro){
         var msg = '<div class="row"><div id="exibe_etapas" class="col-md-12 text-center"><h6>Antes de cadastrar um parceiro é necessário salvar este cadastro!</h6></div><div class="col-md-12 mt-3 text-center"></div></div>';
         var btns = '<button type="button" class="btn btn-primary" salvar-agora>Salvar agora</button>';
         alerta(msg,'modal-cad-vinculo','Atenção','',true,9000,true);
@@ -951,16 +962,24 @@ function lib_vinculoCad(obj){
         });
         return;
     }
-    renderForm(d,obj,function(res){
-        if(res.mens){
-            lib_formatMensagem('.mens',res.mens,res.color);
-        }
-        if(res.exec){
-            var mod = '#modal-geral';
-            $(mod).modal('hide');
-            lib_listDadosHtmlVinculo(res,obj.data('selector'),'cad');
-        }
-    });
+    if(typeof d.janela=='undefined'){
+        d.janela = '';
+    }
+    if(d.janela.url){
+        var url = d.janela.url+d.janela.param+'?popup=true';
+        abrirjanelaPadrao(url);
+    }else{
+        renderForm(d,obj,function(res){
+            if(res.mens){
+                lib_formatMensagem('.mens',res.mens,res.color);
+            }
+            if(res.exec){
+                var mod = '#modal-geral';
+                $(mod).modal('hide');
+                lib_listDadosHtmlVinculo(res,obj.data('selector'),'cad');
+            }
+        });
+    }
 }
 function qFormCampos(config){
     if(typeof config == 'undefined'){
@@ -1011,7 +1030,7 @@ function qFormCampos(config){
                     r = r.replaceAll('{col}','md');
                     r = r.replaceAll('{class}',classe);
                     r = r.replaceAll('{op}',op);
-                    r = r.replaceAll('{placeholder}',v.placeholder);
+                    r = r.replaceAll('{placeholder}',placeholder);
                 }else{
                     var type = v.type;
                     var checked = '';
@@ -1034,7 +1053,7 @@ function qFormCampos(config){
                     r = r.replaceAll('{col}','md');
                     r = r.replaceAll('{class}',classe);
                     r = r.replaceAll('{checked}',checked);
-                    r = r.replaceAll('{placeholder}',v.placeholder);
+                    r = r.replaceAll('{placeholder}',placeholder);
                 }
             }
         });
@@ -1105,6 +1124,10 @@ function janelaEtapaMass(selecionandos){
                 et += '<input type="hidden" name="ids" value="'+selecionandos+'"/>';
                 $('#exibe_etapas').html(et);
                 $(btnsub).insertAfter('#'+m+' .modal-footer button');
+                $('[mask-cpf]').inputmask('999.999.999-99');
+                $('[mask-data]').inputmask('99/99/9999');
+                $('[mask-cep]').inputmask('99.999-999');
+                carregaMascaraMoeda(".moeda");
                 $('#submit-frm-etapas').on('click',function(e){
                     e.preventDefault();
                     submitFormularioCSRF($('#frm-etapas'),function(res){
@@ -1257,11 +1280,89 @@ function lib_abrirModalConsultaVinculo(campo,ac){
         $('#inp-cad-'+campo).show(ef);
         $('#inp-cad-'+campo+' input').val('');
         $('#inp-cad-'+campo+' input').focus();
+        lib_autocomplete($('#inp-auto-'+campo));
     }
     if(ac=='fechar'){
         btnAbrir.show(ef);
         btnFechar.hide(ef);
         $('#inp-cad-'+campo).hide(ef);
         $('#inp-cad-'+campo+' input').val('');
+    }
+}
+function lib_autocomplete(obs){
+    var urlAuto = obs.attr('url');
+    obs.autocomplete({
+        source: urlAuto,
+        select: function (event, ui) {
+            //var sec = $(this).attr('sec');
+            lib_listarCadastro(ui.item,$(this));
+        },
+    });
+}
+function carregaMatricula(val){
+    if(val==''|| val=='cad'|| val=='ger')
+        return ;
+    getAjax({
+        url:'/bairros/'+val+'/edit?ajax=s',
+    },function(res){
+        if(m=res.value.matricula){
+            $('[name="matricula"]').val(m);
+            $('#txt-matricula').html(m);
+        }else{
+            $('[name="matricula"]').val('');
+            $('#txt-matricula').html('');
+        }
+    });
+}
+function buscaCep1_0(cep_code){
+    if( cep_code.length <= 0 ) return;
+    cep_code = cep_code.replaceAll('.','').replaceAll('-','');
+    $.get("https://viacep.com.br/ws/"+cep_code+"/json/", { code: cep_code },
+       function(result){
+           console.log(result);
+          if( result.cep =='' ){
+             alerta(result.message || "Cep nÃ£o encontrado!");
+             return;
+          }
+          if( result.erro){
+              $('#Cep,#Cep,[q-inp="Cep"],[name="edit_cliente[Cep]"]').select();
+             lib_formatMensagem('.mens,.mensa',"O cep <b>"+cep_code+"</b> nÃ£o foi encontrado! <button type=\"button\" onclick='abrirjanelaPadraoConsulta(\"https://buscacepinter.correios.com.br/app/endereco/index.php?t\");' class='btn btn-primary'>"+__translate('NÃ£o sei o cep')+"</button>",'danger',9000);
+              $('input#Cep,[name="cep"],[q-inp="cep"],[name="edit_cliente[Cep]"]').val('');
+             return;
+          }
+          //$("input#Cep,[name=\"cep\"],[q-inp=\"cep\"]").val( result.cep );
+          $('input#Estado,[name="uf"],[q-inp="uf"],[uf="cep"],[name="edit_cliente[Uf]"]').val( result.uf );
+          $('input#Cidade,[name="cidade"],[q-inp="cidade"],[cidade="cep"],[name="edit_cliente[Cidade]"]').val( result.localidade );
+          $('input#Bairro,[name="bairro"],[q-inp="bairro"],[bairro="cep"],[name="edit_cliente[Bairro]"]').val( result.bairro );
+          $('input#Endereco,[name="endereco"],[q-inp="endereco"],[endereco="cep"],[name="edit_cliente[Endereco]"]').val( result.logradouro );
+          $('#UF,[name="Uf"],[name="config[uf]"]').val( result.uf );
+          $("#Uf").val( result.uf );
+          $('#codigoCidade,[name="config_notas[endereco][codigoCidade]"],[codigoCidade="cep"],[name="config[codigoCidade]"],[name="edit_cliente[codigoCidade]"]').val(result.ibge);
+          $('#numero,#Numero,[q-inp="numero"],[name="numero"],[numero="cep"]').select();
+       });
+}
+function popupCallback(funcCall){
+    if(typeof funcCall=='undefined'){
+        funcCall = function(res){
+            console.log(res);
+        }
+    }
+    funcCall;
+}
+function btVoltar(obj){
+    var href = obj.attr('href'),redirect = obj.attr('redirect');
+    if(redirect){
+        if(pop){
+            alert(redirect);
+        }else{
+            window.location = redirect;
+        }
+    }else{
+        if(pop){
+            window.close();
+
+        }else{
+            window.location = href;
+        }
     }
 }

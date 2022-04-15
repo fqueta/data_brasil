@@ -17,10 +17,19 @@ class MenuSeeder extends Seeder
         DB::table('menus')->insert([
             [
                 'categoria'=>'CADASTROS',
-                'description'=>'Cadastro de Famílias',
-                'icon'=>'fas fa-copy',
+                'description'=>'Cadastro Social',
+                'icon'=>'fas fa-user',
                 'actived'=>true,
-                'url'=>'cad-familias',
+                'url'=>'cad-social',
+                'route'=>'',
+                'pai'=>''
+            ]
+            ,[
+                'categoria'=>'',
+                'description'=>'Cadastro Topográfico',
+                'icon'=>'fa fa-map-marker',
+                'actived'=>true,
+                'url'=>'cad-topografico',
                 'route'=>'',
                 'pai'=>''
             ],
@@ -31,7 +40,7 @@ class MenuSeeder extends Seeder
                 'actived'=>true,
                 'url'=>'familias',
                 'route'=>'familias.index',
-                'pai'=>'cad-familias'
+                'pai'=>'cad-social'
             ],
             [
                 'categoria'=>'',
@@ -40,7 +49,25 @@ class MenuSeeder extends Seeder
                 'actived'=>true,
                 'url'=>'beneficiarios',
                 'route'=>'beneficiarios.index',
-                'pai'=>'cad-familias'
+                'pai'=>'cad-social'
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Lotes',
+                'icon'=>'fas fa-list',
+                'actived'=>true,
+                'url'=>'lotes',
+                'route'=>'lotes.index',
+                'pai'=>'cad-topografico'
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Quadras',
+                'icon'=>'fas fa-list',
+                'actived'=>true,
+                'url'=>'quadras',
+                'route'=>'quadras.index',
+                'pai'=>'cad-topografico'
             ],
             [
                 'categoria'=>'',
@@ -49,7 +76,7 @@ class MenuSeeder extends Seeder
                 'actived'=>true,
                 'url'=>'bairros',
                 'route'=>'bairros.index',
-                'pai'=>'cad-familias'
+                'pai'=>'cad-topografico'
             ],
             [
                 'categoria'=>'',
@@ -58,7 +85,7 @@ class MenuSeeder extends Seeder
                 'actived'=>true,
                 'url'=>'etapas',
                 'route'=>'etapas.index',
-                'pai'=>'cad-familias'
+                'pai'=>'cad-social'
             ],
             [
                 'categoria'=>'',
@@ -67,7 +94,7 @@ class MenuSeeder extends Seeder
                 'actived'=>true,
                 'url'=>'escolaridade',
                 'route'=>'escolaridades.index',
-                'pai'=>'cad-familias'
+                'pai'=>'cad-social'
             ],
             [
                 'categoria'=>'',
@@ -76,7 +103,7 @@ class MenuSeeder extends Seeder
                 'actived'=>true,
                 'url'=>'estado-civil',
                 'route'=>'estado-civil.index',
-                'pai'=>'cad-familias'
+                'pai'=>'cad-social'
             ],
             [
                 'categoria'=>'',

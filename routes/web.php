@@ -148,6 +148,12 @@ Route::post('/upload',[App\Http\Controllers\UploadFile::class,'upload'])->name('
 Route::resource('beneficiarios','\App\Http\Controllers\BeneficiariosController',['parameters' => [
 'beneficiarios' => 'id'
 ]]);
+Route::resource('lotes','\App\Http\Controllers\LotesController',['parameters' => [
+'lotes' => 'id'
+]]);
+Route::resource('quadras','\App\Http\Controllers\QuadrasController',['parameters' => [
+'quadras' => 'id'
+]]);
 
 Route::resource('permissions','\App\Http\Controllers\admin\UserPermissions',['parameters' => [
     'permissions' => 'id'

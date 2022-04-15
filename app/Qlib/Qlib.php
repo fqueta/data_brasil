@@ -145,7 +145,21 @@ class Qlib
             if(@$config['type']=='html_vinculo' && @$config['ac']=='alt'){
                 $tab = $config['data_selector']['tab'];
                 $id = $config['value'];
+                $config['data_selector']['placeholder'] = isset($config['data_selector']['placeholder'])?$config['data_selector']['placeholder']:'Digite para iniciar a consulta...';
                 $config['data_selector']['list'] = Qlib::dados_tab($tab,['id'=>$id]);
+                if($config['data_selector']['list'] && isset($config['data_selector']['table']) && is_array($config['data_selector']['table'])){
+                    foreach ($config['data_selector']['table'] as $key => $v) {
+                        if(isset($v['type']) && $v['type']=='arr_tab' && isset($config['data_selector']['list'][$key]) && isset($v['conf_sql'])){
+                            $config['data_selector']['list'][$key] = Qlib::buscaValorDb([
+                                'tab'=>$v['conf_sql']['tab'],
+                                'campo_bus'=>$v['conf_sql']['campo_bus'],
+                                'select'=>$v['conf_sql']['select'],
+                                'valor'=>$config['data_selector']['list'][$key],
+                            ]);
+                        }
+                    }
+                    //dd($config);
+                }
             }
             return view('qlib.campos_form',['config'=>$config]);
         }else{
@@ -301,6 +315,12 @@ class Qlib
         $ret = false;
         if($tab){
             $id = isset($config['id']) ? $config['id']:false;
+            $sql = isset($config['sql']) ? $config['sql']:false;
+            if($sql){
+                $d = DB::select($sql);
+                $ret = (array)$d;
+                return $ret;
+            }
             $obj_list = DB::table($tab)->find($id);
             if($list=(array)$obj_list){
                     if(is_array($list)){
@@ -312,6 +332,33 @@ class Qlib
                     }
                     $ret = $list;
             }
+        }
+        return $ret;
+    }
+    static public function buscaValorDb($config = false)
+    {
+        /*Qlib::buscaValorDd([
+            'tab'=>'',
+            'campo_bus'=>'',
+            'valor'=>'',
+            'select'=>'',
+            'compleSql'=>'',
+        ]);
+        */
+        $ret=false;
+        $tab = isset($config['tab'])?$config['tab']:false;
+        $campo_bus = isset($config['campo_bus'])?$config['campo_bus']:'id';//campo select
+        $valor = isset($config['valor'])?$config['valor']:false;
+        $select = isset($config['select'])?$config['select']:false; //
+        $compleSql = isset($config['compleSql'])?$config['compleSql']:false; //
+        if($tab && $campo_bus && $valor && $select){
+            $sql = "SELECT $select FROM $tab WHERE $campo_bus='$valor' $compleSql";
+            if(isset($config['debug'])&&$config['debug']){
+                echo $sql;
+            }
+            $d = DB::select($sql);
+            if($d)
+                $ret = $d[0]->$select;
         }
         return $ret;
     }

@@ -28,7 +28,7 @@
             select: function (event, ui) {
                 //var sec = $(this).attr('sec');
                 lib_listarCadastro(ui.item,$(this));
-            }
+            },
         });
     });
 </script>

@@ -20,12 +20,14 @@ class BairroController extends Controller
     protected $user;
     public $routa;
     public $label;
+    public $view;
     public function __construct(User $user)
     {
         $this->middleware('auth');
         $this->user = $user;
         $this->routa = 'bairros';
         $this->label = 'Bairro';
+        $this->view = $this->routa;
     }
     public function queryBairros($get=false,$config=false)
     {
@@ -112,7 +114,7 @@ class BairroController extends Controller
             'matricula'=>['label'=>'Matrícula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'opcional'],
             'total_quadras'=>['label'=>'Total Quadras','active'=>true,'type'=>'number','placeholder'=>'opcional','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
             'total_lotes'=>['label'=>'Total de Lote','active'=>true,'type'=>'number','placeholder'=>'opcional','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
-            'ativo'=>['label'=>'Ativado','active'=>true,'type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+            'ativo'=>['label'=>'Ativado','active'=>true,'type'=>'chave_checkbox','valor_padrao'=>'s','value'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             'obs'=>['label'=>'Observação','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
         ];
     }
@@ -135,6 +137,7 @@ class BairroController extends Controller
             'arr_titulo'=>$queryBairros['arr_titulo'],
             'config'=>$queryBairros['config'],
             'routa'=>$routa,
+            'view'=>$this->view,
             'i'=>0,
         ];
         if($ajax){

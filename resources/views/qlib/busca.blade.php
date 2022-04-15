@@ -3,7 +3,7 @@
 <div class="col-md-12">
     <div class="card">
         <div class="card-header">
-            <h5 class="card-title">Pesquisar cadastros</h5>
+            <h5 class="card-title">{{__('Pesquisar cadastros')}}</h5>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                   <i class="fas fa-minus"></i>
@@ -65,8 +65,8 @@
                     <div class="col-md-12">
                         <div class="btn-group">
                             <button class="btn btn-primary" type="submit"> <i class="fas fa-search"></i> Localizar</button>
-                            <a href=" {{route('familias.index')}} " class="btn btn-default" title="Limpar Filtros" type="button"> <i class="fas fa-times"></i> Limpar</a>
-                            @include('familias.dropdow_actions')
+                            <a href=" {{route($routa.'.index')}} " class="btn btn-default" title="Limpar Filtros" type="button"> <i class="fas fa-times"></i> Limpar</a>
+                            @include($view.'.dropdow_actions')
                         </div>
                     </div>
                 </div>

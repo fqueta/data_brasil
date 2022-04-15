@@ -16,17 +16,18 @@ class StoreFamilyRequest extends FormRequest
     public function rules()
     {
         return [
-            'loteamento'=>['required',new familyRules],
+            //'loteamento'=>['required',new familyRules],
             'etapa'=>['required',new familyRules],
             'tipo_residencia'=>['required',new familyRules],
-            'area_alvo'=>['required'],
+            //'area_alvo'=>['required'],
+            'loteamento'=>['required'],
             //'matricula'=>['required'],
-            'quadra'=>['required'],
-            'lote'=>['required'],
-            'nome_completo'=>[new FullName],
+            //'quadra'=>['required'],
+            //'lote'=>['required'],
+            //'nome_completo'=>[new FullName],
             //'escolaridade'=>['required'],
             //'estado_civil'=>'required',
-            'cpf'=>[new RightCpf],
+            //'cpf'=>[new RightCpf],
         ];
     }
     public function messages()
@@ -36,6 +37,7 @@ class StoreFamilyRequest extends FormRequest
             'tel.required' => 'O Telefone é obrigatório',
             'cpf.unique' => 'Este CPF já está sendo utilizado',
             'cpf.required' => 'O CPF é obrigatório',
+            'loteamento.required' => 'Informações do lote são necessárias',
         ];
     }
 }

@@ -4,29 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
-class Beneficiario extends Model
+class Lote extends Model
 {
-    use HasFactory;
+    use HasFactory,Notifiable;
     protected $casts = [
         'config' => 'array',
     ];
+
     protected $fillable = [
-        'tipo',
+        'token',
         'nome',
-        'email',
-        'sexo',
-        'image',
+        'quadra',
+        'endereco',
+        'numero',
+        'cidade',
+        'bairro',
         'ativo',
         'autor',
-        'cpf',
-        'conjuge',
+        'cep',
+        'complemento',
         'config',
-        'token',
         'obs',
         'excluido',
         'reg_excluido',
         'deletado',
-        'reg_deletado',
+        'reg_deletado'
     ];
 }

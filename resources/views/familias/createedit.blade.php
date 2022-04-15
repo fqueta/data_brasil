@@ -73,19 +73,6 @@
             });
             $('#inp-cpf,#inp-cpf_conjuge').inputmask('999.999.999-99');
           });
-            function carregaMatricula(val){
-                if(val==''|| val=='cad'|| val=='ger')
-                    return ;
-                getAjax({
-                    url:'/bairros/'+val+'/edit?ajax=s',
-                },function(res){
-                    if(m=res.value.matricula){
-                        $('[name="matricula"]').val(m);
-                    }else{
-                        $('[name="matricula"]').val('');
-                    }
-                });
-            }
     </script>
     @include('qlib.js_submit')
 @stop

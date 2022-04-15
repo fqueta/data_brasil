@@ -22,13 +22,3 @@
             @endcan
         @endif
 </div>
-<script>
-    function btVoltar(obj){
-        var href = obj.attr('href'),redirect = obj.attr('redirect');
-        if(redirect){
-            window.location = redirect;
-        }else{
-            window.location = href;
-        }
-    }
-</script>

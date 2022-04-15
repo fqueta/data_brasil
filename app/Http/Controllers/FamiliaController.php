@@ -253,6 +253,7 @@ class FamiliaController extends Controller
             'arr_titulo'=>$queryFamilias['arr_titulo'],
             'config'=>$queryFamilias['config'],
             'routa'=>$routa,
+            'view'=>$this->view,
             'i'=>0,
         ]);
     }
@@ -270,17 +271,18 @@ class FamiliaController extends Controller
     }
     public function campos(){
         $user = Auth::user();
-        $bairro = new BairroController($user);
         $etapa = new EtapaController($user);
+        $bairro = new BairroController($user);
         $beneficiario = new BeneficiariosController($user);
         $escolaridade = new EscolaridadeController($user);
         $estadocivil = new EstadocivilController($user);
+        $lote = new LotesController($user);
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
-            'loteamento'=>[
-                'label'=>'Bairro ou distrito*',
+            'bairro'=>[
+                'label'=>'Bairro',
                 'active'=>true,
-                'type'=>'selector',
+                'type'=>'select',
                 'data_selector'=>[
                     'campos'=>$bairro->campos(),
                     'route_index'=>route('bairros.index'),
@@ -288,11 +290,67 @@ class FamiliaController extends Controller
                     'action'=>route('bairros.store'),
                     'campo_id'=>'id',
                     'campo_bus'=>'nome',
-                    'label'=>'Bairro',
+                    'label'=>'Etapa',
                 ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'onchange=carregaMatricula(this.value)',
+                'event'=>'',
                 'tam'=>'6',
                 'class'=>'select2'
+            ],
+            'etapa'=>[
+                'label'=>'Etapa',
+                'active'=>true,
+                'type'=>'select',
+                'data_selector'=>[
+                    'campos'=>$etapa->campos(),
+                    'route_index'=>route('etapas.index'),
+                    'id_form'=>'frm-etapas',
+                    'action'=>route('etapas.store'),
+                    'campo_id'=>'id',
+                    'campo_bus'=>'nome',
+                    'label'=>'Etapa',
+                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM etapas WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'6',
+                //'class'=>'select2'
+            ],
+            'loteamento'=>[
+                'label'=>'Informações do lote',
+                'active'=>false,
+                'type'=>'html_vinculo',
+                'exibe_busca'=>'d-none',
+                'event'=>'',
+                'tam'=>'12',
+                'script'=>'',
+                'data_selector'=>[
+                    'campos'=>$lote->campos(),
+                    'route_index'=>route('lotes.index'),
+                    'id_form'=>'frm-loteamento',
+                    'action'=>route('lotes.store'),
+                    'campo_id'=>'id',
+                    'campo_bus'=>'nome',
+                    'campo'=>'loteamento',
+                    'value'=>[],
+                    'label'=>'Informações do lote',
+                    'table'=>[
+                        'id'=>['label'=>'Id','type'=>'text'],
+                        'quadra'=>['label'=>'Quadra','type'=>'arr_tab',
+                            'conf_sql'=>[
+                                'tab'=>'quadras',
+                                'campo_bus'=>'id',
+                                'select'=>'nome',
+                            ]
+                        ],
+                        'nome'=>['label'=>'Número','type'=>'text'],
+                    ],
+                    'tab' =>'lotes',
+                    'placeholder' =>'Digite somente o número do Lote...',
+                    /*'janela'=>[
+                        'url'=>route('lotes.create').'',
+                        'param'=>'',
+                        'form-param'=>'',
+                    ],*/
+                    'salvar_primeiro' =>false,//exigir cadastro do vinculo antes de cadastrar este
+                ],
             ],
             'tipo_residencia'=>[
                 'label'=>'tipo de residência*',
@@ -304,8 +362,8 @@ class FamiliaController extends Controller
                 'class'=>'',
                 'option_select'=>false,
             ],
-            'endereco'=>['label'=>'Rua','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'10'],
-            'numero'=>['label'=>'Número','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            //'endereco'=>['label'=>'Rua','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'10'],
+            //'numero'=>['label'=>'Número','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'tags[]'=>[
                 'label'=>'Situação',
                 'active'=>true,
@@ -314,25 +372,8 @@ class FamiliaController extends Controller
                 'event'=>'',
                 'class'=>'',
                 'option_select'=>false,
-                'tam'=>'12',
+                'tam'=>'6',
                 'cp_busca'=>'tags]['
-            ],
-            'etapa'=>[
-                'label'=>'Etapa',
-                'active'=>true,
-                'type'=>'selector',
-                'data_selector'=>[
-                    'campos'=>$etapa->campos(),
-                    'route_index'=>route('etapas.index'),
-                    'id_form'=>'frm-etapas',
-                    'action'=>route('etapas.store'),
-                    'campo_id'=>'id',
-                    'campo_bus'=>'nome',
-                    'label'=>'Etapa',
-                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM etapas WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
-                'tam'=>'12',
-                'class'=>'select2'
             ],
             'id_beneficiario'=>[
                 'label'=>'Prorietário',
@@ -344,8 +385,8 @@ class FamiliaController extends Controller
                 'script'=>'',
                 'data_selector'=>[
                     'campos'=>$beneficiario->campos(),
-                    'route_index'=>route('beneficiarios.index'),
-                    'id_form'=>'frm-conjuge',
+                    'route_index'=>route('beneficiarios.index').'?filter[tipo]=1',
+                    'id_form'=>'frm-beneficiario',
                     'action'=>route('beneficiarios.store'),
                     'campo_id'=>'id',
                     'campo_bus'=>'nome',
@@ -370,7 +411,7 @@ class FamiliaController extends Controller
                 'script'=>'',
                 'data_selector'=>[
                     'campos'=>$beneficiario->campos_parceiro(),
-                    'route_index'=>route('beneficiarios.index'),
+                    'route_index'=>route('beneficiarios.index').'?filter[tipo]=2',
                     'id_form'=>'frm-conjuge',
                     'action'=>route('beneficiarios.store'),
                     'campo_id'=>'id',
@@ -386,18 +427,19 @@ class FamiliaController extends Controller
                     'tab' =>'beneficiarios',
                 ],
             ],
-            'area_alvo'=>['label'=>'Área Alvo*','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'2','placeholder'=>''],
-            'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
+            //'area_alvo'=>['label'=>'Área Alvo*','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'2','placeholder'=>''],
+            //'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
             'config[registro]'=>['label'=>'Registro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>'','cp_busca'=>'config][registro'],
             'config[livro]'=>['label'=>'Livro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>'','cp_busca'=>'config][livro'],
-            'quadra'=>['label'=>'Quadra*','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            'lote'=>['label'=>'Lote*','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            'nome_completo'=>['label'=>'Proprietário','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            'cpf'=>['label'=>'CPF proprietário','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            'nome_conjuge'=>['label'=>'Nome do Cônjuge','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            'cpf_conjuge'=>['label'=>'CPF do Cônjuge','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            'telefone'=>['label'=>'Telefone','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'onblur=mask(this,clientes_mascaraTelefone); onkeypress=mask(this,clientes_mascaraTelefone);'],
-            'config[telefone2]'=>['label'=>'Telefone2','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'onblur=mask(this,clientes_mascaraTelefone); onkeypress=mask(this,clientes_mascaraTelefone);','cp_busca'=>'config][telefone2'],
+            //'quadra'=>['label'=>'Quadra*','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            //'lote'=>['label'=>'Lote*','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            //'nome_completo'=>['label'=>'Proprietário','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
+            //'cpf'=>['label'=>'CPF proprietário','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
+            //'nome_conjuge'=>['label'=>'Nome do Cônjuge','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
+            //'cpf_conjuge'=>['label'=>'CPF do Cônjuge','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
+            //'telefone'=>['label'=>'Telefone','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'onblur=mask(this,clientes_mascaraTelefone); onkeypress=mask(this,clientes_mascaraTelefone);'],
+            //'config[telefone2]'=>['label'=>'Telefone2','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'onblur=mask(this,clientes_mascaraTelefone); onkeypress=mask(this,clientes_mascaraTelefone);','cp_busca'=>'config][telefone2'],
+            /*
             'escolaridade'=>[
                 'label'=>'Escolaridade',
                 'active'=>true,
@@ -433,8 +475,8 @@ class FamiliaController extends Controller
                 'event'=>'',
                 'tam'=>'3',
                 'class'=>'select2',
-            ],
-            'situacao_profissional'=>['label'=>'Situação Profissional','type'=>'text','active'=>true,'exibe_busca'=>'d-block','event'=>'','tam'=>'4'],
+            ],*/
+            //'situacao_profissional'=>['label'=>'Situação Profissional','type'=>'text','active'=>true,'exibe_busca'=>'d-block','event'=>'','tam'=>'4'],
             'bcp_bolsa_familia'=>['label'=>'BPC ou Bolsa Família','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4'],
             'renda_familiar'=>['label'=>'Renda Fam.','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2','class'=>'moeda'],
             'qtd_membros'=>['label'=>'Membros','active'=>true,'type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],

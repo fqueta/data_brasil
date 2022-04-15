@@ -50,7 +50,8 @@
                     @if ($config['option_select'])
                         <option value=""> {{$config['label_option_select']}} </option>
                     @endif
-                    <option value="cad"> Cadastrar {{$config['label']}}</option>
+                    <option value="cad"> {{__('Cadastrar')}} {{$config['label']}}</option>
+                    <option value="ger"> {{__('Gerenciar Cadastros ')}} </option>
                     <option value="" disabled>--------------</option>
 
                     @foreach ($config['arr_opc'] as $k=>$v)
@@ -86,14 +87,14 @@
             @enderror
         </div>
     @elseif ($config['type']=='hidden_text')
-        <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}} d-none" div-id="{{$config['campo']}}" >
+        <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}" >
             @if ($config['label'])
-                <label for="{{$config['campo']}}">{{$config['label']}}</label>
+                <label for="{{$config['campo']}}">{{$config['label']}}:</label>
             @endif
-            <span class="{{$config['campo']}}">
+            <span id="txt-{{$config['campo']}}">
                 {{$config['value']}}
             </span>
-            <input type="{{$config['type']}}" class="form-control @error($config['campo']) is-invalid @enderror {{$config['class']}}" id="inp-{{$config['campo']}}" name="{{$config['campo']}}" aria-describedby="{{$config['campo']}}" placeholder="{{$config['placeholder']}}" value="@if(isset($config['value'])){{$config['value']}}@elseif($config['ac']=='cad'){{old($config['campo'])}}@endif" {{$config['event']}} />
+            <input type="hidden" class="form-control @error($config['campo']) is-invalid @enderror {{$config['class']}}" id="inp-{{$config['campo']}}" name="{{$config['campo']}}" aria-describedby="{{$config['campo']}}" placeholder="{{$config['placeholder']}}" value="@if(isset($config['value'])){{$config['value']}}@elseif($config['ac']=='cad'){{old($config['campo'])}}@endif" {{$config['event']}} />
             @error($config['campo'])
                 <div class="alert alert-danger">{{ $message }}</div>
             @enderror
@@ -101,7 +102,7 @@
     @elseif ($config['type']=='chave_checkbox')
         <!--config['checked'] é o gravado no bando do dedos e o value é o valor para ficar checado-->
         <div class="form-group col-{{$config['col']}}-{{$config['tam']}}">
-            <div class="custom-control custom-switch @error($config['campo']) is-invalid @enderror {{$config['class']}}">
+            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success @error($config['campo']) is-invalid @enderror {{$config['class']}}">
                 <input type="checkbox" class="custom-control-input" @if(isset($config['checked']) && $config['checked'] == $config['value']) checked @endif  value="{{$config['value']}}"  name="{{$config['campo']}}" id="{{$config['campo']}}">
                 <label class="custom-control-label" for="{{$config['campo']}}">{{$config['label']}}</label>
             </div>
@@ -135,19 +136,19 @@
            $config['script'] = isset($config['script'])?$config['script']:false;
         @endphp
         <div class="col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}">
-            <div class="card">
+            <div class="card card-secondary">
                 <div class="card-header">
-                    <h6>
+                    <h3 class="card-title">
                         {{__($config['label'])}}
-                    </h6>
+                    </h3>
                 </div>
                 <div class="card-body">
                    <div class="row" id="row-{{$config['data_selector']['campo']}}">
                         <div class="col-6 mb-2 btn-consulta-vinculo">
-                            <button type="button" class="btn btn-default btn-block" data-toggle="button" aria-pressed="false" autocomplete="off" onclick="lib_abrirModalConsultaVinculo('{{@$config['data_selector']['campo']}}','abrir');"> <i class="fa fa-search" aria-hidden="true"></i> {{__('Usar cadastrado')}}</button>
+                            <button type="button" class="btn btn-default btn-block" data-toggle="button" aria-pressed="false" onclick="lib_abrirModalConsultaVinculo('{{@$config['data_selector']['campo']}}','abrir');"> <i class="fa fa-search" aria-hidden="true"></i> {{__('Usar cadastrado')}}</button>
                         </div>
                         <div class="col-6 mb-2 btn-voltar-vinculo" style="display: none">
-                            <button type="button" class="btn btn-default btn-block" data-toggle="button" aria-pressed="false" autocomplete="off" onclick="lib_abrirModalConsultaVinculo('{{@$config['data_selector']['campo']}}','fechar');">
+                            <button type="button" class="btn btn-default btn-block" data-toggle="button" aria-pressed="false" onclick="lib_abrirModalConsultaVinculo('{{@$config['data_selector']['campo']}}','fechar');">
                                 <span class="pull-left">
                                     <i class="fa fa-chevron-left " aria-hidden="true"></i> {{__('Voltar')}}
                                 </span>
@@ -157,11 +158,12 @@
                             <button type="button" class="btn btn-outline-primary btn-block" data-ac="{{$config['ac']}}" data-selector="{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}" onclick="lib_vinculoCad($(this));" > <i class="fa fa-plus" aria-hidden="true"></i> {{__('Cadastrar')}}</button>
                         </div>
                         <div class="col-md-12 mb-2" style="display: none;" id="inp-cad-{{$config['data_selector']['campo']}}">
-                            <input type="text"
+                            <input id="inp-auto-{{$config['data_selector']['campo']}}" type="text"
                                 url="{{$config['data_selector']['route_index']}}"
                                 class="autocomplete form-control"
                                 data-selector="{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}"
-                                placeholder="{{__('Digite para iniciar a consulta...')}}"
+                                placeholder="{{__(@$config['data_selector']['placeholder'])}}"
+                                onclick="this.value=''"
                                 />
                         </div>
 
@@ -191,7 +193,8 @@
                                     @if (isset($config['data_selector']['list']) && is_array($config['data_selector']['list']) && isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
                                     <tr id="tr-{{$config['data_selector']['list']['id']}}"><input type="hidden" name="{{$config['campo']}}" value="{{$config['data_selector']['list']['id']}}">
                                         @foreach ($config['data_selector']['table'] as $kb=>$vb)
-                                            <td id="td-{{$kb}}">{{$config['data_selector']['list'][$kb]}}</td>
+                                                <td id="td-{{$kb}}">{{$config['data_selector']['list'][$kb]}}</td>
+
                                         @endforeach
                                         <td class="text-right">
                                             <button type="button" btn-alt onclick="lib_htmlVinculo('alt','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}')" title="{{__('Editar')}}" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button>
