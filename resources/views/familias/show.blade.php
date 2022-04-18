@@ -3,48 +3,35 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>{{$titulo}}</h1>
+    <h3>{{$titulo}}</h3>
 @stop
 @section('content')
 <div class="row">
+    <div class="col-md-12 mens">
+        {{ App\Qlib\Qlib::formatMensagem( $_GET) }}
+    </div>
     <div class="col-md-12">
         <div class="card card-primary card-outline">
-                <div class="card-header">
-                    <h1 class="card-title">{{__('Informações')}}</h1>
+            <div class="card-header">
+                <h3 class="card-title">Informações</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                    @if (isset($campos) && is_array($campos))
-                        @foreach ($campos as $k=>$v)
-                        @if ($v['type']=='text')
-                            <div class="col-{{$v['tam']}}">
-                                <label for="{{$k}}">{{$v['label']}}:</label>
-                                {{@$value[$k]}}
-                            </div>
-                        @elseif ($v['type']=='select' || $v['type']=='selector')
-                            <div class="col-{{$v['tam']}}">
-                                <label for="{{$k}}">{{$v['label']}}:</label>
-                                {{@$v['arr_opc'][$value[$k]]}}
-                            </div>
-                        @elseif ($v['type']=='html')
-                            @if ($v['script'])
-                                @if(isset($value['dados']))
-                                    @include($v['script'],@$v['dados'])
-                                @else
-                                    @include($v['script'])
-                                @endif
-                            @endif
-                        @endif
-                        @endforeach
-                    @endif
-                    </div>
-                </div>
-                <div class="card-footer text-muted d-print-none">
-                    Footer
-                </div>
+            </div>
+            <div class="card-body">
+                {{App\Qlib\Qlib::show([
+                    'campos'=>$campos,
+                    'config'=>$config,
+                    'value'=>$value,
+                ])}}
+
             </div>
         </div>
     </div>
+</div>
+
 @stop
 
 @section('css')
@@ -61,5 +48,5 @@
             $('#inp-cpf,#inp-cpf_conjuge').inputmask('999.999.999-99');
           });
     </script>
-    @include('qlib.js_submit')
 @stop
+

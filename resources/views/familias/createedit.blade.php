@@ -21,11 +21,6 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-12 matricula {{@$config['display_matricula']}}">
-                        <label for="matricula">Matricula:</label> <span>{{@$value['matricula']}}</span>
-                    </div>
-                </div>
                 {{App\Qlib\Qlib::formulario([
                     'campos'=>$campos,
                     'config'=>$config,

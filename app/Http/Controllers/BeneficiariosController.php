@@ -191,6 +191,7 @@ class BeneficiariosController extends Controller
             'config[tipo_uniao]'=>['label'=>'Tipo de união','cp_busca'=>'config][tipo_uniao','active'=>true,'type'=>'text','tam'=>'6','exibe_busca'=>'d-block','event'=>''],
             'config[mae]'=>['label'=>'Mãe','cp_busca'=>'config][mae','active'=>true,'type'=>'text','tam'=>'12','exibe_busca'=>'d-block','event'=>''],
             'config[pai]'=>['label'=>'Pai','cp_busca'=>'config][pai','active'=>true,'type'=>'text','tam'=>'12','exibe_busca'=>'d-block','event'=>''],
+            /*
             'conjuge'=>[
                 'label'=>'Cônjuge ou parceiro',
                 'active'=>false,
@@ -216,7 +217,7 @@ class BeneficiariosController extends Controller
                     ],
                     'tab' =>$this->tab,
                 ],
-            ],
+            ],*/
             'obs'=>['label'=>'Observação','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
         ];

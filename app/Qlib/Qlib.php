@@ -188,6 +188,72 @@ class Qlib
             return false;
         }
     }
+    static function qShow($config=false){
+        if(isset($config['type'])){
+            $config['campo'] = isset($config['campo'])?$config['campo']:'teste';
+            $config['label'] = isset($config['label'])?$config['label']:false;
+            $config['placeholder'] = isset($config['placeholder'])?$config['placeholder']:false;
+            $config['selected'] = isset($config['selected']) ? $config['selected']:false;
+            $config['tam'] = isset($config['tam']) ? $config['tam']:'12';
+            $config['col'] = isset($config['col']) ? $config['col']:'md';
+            $config['event'] = isset($config['event']) ? $config['event']:false;
+            $config['ac'] = isset($config['ac']) ? $config['ac']:'cad';
+            $config['option_select'] = isset($config['option_select']) ? $config['option_select']:true;
+            $config['label_option_select'] = isset($config['label_option_select']) ? $config['label_option_select']:'Selecione';
+            $config['option_gerente'] = isset($config['option_gerente']) ? $config['option_gerente']:false;
+            $config['class'] = isset($config['class']) ? $config['class'] : false;
+            $config['style'] = isset($config['style']) ? $config['style'] : false;
+            $config['class_div'] = isset($config['class_div']) ? $config['class_div'] : false;
+            if(@$config['type']=='chave_checkbox' && @$config['ac']=='cad'){
+                if(@$config['checked'] == null && isset($config['valor_padrao']))
+                $config['checked'] = $config['valor_padrao'];
+            }
+            if(@$config['type']=='html_vinculo' && @$config['ac']=='alt'){
+                $tab = $config['data_selector']['tab'];
+                $config['data_selector']['placeholder'] = isset($config['data_selector']['placeholder'])?$config['data_selector']['placeholder']:'Digite para iniciar a consulta...';
+                $dsel = $config['data_selector'];
+                $id = $config['value'];
+                if(@$dsel['tipo']=='array'){
+                    if(is_array($id)){
+                        foreach ($id as $ki => $vi) {
+                            $config['data_selector']['list'][$ki] = Qlib::dados_tab($tab,['id'=>$vi]);
+                            if($config['data_selector']['list'][$ki] && isset($config['data_selector']['table']) && is_array($config['data_selector']['table'])){
+                                foreach ($config['data_selector']['table'] as $key => $v) {
+                                    if(isset($v['type']) && $v['type']=='arr_tab' && isset($config['data_selector']['list'][$ki][$key]) && isset($v['conf_sql'])){
+                                        $config['data_selector']['list'][$ki][$key.'_valor'] = Qlib::buscaValorDb([
+                                            'tab'=>$v['conf_sql']['tab'],
+                                            'campo_bus'=>$v['conf_sql']['campo_bus'],
+                                            'select'=>$v['conf_sql']['select'],
+                                            'valor'=>$config['data_selector']['list'][$ki][$key],
+                                        ]);
+                                    }
+                                }
+                            }
+                        }
+                        //dd($config['data_selector']);
+                    }
+                }else{
+                    $config['data_selector']['list'] = Qlib::dados_tab($tab,['id'=>$id]);
+                    if($config['data_selector']['list'] && isset($config['data_selector']['table']) && is_array($config['data_selector']['table'])){
+                        foreach ($config['data_selector']['table'] as $key => $v) {
+                            if(isset($v['type']) && $v['type']=='arr_tab' && isset($config['data_selector']['list'][$key]) && isset($v['conf_sql'])){
+                                $config['data_selector']['list'][$key.'_valor'] = Qlib::buscaValorDb([
+                                    'tab'=>$v['conf_sql']['tab'],
+                                    'campo_bus'=>$v['conf_sql']['campo_bus'],
+                                    'select'=>$v['conf_sql']['select'],
+                                    'valor'=>$config['data_selector']['list'][$key],
+                                ]);
+                            }
+                        }
+                        //dd($config);
+                    }
+                }
+            }
+            return view('qlib.campos_show',['config'=>$config]);
+        }else{
+            return false;
+        }
+    }
     static function sql_array($sql, $ind, $ind_2, $ind_3 = '', $leg = '',$type=false){
         $table = DB::select($sql);
         $userinfo = array();
@@ -266,6 +332,14 @@ class Qlib
     static function formulario($config=false){
         if($config['campos']){
             $view = 'qlib.formulario';
+            return view($view, ['conf'=>$config]);
+        }else{
+            return false;
+        }
+    }
+    static function show($config=false){
+        if($config['campos']){
+            $view = 'qlib.show';
             return view($view, ['conf'=>$config]);
         }else{
             return false;
