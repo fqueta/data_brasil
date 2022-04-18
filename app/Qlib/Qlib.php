@@ -144,21 +144,43 @@ class Qlib
             }
             if(@$config['type']=='html_vinculo' && @$config['ac']=='alt'){
                 $tab = $config['data_selector']['tab'];
-                $id = $config['value'];
                 $config['data_selector']['placeholder'] = isset($config['data_selector']['placeholder'])?$config['data_selector']['placeholder']:'Digite para iniciar a consulta...';
-                $config['data_selector']['list'] = Qlib::dados_tab($tab,['id'=>$id]);
-                if($config['data_selector']['list'] && isset($config['data_selector']['table']) && is_array($config['data_selector']['table'])){
-                    foreach ($config['data_selector']['table'] as $key => $v) {
-                        if(isset($v['type']) && $v['type']=='arr_tab' && isset($config['data_selector']['list'][$key]) && isset($v['conf_sql'])){
-                            $config['data_selector']['list'][$key.'_valor'] = Qlib::buscaValorDb([
-                                'tab'=>$v['conf_sql']['tab'],
-                                'campo_bus'=>$v['conf_sql']['campo_bus'],
-                                'select'=>$v['conf_sql']['select'],
-                                'valor'=>$config['data_selector']['list'][$key],
-                            ]);
+                $dsel = $config['data_selector'];
+                $id = $config['value'];
+                if(@$dsel['tipo']=='array'){
+                    if(is_array($id)){
+                        foreach ($id as $ki => $vi) {
+                            $config['data_selector']['list'][$ki] = Qlib::dados_tab($tab,['id'=>$vi]);
+                            if($config['data_selector']['list'][$ki] && isset($config['data_selector']['table']) && is_array($config['data_selector']['table'])){
+                                foreach ($config['data_selector']['table'] as $key => $v) {
+                                    if(isset($v['type']) && $v['type']=='arr_tab' && isset($config['data_selector']['list'][$ki][$key]) && isset($v['conf_sql'])){
+                                        $config['data_selector']['list'][$ki][$key.'_valor'] = Qlib::buscaValorDb([
+                                            'tab'=>$v['conf_sql']['tab'],
+                                            'campo_bus'=>$v['conf_sql']['campo_bus'],
+                                            'select'=>$v['conf_sql']['select'],
+                                            'valor'=>$config['data_selector']['list'][$ki][$key],
+                                        ]);
+                                    }
+                                }
+                            }
                         }
+                        //dd($config['data_selector']);
                     }
-                    //dd($config);
+                }else{
+                    $config['data_selector']['list'] = Qlib::dados_tab($tab,['id'=>$id]);
+                    if($config['data_selector']['list'] && isset($config['data_selector']['table']) && is_array($config['data_selector']['table'])){
+                        foreach ($config['data_selector']['table'] as $key => $v) {
+                            if(isset($v['type']) && $v['type']=='arr_tab' && isset($config['data_selector']['list'][$key]) && isset($v['conf_sql'])){
+                                $config['data_selector']['list'][$key.'_valor'] = Qlib::buscaValorDb([
+                                    'tab'=>$v['conf_sql']['tab'],
+                                    'campo_bus'=>$v['conf_sql']['campo_bus'],
+                                    'select'=>$v['conf_sql']['select'],
+                                    'valor'=>$config['data_selector']['list'][$key],
+                                ]);
+                            }
+                        }
+                        //dd($config);
+                    }
                 }
             }
             return view('qlib.campos_form',['config'=>$config]);
@@ -318,11 +340,25 @@ class Qlib
             $sql = isset($config['sql']) ? $config['sql']:false;
             if($sql){
                 $d = DB::select($sql);
-                $ret = (array)$d;
+                $arr_list = $d;
+                $list = false;
+                foreach ($arr_list as $k => $v) {
+                    if(is_object($v)){
+                        $list[$k] = (array)$v;
+                        foreach ($list[$k] as $k1 => $v1) {
+                            if(Qlib::isJson($v1)){
+                                $list[$k][$k1] = Qlib::lib_json_array($v1);
+                            }
+                        }
+                    }
+                }
+                $ret = $list;
                 return $ret;
+            }else{
+                $obj_list = DB::table($tab)->find($id);
             }
-            $obj_list = DB::table($tab)->find($id);
             if($list=(array)$obj_list){
+                //dd($obj_list);
                     if(is_array($list)){
                         foreach ($list as $k => $v) {
                             if(Qlib::isJson($v)){

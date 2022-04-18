@@ -190,21 +190,39 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (isset($config['data_selector']['list']) && is_array($config['data_selector']['list']) && isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
-                                    <tr id="tr-{{$config['data_selector']['list']['id']}}"><input type="hidden" name="{{$config['campo']}}" value="{{$config['data_selector']['list']['id']}}">
-                                        @foreach ($config['data_selector']['table'] as $kb=>$vb)
-                                            @if ($vb['type']=='text')
-                                                <td id="td-{{$kb}}">{{$config['data_selector']['list'][$kb]}}</td>
-                                            @elseif ($vb['type']=='arr_tab')
-                                                <td id="td-{{$kb}}_valor">{{$config['data_selector']['list'][$kb.'_valor']}}</td>
-                                            @endif
+                                @if (isset($config['data_selector']['list']) && is_array($config['data_selector']['list']) && isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
+                                    @if (@$config['data_selector']['tipo']=='array')
+                                        @foreach ($config['data_selector']['list'] as $klis=>$vlis)
+                                            <tr id="tr-{{$klis}}-{{$config['data_selector']['list'][$klis]['id']}}"><input id="inp-{{$klis}}-{{$config['data_selector']['list'][$klis]['id']}}" type="hidden" name="{{$config['campo']}}[]" value="{{$config['data_selector']['list'][$klis]['id']}}">
+                                                @foreach ($config['data_selector']['table'] as $kb=>$vb)
+                                                    @if ($vb['type']=='text')
+                                                        <td id="td-{{$kb}}">{{$config['data_selector']['list'][$klis][$kb]}}</td>
+                                                    @elseif ($vb['type']=='arr_tab')
+                                                        <td id="td-{{$kb}}_valor">{{$config['data_selector']['list'][$klis][$kb.'_valor']}}</td>
+                                                    @endif
+                                                @endforeach
+                                                <td class="text-right">
+                                                    <button type="button" btn-alt onclick="lib_htmlVinculo('alt','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}','{{$klis}}')" title="{{__('Editar')}}" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button>
+                                                    <button type="button" onclick="lib_htmlVinculo('del','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}','{{$klis}}')" class="btn btn-outline-danger" title="{{__('Remover')}}" > <i class="fa fa-trash" aria-hidden="true"></i> </button>
+                                                </td>
+                                            </tr>
                                         @endforeach
-                                        <td class="text-right">
-                                            <button type="button" btn-alt onclick="lib_htmlVinculo('alt','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}')" title="{{__('Editar')}}" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button>
-                                            <button type="button" onclick="lib_htmlVinculo('del','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}')" class="btn btn-outline-danger" title="{{__('Remover')}}" > <i class="fa fa-trash" aria-hidden="true"></i> </button>
-                                        </td>
-                                    </tr>
+                                    @else
+                                        <tr id="tr-{{$config['data_selector']['list']['id']}}"><input type="hidden" name="{{$config['campo']}}" value="{{$config['data_selector']['list']['id']}}">
+                                            @foreach ($config['data_selector']['table'] as $kb=>$vb)
+                                                @if ($vb['type']=='text')
+                                                    <td id="td-{{$kb}}">{{$config['data_selector']['list'][$kb]}}</td>
+                                                @elseif ($vb['type']=='arr_tab')
+                                                    <td id="td-{{$kb}}_valor">{{$config['data_selector']['list'][$kb.'_valor']}}</td>
+                                                @endif
+                                            @endforeach
+                                            <td class="text-right">
+                                                <button type="button" btn-alt onclick="lib_htmlVinculo('alt','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}')" title="{{__('Editar')}}" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button>
+                                                <button type="button" onclick="lib_htmlVinculo('del','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}')" class="btn btn-outline-danger" title="{{__('Remover')}}" > <i class="fa fa-trash" aria-hidden="true"></i> </button>
+                                            </td>
+                                        </tr>
                                     @endif
+                                @endif
                                 </tbody>
                             </table>
                             @endif

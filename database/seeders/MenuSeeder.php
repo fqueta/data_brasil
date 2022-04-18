@@ -92,7 +92,7 @@ class MenuSeeder extends Seeder
                 'description'=>'Escolaridade',
                 'icon'=>'fas fa-list',
                 'actived'=>true,
-                'url'=>'escolaridade',
+                'url'=>'escolaridades',
                 'route'=>'escolaridades.index',
                 'pai'=>'cad-social'
             ],

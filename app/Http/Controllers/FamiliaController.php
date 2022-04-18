@@ -235,7 +235,7 @@ class FamiliaController extends Controller
     }
     public function index(User $user)
     {
-        $this->authorize('is_admin', $user);
+        //$this->authorize('is_admin', $user);
         $this->authorize('ler', $this->routa);
         $title = 'Famílias Cadastradas';
         $titulo = $title;
@@ -292,7 +292,8 @@ class FamiliaController extends Controller
                     'campo_bus'=>'nome',
                     'label'=>'Etapa',
                 ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\');',
+                //'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\');carregaMatricula($(this))',
+                'event'=>'onchange=carregaMatricula($(this).val())',
                 'tam'=>'6',
                 'class'=>'select2'
             ],
@@ -313,6 +314,31 @@ class FamiliaController extends Controller
                 'tam'=>'6',
                 //'class'=>'select2'
             ],
+            'tipo_residencia'=>[
+                'label'=>'tipo de residência*',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='2'",'nome','id'),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'6',
+                'class'=>'',
+                'option_select'=>false,
+            ],
+            'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
+            'area_alvo'=>['label'=>'Área Alvo','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'2','placeholder'=>''],
+            //'endereco'=>['label'=>'Rua','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'10'],
+            //'numero'=>['label'=>'Número','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'tags[]'=>[
+                'label'=>'Situação',
+                'active'=>true,
+                'type'=>'select_multiple',
+                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='1'",'nome','id'),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'class'=>'',
+                'option_select'=>false,
+                'tam'=>'12',
+                'cp_busca'=>'tags]['
+            ],
             'loteamento'=>[
                 'label'=>'Informações do lote',
                 'active'=>false,
@@ -325,6 +351,7 @@ class FamiliaController extends Controller
                     'campos'=>$lote->campos(),
                     'route_index'=>route('lotes.index'),
                     'id_form'=>'frm-loteamento',
+                    'tipo'=>'array', // int para somente um ou array para vários
                     'action'=>route('lotes.store'),
                     'campo_id'=>'id',
                     'campo_bus'=>'nome',
@@ -352,29 +379,6 @@ class FamiliaController extends Controller
                     ],
                     'salvar_primeiro' =>false,//exigir cadastro do vinculo antes de cadastrar este
                 ],
-            ],
-            'tipo_residencia'=>[
-                'label'=>'tipo de residência*',
-                'active'=>true,
-                'type'=>'select',
-                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='2'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
-                'tam'=>'6',
-                'class'=>'',
-                'option_select'=>false,
-            ],
-            //'endereco'=>['label'=>'Rua','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'10'],
-            //'numero'=>['label'=>'Número','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            'tags[]'=>[
-                'label'=>'Situação',
-                'active'=>true,
-                'type'=>'select_multiple',
-                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='1'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
-                'class'=>'',
-                'option_select'=>false,
-                'tam'=>'6',
-                'cp_busca'=>'tags]['
             ],
             'id_beneficiario'=>[
                 'label'=>'Prorietário',
@@ -428,8 +432,6 @@ class FamiliaController extends Controller
                     'tab' =>'beneficiarios',
                 ],
             ],
-            //'area_alvo'=>['label'=>'Área Alvo*','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'2','placeholder'=>''],
-            //'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
             'config[registro]'=>['label'=>'Registro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][registro'],
             'config[livro]'=>['label'=>'Livro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][livro'],
             //'quadra'=>['label'=>'Quadra*','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
@@ -478,13 +480,13 @@ class FamiliaController extends Controller
                 'class'=>'select2',
             ],*/
             //'situacao_profissional'=>['label'=>'Situação Profissional','type'=>'text','active'=>true,'exibe_busca'=>'d-block','event'=>'','tam'=>'4'],
-            'bcp_bolsa_familia'=>['label'=>'BPC ou Bolsa Família','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            'renda_familiar'=>['label'=>'Renda Fam.','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6','class'=>'moeda'],
+            'bcp_bolsa_familia'=>['label'=>'BPC ou Bolsa Família','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'renda_familiar'=>['label'=>'Renda Fam.','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','class'=>''],
+            'doc_imovel'=>['label'=>'Doc Imóvel','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
             'qtd_membros'=>['label'=>'Membros','active'=>true,'type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
             'membros'=>['label'=>'lista de Membros','active'=>false,'type'=>'html','exibe_busca'=>'d-none','event'=>'','tam'=>'12','script'=>'familias.lista_membros'],
             'idoso'=>['label'=>'Idoso','active'=>true,'type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-none','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             'crianca_adolescente'=>['label'=>'Criança e Adolescente','active'=>true,'exibe_busca'=>'d-none','event'=>'','type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
-            'doc_imovel'=>['label'=>'Doc Imóvel','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             'obs'=>['label'=>'Observação','active'=>true,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','rows'=>'4','cols'=>'80','tam'=>'12'],
         ];
     }
@@ -568,9 +570,66 @@ class FamiliaController extends Controller
         }
     }
 
-    public function show(Familia $familia)
+    public function show($id,User $user)
     {
-        //
+        $dados = Familia::findOrFail($id);
+        $this->authorize('ler', $this->routa);
+        if(!empty($dados)){
+            $title = 'Cadastro da família';
+            $titulo = $title;
+            //dd($dados);
+            $dados['ac'] = 'alt';
+            if(isset($dados['config'])){
+                $dados['config'] = Qlib::lib_json_array($dados['config']);
+            }
+            $arr_escolaridade = Qlib::sql_array("SELECT id,nome FROM escolaridades ORDER BY nome ", 'nome', 'id');
+            $arr_estadocivil = Qlib::sql_array("SELECT id,nome FROM estadocivils ORDER BY nome ", 'nome', 'id');
+            $listFiles = false;
+            $dados['renda_familiar'] = number_format($dados['renda_familiar'],2,',','.');
+            $campos = $this->campos();
+            if(isset($dados['token'])){
+                $listFiles = _upload::where('token_produto','=',$dados['token'])->get();
+            }
+            $config = [
+                'ac'=>'alt',
+                'frm_id'=>'frm-familias',
+                'route'=>$this->routa,
+                'id'=>$id,
+            ];
+            if($dados['loteamento']>0){
+                $bairro = Bairro::find($dados['bairro']);
+                $dados['matricula'] = isset($bairro['matricula'])?$bairro['matricula']:false;
+            }
+            if(!$dados['matricula'])
+                $config['display_matricula'] = 'd-none';
+            if(isset($dados['config']) && is_array($dados['config'])){
+                foreach ($dados['config'] as $key => $value) {
+                    if(is_array($value)){
+
+                    }else{
+                        $dados['config['.$key.']'] = $value;
+                    }
+                }
+            }
+            $ret = [
+                'value'=>$dados,
+                'config'=>$config,
+                'title'=>$title,
+                'titulo'=>$titulo,
+                'arr_escolaridade'=>$arr_escolaridade,
+                'arr_estadocivil'=>$arr_estadocivil,
+                'listFiles'=>$listFiles,
+                'campos'=>$campos,
+                'routa'=>$this->routa,
+                'exec'=>true,
+            ];
+            return view($this->routa.'.show',$ret);
+        }else{
+            $ret = [
+                'exec'=>false,
+            ];
+            return redirect()->route($this->routa.'.index',$ret);
+        }
     }
 
     public function edit($id,User $user)

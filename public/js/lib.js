@@ -1171,16 +1171,37 @@ function lib_carregaConjuge(frmParce,frmBene){
     formParce.find('[name="conjuge"]').val(idBenef);
 }
 function cursos_carregaUrl(){}
-function lib_htmlVinculo(ac,campos){
+function lib_htmlVinculo(ac,campos,lin){
     var c = decodeArray(campos),idf='#'+c.id_form,arr=c.campos;
+    try {
+        if(typeof lin == 'undefined'){
+            lin = '';
+        }
+        var tipo=c.tipo;
+    } catch (e) {
+        var tipo='int';
+        console.log(e);
+    }
+    if(typeof tipo =='undefined'){
+        var tipo='int';
+    }
     if(ac=='del'){
-        if(id = c.list.id){
+        if(tipo=='array' && lin){
+            var id = c.list[lin].id,trsel = '#tr-'+lin+'-'+id;
+        }else{
+            var id = c.list.id;
+        }
+        if(id){
             var msg = '<div class="row"><div id="mens-id" class="col-md-12 text-center"><h5>Deseja Remover da lista?</h5><p>Para completar é necessário salvar</p><p>Remover da lista não exclui o cadastro</p></div><div class="col-md-12 mt-3 text-center"></div></div>';
             var btnr = '<button type="button" class="btn btn-danger" deletar>Remover Agora!</button>';
             alerta(msg,'modal-del-html_vinculo','Atenção','',true);
             $(btnr).insertAfter('#modal-del-html_vinculo .modal-footer button');
             $('[deletar]').on('click',function(){
-                $('#table-html_vinculo-'+c.campo+' #tr-'+id+' td').html('');
+                if(tipo=='array' && lin){
+                    $('#table-html_vinculo-'+c.campo+' '+trsel).remove();
+                }else{
+                    $('#table-html_vinculo-'+c.campo+' '+trsel+' td').html('');
+                }
                 $('#modal-del-html_vinculo').modal('hide');
                 $('[name="'+c.campo+'"]').val('');
             });
@@ -1189,13 +1210,26 @@ function lib_htmlVinculo(ac,campos){
     if(ac=='alt'){
         if(Object.entries(arr).length>0){
             Object.entries(arr).forEach(([k, v]) => {
-                if(c.list[k]){
-                    c.campos[k].value = c.list[k];
+                if(tipo=='array'){
+                    if(c.list[lin][k]){
+                        c.campos[k].value = c.list[lin][k];
+                    }else{
+                        if(cp=c.campos[k].cp_busca){
+                            let ar = cp.split('][');
+                            if(ar[1]){
+                                c.campos[k].value = c.list[lin][ar[0]][ar[1]];
+                            }
+                        }
+                    }
                 }else{
-                    if(cp=c.campos[k].cp_busca){
-                        let ar = cp.split('][');
-                        if(ar[1]){
-                            c.campos[k].value = c.list[ar[0]][ar[1]];
+                    if(c.list[k]){
+                        c.campos[k].value = c.list[k];
+                    }else{
+                        if(cp=c.campos[k].cp_busca){
+                            let ar = cp.split('][');
+                            if(ar[1]){
+                                c.campos[k].value = c.list[ar[0]][ar[1]];
+                            }
                         }
                     }
                 }
@@ -1208,26 +1242,69 @@ function lib_htmlVinculo(ac,campos){
                 if(res.exec){
                     var mod = '#modal-geral';
                     $(mod).modal('hide');
-                    lib_listDadosHtmlVinculo(res,campos);
+                    lib_listDadosHtmlVinculo(res,campos,ac,lin);
                 }
             });
-            if(c.list.id){
-                frm = $(idf)
-                var m = '<input type="hidden" name="_method" value="PUT">';
-                frm.attr('action',c.action+'/'+c.list.id);
-                frm.find('[name="_method"]').remove();
-                frm.append(m);
+            if(tipo=='array' && lin){
+                if(c.list[lin].id){
+                    frm = $(idf)
+                    var m = '<input type="hidden" name="_method" value="PUT">';
+                    frm.attr('action',c.action+'/'+c.list[lin].id);
+                    frm.find('[name="_method"]').remove();
+                    frm.append(m);
+                }
+            }else{
+                if(c.list.id){
+                    frm = $(idf)
+                    var m = '<input type="hidden" name="_method" value="PUT">';
+                    frm.attr('action',c.action+'/'+c.list.id);
+                    frm.find('[name="_method"]').remove();
+                    frm.append(m);
+                }
             }
         }
     }
 }
-function lib_listDadosHtmlVinculo(res,campos,ac){
+function calculaLinCad(seleTr){
+    //calcula numero da ultima linha
+    var ret='';
+    try {
+        var elem = $(seleTr).last().attr('id');
+        if(typeof elem=='undefined'){
+            return '0';
+        }
+        var tr=elem.split('-');
+        if(tr[1]){
+            ret = new Number(tr[1])+1;
+        }
+    } catch (e) {
+        console.log(e);
+        return '0';
+    }
+    return ret;
+
+}
+function lib_listDadosHtmlVinculo(res,campos,ac,lin){
+    //lin é o numero da linha para o caso do tipo array
     if(typeof ac=='undefined'){
         ac = 'alt';
     }
+    if(typeof lin=='undefined'){
+        lin = '';
+    }
     var dt = decodeArray(campos);
+    try {
+        var tipo=dt.tipo;
+    } catch (e) {
+        var tipo='int';
+        console.log(e);
+    }
+    if(typeof tipo =='undefined'){
+        var tipo='int';
+    }
     if((d=res.dados) && ac =='cad'){
         var table = $('#table-html_vinculo-'+dt.campo);
+        lin = calculaLinCad('#table-html_vinculo-'+dt.campo+' tbody tr');
         var tm = $('tm').html();
         var tm0 = '<tr id="tr-{id}">{td}</tr>';
         var tm = '<td id="td-{k}" class="{class}">{v}</td>';
@@ -1246,37 +1323,67 @@ function lib_listDadosHtmlVinculo(res,campos,ac){
                     td = td.replaceAll('{class}','');
                 }
             });
-
-            table.find('tbody tr').remove();
-            var tr = tm0.replaceAll('{id}',d.id);
-            dt.list = d;
+            if (tipo=='array'&&lin){
+                if(lin=='0')
+                    lin=0;
+                try {
+                    if(typeof dt.list[lin]=='undefined'){
+                        dt.list = [d];
+                    }else{
+                        dt.list[lin] = d;
+                    }
+                    console.log(dt);
+                } catch (e) {
+                    dt.list = [d];
+                    console.log(e);
+                }
+            }else{
+                dt.list = d;
+            }
             var e = encodeArray(dt);
-            var btnsAc = '<button type="button" btn-alt="" onclick="lib_htmlVinculo(\'alt\',\''+e+'\')" title="Editar" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button> '+
-            '<button type="button" onclick="lib_htmlVinculo(\'del\',\''+e+'\')" class="btn btn-outline-danger" title="Remover"> <i class="fa fa-trash" aria-hidden="true"></i> </button>';
+            var btnsAc = '<button type="button" btn-alt="" onclick="lib_htmlVinculo(\'alt\',\''+e+'\',\''+lin+'\')" title="Editar" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button> '+
+            '<button type="button" onclick="lib_htmlVinculo(\'del\',\''+e+'\',\''+lin+'\')" class="btn btn-outline-danger" title="Remover"> <i class="fa fa-trash" aria-hidden="true"></i> </button>';
             var tdacao = tm.replaceAll('{k}','tr-acao');
             tdacao = tdacao.replaceAll('{v}',btnsAc);
             tdacao = tdacao.replaceAll('{class}','text-right');
-            var tr = tr.replaceAll('{td}',td+tdacao);
-            table.find('tbody').html(tr);
-            if(dt.campo){
-                $('[name="'+dt.campo+'"]').remove();
-                var selInp = table.find('tbody');
-                $('<input type="hidden" name="'+dt.campo+'" value="'+d.id+'" />').insertBefore(selInp);
+            if(tipo=='array'){
+                var tr = tm0.replaceAll('{id}',lin+'-'+d.id);
+                var inp = '<input type="hidden" name="'+dt.campo+'[]" value="'+d.id+'" />';
+                var tr = tr.replaceAll('{td}',td+inp+tdacao);
+                table.find('tbody').append(tr);
+            }else{
+                var tr = tm0.replaceAll('{id}',d.id);
+                var tr = tr.replaceAll('{td}',td+tdacao);
+                var inp = '<input type="hidden" name="'+dt.campo+'" value="'+d.id+'" />';
+                table.find('tbody tr').remove();
+                table.find('tbody').html(tr);
+                if(dt.campo){
+                    $('[name="'+dt.campo+'"]').remove();
+                    var selInp = table.find('tbody');
+                    $(inp).insertBefore(selInp);
+                }
             }
         }
     }
     if((d=res.dados) && ac =='alt'){
         var table = $('#table-html_vinculo-'+dt.campo);
+        if(tipo=='array' && lin){
+            var seltr = '#tr-'+lin+'-'+d.id;
+            dt.list[lin] = d;
+            //console.log(dt.list[lin]);
+        }else{
+            var seltr = '#tr-'+d.id;
+            dt.list = d;
+        }
         $.each(d,function(k,v){
-            table.find('#tr-'+d.id+' #td-'+k).html(v);
+            table.find(seltr+' #td-'+k).html(v);
         });
-        dt.list = d;
         var e = encodeArray(dt);
 
-        table.find('#tr-'+d.id+' [btn-alt]').attr('data_selector',e);
-        table.find('#tr-'+d.id+' [btn-alt]').attr('onclick','lib_htmlVinculo(\'alt\',"'+e+'")');
-        console.log(dt);
-
+        table.find(seltr+' [btn-alt]').attr('data_selector',e);
+        table.find(seltr+' [btn-alt]').attr('onclick','lib_htmlVinculo(\'alt\',"'+e+'","'+lin+'")');
+        //console.log(dt);
+        //alert(ac);
     }
 }
 function lib_listarCadastro(res,obj){

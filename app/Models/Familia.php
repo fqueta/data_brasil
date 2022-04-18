@@ -11,6 +11,7 @@ class Familia extends Model
     use HasFactory,Notifiable;
     protected $casts = [
         'config' => 'array',
+        'loteamento' => 'array',
         'tags' => 'array',
     ];
     protected $fillable = [
@@ -19,7 +20,7 @@ class Familia extends Model
         'tipo_residencia',
         'etapa',
         'loteamento',
-        'id_loteamento',
+        //'id_loteamento',
         'id_beneficiario',
         'id_conjuge',
         'matricula',
