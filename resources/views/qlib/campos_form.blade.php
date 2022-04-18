@@ -193,12 +193,12 @@
                                 @if (isset($config['data_selector']['list']) && is_array($config['data_selector']['list']) && isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
                                     @if (@$config['data_selector']['tipo']=='array')
                                         @foreach ($config['data_selector']['list'] as $klis=>$vlis)
-                                            <tr id="tr-{{$klis}}-{{$config['data_selector']['list'][$klis]['id']}}"><input id="inp-{{$klis}}-{{$config['data_selector']['list'][$klis]['id']}}" type="hidden" name="{{$config['campo']}}[]" value="{{$config['data_selector']['list'][$klis]['id']}}">
+                                            <tr id="tr-{{$klis}}-{{@$config['data_selector']['list'][$klis]['id']}}"><input id="inp-{{$klis}}-{{@$config['data_selector']['list'][$klis]['id']}}" type="hidden" name="{{@$config['campo']}}[]" value="{{@$config['data_selector']['list'][$klis]['id']}}">
                                                 @foreach ($config['data_selector']['table'] as $kb=>$vb)
                                                     @if ($vb['type']=='text')
-                                                        <td id="td-{{$kb}}">{{$config['data_selector']['list'][$klis][$kb]}}</td>
+                                                        <td id="td-{{$kb}}">{{@$config['data_selector']['list'][$klis][$kb]}}</td>
                                                     @elseif ($vb['type']=='arr_tab')
-                                                        <td id="td-{{$kb}}_valor">{{$config['data_selector']['list'][$klis][$kb.'_valor']}}</td>
+                                                        <td id="td-{{$kb}}_valor">{{@$config['data_selector']['list'][$klis][$kb.'_valor']}}</td>
                                                     @endif
                                                 @endforeach
                                                 <td class="text-right">
