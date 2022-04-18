@@ -585,7 +585,7 @@ class FamiliaController extends Controller
             $arr_escolaridade = Qlib::sql_array("SELECT id,nome FROM escolaridades ORDER BY nome ", 'nome', 'id');
             $arr_estadocivil = Qlib::sql_array("SELECT id,nome FROM estadocivils ORDER BY nome ", 'nome', 'id');
             $listFiles = false;
-            $dados['renda_familiar'] = number_format($dados['renda_familiar'],2,',','.');
+            //$dados['renda_familiar'] = number_format($dados['renda_familiar'],2,',','.');
             $campos = $this->campos();
             if(isset($dados['token'])){
                 $listFiles = _upload::where('token_produto','=',$dados['token'])->get();
