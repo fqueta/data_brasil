@@ -8,6 +8,7 @@
                 {{@$config['arr_opc'][$config['value']]}}
             @endif
         </div>
+    @elseif ($config['type']=='hidden')
     @elseif ($config['type']=='select_multiple')
         @if (isset($config['arr_opc']))
         <div class="col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}">
@@ -90,90 +91,164 @@
                             $d = $config['data_selector'];
 
                         @endphp
-                        @if (isset($d['list']) && is_array($d['list']))
-                        @foreach ($d['campos'] as $k=>$v)
-                            @if(@$d['tipo']=='array')
-                                        @foreach ($d['list'] as $kk=>$vv)
+                        @if (isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
+                        <div class="col-md-12 ">
+                                @if (isset($config['data_selector']['list']) && is_array($config['data_selector']['list']) && isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
+                                    @if (@$config['data_selector']['tipo']=='array')
+                                        @foreach ($config['data_selector']['list'] as $klis=>$vlis)
+                                            <div class="row" id="tr-{{$klis}}-{{$config['data_selector']['list'][$klis]['id']}}">
+                                                @foreach ($config['data_selector']['campos'] as $kb=>$vb)
+                                                    @if ($vb['type']=='arr_tab')
+                                                        {{App\Qlib\Qlib::qShow([
+                                                            'type'=>@$vb['type'],
+                                                            'campo'=>$kb,
+                                                            'label'=>$vb['label'],
+                                                            'placeholder'=>@$vb['placeholder'],
+                                                            'ac'=>$config['ac'],
+                                                            'value'=>@$config['data_selector']['list'][$klis][$kb.'_valor'],
+                                                            'tam'=>@$vb['tam'],
+                                                            'event'=>@$vb['event'],
+                                                            'checked'=>@$config['data_selector']['list'][$klis][$kb.'_valor'],
+                                                            'selected'=>@$vb['selected'],
+                                                            'arr_opc'=>@$vb['arr_opc'],
+                                                            'option_select'=>@$vb['option_select'],
+                                                            'class'=>@$vb['class'],
+                                                            'class_div'=>@$vb['class_div'],
+                                                            'rows'=>@$vb['rows'],
+                                                            'cols'=>@$vb['cols'],
+                                                            'data_selector'=>@$vb['data_selector'],
+                                                            'script'=>@$vb['script_show'],
+                                                            'valor_padrao'=>@$vb['valor_padrao'],
+                                                            'dados'=>@$vb['dados'],
+                                                        ])}}
+                                                    @else
                                                         @php
-                                                            if(isset($v['cp_busca']) && !empty($v['cp_busca']))
+                                                            if(isset($vb['cp_busca']) && !empty($vb['cp_busca']))
                                                             {
-                                                                $ck = explode('][',$v['cp_busca']);
+                                                                $ck = explode('][',$vb['cp_busca']);
                                                                 if(isset($ck[1])){
-                                                                    $value = @$vv[$ck[0]][$ck[1]];
+                                                                    $value = @$config['data_selector']['list'][$klis][$ck[0]][$ck[1]];
                                                                 }else{
-                                                                    $value = '';
+                                                                    $value = $config['data_selector']['list'][$klis][$kb];
                                                                 }
                                                             }else{
-                                                                $value = @$vv[$k];
+                                                                $value = @$config['data_selector']['list'][$klis][$kb];
                                                             }
                                                         @endphp
-
-                                                            {{App\Qlib\Qlib::qShow([
-                                                                'type'=>@$v['type'],
-                                                                'campo'=>$k,
-                                                                'label'=>$v['label'],
-                                                                'placeholder'=>@$v['placeholder'],
-                                                                'ac'=>$config['ac'],
-                                                                'value'=>@$value,
-                                                                'tam'=>@$v['tam'],
-                                                                'event'=>@$v['event'],
-                                                                'checked'=>@$value,
-                                                                'selected'=>@$v['selected'],
-                                                                'arr_opc'=>@$v['arr_opc'],
-                                                                'option_select'=>@$v['option_select'],
-                                                                'class'=>@$v['class'],
-                                                                'class_div'=>@$v['class_div'],
-                                                                'rows'=>@$v['rows'],
-                                                                'cols'=>@$v['cols'],
-                                                                'data_selector'=>@$v['data_selector'],
-                                                                'script'=>@$v['script_show'],
-                                                                'valor_padrao'=>@$v['valor_padrao'],
-                                                                'dados'=>@$v['dados'],
-                                                                ])}}
-
+                                                    {{App\Qlib\Qlib::qShow([
+                                                        'type'=>@$vb['type'],
+                                                        'campo'=>$kb,
+                                                        'label'=>$vb['label'],
+                                                        'placeholder'=>@$vb['placeholder'],
+                                                        'ac'=>$config['ac'],
+                                                        'value'=>@$value,
+                                                        'tam'=>@$vb['tam'],
+                                                        'event'=>@$vb['event'],
+                                                        'checked'=>@$value,
+                                                        'selected'=>@$vb['selected'],
+                                                        'arr_opc'=>@$vb['arr_opc'],
+                                                        'option_select'=>@$vb['option_select'],
+                                                        'class'=>@$vb['class'],
+                                                        'class_div'=>@$vb['class_div'],
+                                                        'rows'=>@$vb['rows'],
+                                                        'cols'=>@$vb['cols'],
+                                                        'data_selector'=>@$vb['data_selector'],
+                                                        'script'=>@$vb['script_show'],
+                                                        'valor_padrao'=>@$vb['valor_padrao'],
+                                                        'dados'=>@$vb['dados'],
+                                                        ])}}
+                                                    @endif
+                                                @endforeach
+                                                <div class="col-12">
+                                                    <hr>
+                                                </div>
+                                            </div>
                                         @endforeach
+                                    @else
+                                        <div class="row" id="tr-{{@$config['data_selector']['list']['id']}}">
+                                            @foreach ($config['data_selector']['campos'] as $kb=>$vb)
+                                                @if ($vb['type']=='text')
+                                                    @php
+                                                        if(isset($vb['cp_busca']) && !empty($vb['cp_busca']))
+                                                        {
+                                                            $ck = explode('][',$vb['cp_busca']);
+                                                            if(isset($ck[1])){
+                                                                $value = @$config['data_selector']['list'][$ck[0]][$ck[1]];
+                                                            }else{
+                                                                $value = $config['data_selector']['list'][$kb];
+                                                            }
+                                                        }else{
+                                                            $value = @$config['data_selector']['list'][$kb];
+                                                        }
+                                                    @endphp
+                                                    {{App\Qlib\Qlib::qShow([
+                                                        'type'=>@$vb['type'],
+                                                        'campo'=>$kb,
+                                                        'label'=>$vb['label'],
+                                                        'placeholder'=>@$vb['placeholder'],
+                                                        'ac'=>$config['ac'],
+                                                        'value'=>@$value,
+                                                        'tam'=>@$vb['tam'],
+                                                        'event'=>@$vb['event'],
+                                                        'checked'=>@$value,
+                                                        'selected'=>@$vb['selected'],
+                                                        'arr_opc'=>@$vb['arr_opc'],
+                                                        'option_select'=>@$vb['option_select'],
+                                                        'class'=>@$vb['class'],
+                                                        'class_div'=>@$vb['class_div'],
+                                                        'rows'=>@$vb['rows'],
+                                                        'cols'=>@$vb['cols'],
+                                                        'data_selector'=>@$vb['data_selector'],
+                                                        'script'=>@$vb['script_show'],
+                                                        'valor_padrao'=>@$vb['valor_padrao'],
+                                                        'dados'=>@$vb['dados'],
+                                                    ])}}
 
-                                @else
-                                    @if(isset($d['list']) && $v['type']!='hidden')
-                                        @php
-                                            if(isset($d['campos'][$k]['cp_busca']) && !empty($d['campos'][$k]['cp_busca']))
-                                            {
-                                                $ck = explode('][',$d['campos'][$k]['cp_busca']);
-                                                if(isset($ck[1])){
-                                                    $value = @$d['list'][$ck[0]][$ck[1]];
-                                                }else{
-                                                    $value = '';
-                                                }
+                                                @elseif ($vb['type']=='arr_tab'||$vb['type']=='select')
+                                                    @php
+                                                        if(isset($vb['cp_busca']) && !empty($vb['cp_busca']))
+                                                        {
+                                                            $ck = explode('][',$vb['cp_busca']);
+                                                            if(isset($ck[1])){
+                                                                $value = @$config['data_selector']['list'][$ck[0]][$ck[1]];
+                                                            }else{
+                                                                //$value = $config['data_selector']['list'][$kb.'_valor']
+                                                                $value = $config['data_selector']['list'][$kb];
+                                                            }
+                                                        }else{
+                                                            //$value = $config['data_selector']['list'][$kb.'_valor'];
+                                                            $value = $config['data_selector']['list'][$kb];
+                                                        }
+                                                    @endphp
 
-                                            }else{
-                                                $value = @$d['list'][$k];
-                                            }
-                                        @endphp
-                                    {{App\Qlib\Qlib::qShow([
-                                        'type'=>@$v['type'],
-                                        'campo'=>$k,
-                                        'label'=>$v['label'],
-                                        'placeholder'=>@$v['placeholder'],
-                                        'ac'=>$config['ac'],
-                                        'value'=>@$value,
-                                        'tam'=>@$v['tam'],
-                                        'event'=>@$v['event'],
-                                        'checked'=>@$value,
-                                        'selected'=>@$v['selected'],
-                                        'arr_opc'=>@$v['arr_opc'],
-                                        'option_select'=>@$v['option_select'],
-                                        'class'=>@$v['class'],
-                                        'class_div'=>@$v['class_div'],
-                                        'rows'=>@$v['rows'],
-                                        'cols'=>@$v['cols'],
-                                        'data_selector'=>@$v['data_selector'],
-                                        'script'=>@$v['script_show'],
-                                        'valor_padrao'=>@$v['valor_padrao'],
-                                        'dados'=>@$v['dados'],
-                                        ])}}
+                                                    {{App\Qlib\Qlib::qShow([
+                                                        'type'=>@$vb['type'],
+                                                        'campo'=>$kb,
+                                                        'label'=>$vb['label'],
+                                                        'placeholder'=>@$vb['placeholder'],
+                                                        'ac'=>$config['ac'],
+                                                        'value'=>@$value,
+                                                        'tam'=>@$vb['tam'],
+                                                        'event'=>@$vb['event'],
+                                                        'checked'=>@$value,
+                                                        'selected'=>@$vb['selected'],
+                                                        'arr_opc'=>@$vb['arr_opc'],
+                                                        'option_select'=>@$vb['option_select'],
+                                                        'class'=>@$vb['class'],
+                                                        'class_div'=>@$vb['class_div'],
+                                                        'rows'=>@$vb['rows'],
+                                                        'cols'=>@$vb['cols'],
+                                                        'data_selector'=>@$vb['data_selector'],
+                                                        'script'=>@$vb['script_show'],
+                                                        'valor_padrao'=>@$vb['valor_padrao'],
+                                                        'dados'=>@$vb['dados'],
+                                                        ])}}
+                                                @endif
+                                            @endforeach
+                                        </div>
                                     @endif
                                 @endif
-                            @endforeach
+                        </div>
                         @endif
                     </div>
                 </div>

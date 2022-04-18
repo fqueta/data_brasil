@@ -141,7 +141,7 @@ class BeneficiariosController extends Controller
                 'option_select'=>false,
             ],
             'nome'=>['label'=>'Nome da Beneficiario','active'=>true,'placeholder'=>'Ex.: Cadastrado','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
-            'config[nacionalidade]'=>['label'=>'Nacionalidade','active'=>false,'js'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
+            'config[nacionalidade]'=>['label'=>'Nacionalidade','active'=>false,'js'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>'','cp_busca'=>'config][nacionalidade'],
             'config[rg]'=>['label'=>'RG','active'=>true,'type'=>'tel','tam'=>'4','exibe_busca'=>'d-block','event'=>'','cp_busca'=>'config][rg'],
             'cpf'=>['label'=>'CPF','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'mask-cpf','tam'=>'4'],
             'config[telefone]'=>['label'=>'Telefone1','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'onblur=mask(this,clientes_mascaraTelefone); onkeypress=mask(this,clientes_mascaraTelefone);','cp_busca'=>'config][telefone'],

@@ -225,8 +225,8 @@
                                 @endif
                                 </tbody>
                             </table>
-                            @endif
                         </div>
+                        @endif
                    </div>
                 </div>
                 <div class="card-footer text-muted">
