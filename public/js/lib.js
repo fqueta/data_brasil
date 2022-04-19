@@ -1194,7 +1194,7 @@ function lib_htmlVinculo(ac,campos,lin){
         if(tipo=='array' && lin){
             var id = c.list[lin].id,trsel = '#tr-'+lin+'-'+id;
         }else{
-            var id = c.list.id;
+            var id = c.list.id,trsel = '#tr-'+id;
         }
         if(id){
             var msg = '<div class="row"><div id="mens-id" class="col-md-12 text-center"><h5>Deseja Remover da lista?</h5><p>Para completar é necessário salvar</p><p>Remover da lista não exclui o cadastro</p></div><div class="col-md-12 mt-3 text-center"></div></div>';

@@ -17,7 +17,7 @@ class StoreBeneficiarioRequest extends FormRequest
     {
         return [
             'nome'=>[new FullName],
-            'cpf'=>[new RightCpf],
+            'cpf'=>['unique:beneficiarios',new RightCpf],
         ];
     }
     public function messages()

@@ -45,7 +45,7 @@ $config = [
     |
     */
 
-    'logo' => '<b>Data Brasil</b>',
+    'logo' => '<img class="d-none" src="/vendor/adminlte/dist/img/logo-h.png"/>',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     //'logo_img' => 'vendor/adminlte/dist/img/logo.jpeg',
     'logo_img_class' => 'brand-image img-circle elevation-3',

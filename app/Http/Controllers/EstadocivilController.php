@@ -126,6 +126,7 @@ class EstadocivilController extends Controller
             'arr_titulo'=>$queryEstadocivil['arr_titulo'],
             'config'=>$queryEstadocivil['config'],
             'routa'=>$routa,
+            'view'=>$this->view,
             'i'=>0,
         ]);
     }

@@ -54,8 +54,8 @@ table.familias td{
     display: inline-block;
     width: 80px;
     height: 80px;
-  }
-  .lds-dual-ring:after {
+}
+.lds-dual-ring:after {
     content: " ";
     display: block;
     width: 64px;
@@ -65,7 +65,42 @@ table.familias td{
     border: 6px solid #fff;
     border-color: rgb(18, 29, 66) transparent #fff transparent;
     animation: lds-dual-ring 1.2s linear infinite;
-  }
+}
+.brand-text {
+    transform: scale(1) !important;
+    opacity: 1 !important;
+    transition: all ease 0.4s !important;
+}
+
+.sidebar-collapse .brand-text {
+    transform: scale(0) !important;
+    opacity: 0 !important;
+    transition: all ease 0.4s !important;
+}
+.brand-image {
+    /*transform: scale(0) !important;
+    opacity: 0 !important;
+    transition: all ease 0.4s !important;*/
+    display: none;
+}
+.brand-text .d-none {
+    display: block !important
+}
+.sidebar-collapse .brand-image {
+    /*
+    transform: scale(1) !important;
+    opacity: 1 !important;
+    transition: all ease 0.4s !important;*/
+    display: block;
+}
+.brand-text img {
+    max-height: 32px;
+    width: auto;
+}
+.login-box .logo-horizontal,
+.register-box .logo-horizontal {
+    display: none !important;
+}
   @keyframes lds-dual-ring {
     0% {
       transform: rotate(0deg);
