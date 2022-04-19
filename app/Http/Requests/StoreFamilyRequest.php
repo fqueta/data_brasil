@@ -33,7 +33,7 @@ class StoreFamilyRequest extends FormRequest
     public function messages()
     {
         return [
-            'nome_completo.required' => 'O Nome é obrigatório',
+            'etapa.required' => 'A seleção da Etapa é obrigatória',
             'tel.required' => 'O Telefone é obrigatório',
             'cpf.unique' => 'Este CPF já está sendo utilizado',
             'cpf.required' => 'O CPF é obrigatório',
