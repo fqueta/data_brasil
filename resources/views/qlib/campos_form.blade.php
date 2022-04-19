@@ -3,7 +3,7 @@
         @if (isset($config['arr_opc']))
         <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}">
             @if ($config['label'])
-                 <label for="{{$config['campo']}}">{{$config['label']}}</label>
+                 <label for="{{$config['campo']}}">{{$config['label']}}</label><br>
             @endif
             <select name="{{$config['campo']}}" {{$config['event']}} id="sele-{{$config['campo']}} @error($config['campo']) is-invalid @enderror" class="form-control custom-select selectpicker {{$config['class']}}">
                 @if ($config['option_select'])
@@ -44,7 +44,7 @@
         @if (isset($config['arr_opc']))
             <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}">
                 @if ($config['label'])
-                    <label for="{{$config['campo']}}">{{$config['label']}}</label>
+                    <label for="{{$config['campo']}}">{{$config['label']}}</label><br>
                 @endif
                 <select name="{{$config['campo']}}" {{$config['event']}} data-selector="{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}" selector-event id="sele-{{$config['campo']}} @error($config['campo']) is-invalid @enderror" class="form-control custom-select selectpicker {{$config['class']}}">
                     @if ($config['option_select'])

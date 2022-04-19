@@ -26,3 +26,12 @@ table.familias td{
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.select2{
+    max-width: 100%;
+}
+.select2-container{
+    width: 100% !important;
+}
+.control-label {
+    width: 100%;
+}

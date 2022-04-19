@@ -96,7 +96,7 @@
                                 @if (isset($config['data_selector']['list']) && is_array($config['data_selector']['list']) && isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
                                     @if (@$config['data_selector']['tipo']=='array')
                                         @foreach ($config['data_selector']['list'] as $klis=>$vlis)
-                                            <div class="row" id="tr-{{$klis}}-{{$config['data_selector']['list'][$klis]['id']}}">
+                                            <div class="row" id="tr-{{$klis}}-{{@$config['data_selector']['list'][$klis]['id']}}">
                                                 @foreach ($config['data_selector']['campos'] as $kb=>$vb)
                                                     @if ($vb['type']=='arr_tab')
                                                         {{App\Qlib\Qlib::qShow([
