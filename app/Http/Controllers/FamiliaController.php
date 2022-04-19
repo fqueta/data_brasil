@@ -555,10 +555,12 @@ class FamiliaController extends Controller
         $dados['renda_familiar'] = Qlib::precoBanco($renda_familiar);
         $salvar = Familia::create($dados);
         $route = $this->routa.'.index';
+        $dados['id_familia'] = $salvar->id;
         $ret = [
             'mens'=>'Salvo com sucesso!',
             'color'=>'success',
             'idCad'=>$salvar->id,
+            'salvarQuadra'=>$this->salvarQuadra($dados),
         ];
 
         if($ajax=='s'){
@@ -569,7 +571,35 @@ class FamiliaController extends Controller
             return redirect()->route($route,$ret);
         }
     }
+    public function salvarQuadra($config = null)
+    {
+        $ret = false;
+        if(isset($config['id_familia']) && isset($config['loteamento'])){
+            $arr_lote = $config['loteamento'];
+            if(!is_array($arr_lote)){
 
+                if(Qlib::isJson($config['loteamento'])){
+                    $arr_lote = Qlib::lib_json_array($config['loteamento']);
+                }
+            }
+            if(isset($arr_lote[0])){
+                $quadra = Qlib::buscaValorDb([
+                    'tab'=>'lotes',
+                    'campo_bus'=>'id',
+                    'valor'=>$arr_lote[0],
+                    'select'=>'quadra',
+                    'compleSql'=>'',
+                    'debug'=>false,
+                ]);
+                if($quadra){
+                    $ret=Familia::where('id',$config['id_familia'])->update([
+                        'quadra'=>$quadra,
+                    ]);
+                }
+            }
+        }
+        return $ret;
+    }
     public function show($id,User $user)
     {
         $dados = Familia::findOrFail($id);
@@ -726,6 +756,7 @@ class FamiliaController extends Controller
             //dd($data);
             $atualizar=Familia::where('id',$id)->update($data);
             $route = 'familias.index';
+            $data['id_familia'] = $id;
             $ret = [
                 'exec'=>true,
                 'id'=>$id,
@@ -733,6 +764,7 @@ class FamiliaController extends Controller
                 'color'=>'success',
                 'idCad'=>$id,
                 'return'=>$route,
+                'salvarQuadra'=>$this->salvarQuadra($data),
             ];
         }else{
             $route = 'familias.edit';
