@@ -11,3 +11,6 @@
 
 </style>
 @endif
+<div id="preload">
+    <div class="lds-dual-ring"></div>
+</div>

@@ -58,7 +58,15 @@ class LoteRequest implements Rule
     public function message()
     {
         $d = $this->dadosForm;
-
-        return 'O Lote '.$d['nome'].' na Quadra '.$d['quadra'].' já foi cadastrado!';
+        $nomeQuadra = Qlib::buscaValorDb([
+            'tab'=>'quadras',
+            'campo_bus'=>'id',
+            'valor'=>$d['quadra'],
+            'select'=>'nome',
+            'compleSql'=>'',
+            'debug'=>false,
+        ]);
+        $nquadra = $nomeQuadra?$nomeQuadra:$d['quadra'];
+        return 'O <b>Lote '.$d['nome'].'</b> na Quadra <b>'.$nquadra.'</b> já foi cadastrado!';
     }
 }

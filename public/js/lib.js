@@ -773,10 +773,15 @@ function submitFormulario(objForm,funCall,funError){
         url: route,
         data: objForm.serialize()+'&ajax=s',
         dataType: 'json',
+        beforeSend: function(){
+            $('#preload').fadeIn();
+        },
         success: function (data) {
+            $('#preload').fadeOut("fast");
             funCall(data);
         },
         error: function (data) {
+            $('#preload').fadeOut("fast");
             if(data.responseJSON.errors){
                 funError(data.responseJSON.errors);
                 console.log(data.responseJSON.errors);
@@ -1440,6 +1445,8 @@ function lib_autocomplete(obs){
     console.log(urlAuto);
      obs.autocomplete({
         source: urlAuto,
+        search  : function(){$(this).addClass('ui-autocomplete-loading');},
+        open    : function(){$(this).removeClass('ui-autocomplete-loading');},
         select: function (event, ui) {
             //var sec = $(this).attr('sec');
             lib_listarCadastro(ui.item,$(this));
