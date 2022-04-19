@@ -5,6 +5,7 @@ use stdClass;
 use App\Models\Beneficiario;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreBeneficiarioRequest;
+use App\Http\Requests\StoreBeneficiarioRequestUp;
 use App\Qlib\Qlib;
 use App\Models\User;
 use App\Models\_upload;
@@ -476,11 +477,11 @@ class BeneficiariosController extends Controller
         }
     }
 
-    public function update(StoreBeneficiarioRequest $request, $id)
+    public function update(StoreBeneficiarioRequestUp $request, $id)
     {
-        $validatedData = $request->validate([
-            'nome' => ['required'],
-        ]);
+        //$validatedData = $request->validate([
+            //'nome' => ['required'],
+        //]);
         $data = [];
         $dados = $request->all();
         $ajax = isset($dados['ajax'])?$dados['ajax']:'n';

@@ -7,7 +7,7 @@ use App\Rules\FullName;
 use App\Rules\RightCpf;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreBeneficiarioRequest extends FormRequest
+class StoreBeneficiarioRequestUp extends FormRequest
 {
     public function authorize()
     {
@@ -18,7 +18,6 @@ class StoreBeneficiarioRequest extends FormRequest
         return [
             'nome'=>['required',new FullName],
             'cpf'=>[new RightCpf],
-            //'cpf'=>['unique:beneficiarios',new RightCpf],
         ];
     }
     public function messages()

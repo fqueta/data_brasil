@@ -24,7 +24,7 @@ class CreateBeneficiariosTable extends Migration
             $table->longText('obs')->nullable();
             $table->enum('ativo',['s','n']);
             $table->integer('autor')->nullable();
-            $table->string('cpf','20')->unique()->nullable();
+            $table->string('cpf','20')->nullable();
             $table->integer('conjuge')->nullable();
             $table->json('config')->nullable();
             $table->string('token','60')->nullable();
