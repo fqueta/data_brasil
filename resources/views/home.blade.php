@@ -3,28 +3,27 @@
 @section('title', 'Painel')
 
 @section('content_header')
-
-    <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1 class="m-0">Painel</h1>
-        </div><!-- /.col -->
-        <div class="col-sm-6 text-right">
-          <div class="btn-group" role="group" aria-label="actions">
+<div class="row mb-2">
+    <div class="col-sm-6">
+        <h1 class="m-0">Painel</h1>
+    </div><!-- /.col -->
+    <div class="col-sm-6 text-right">
+        <div class="btn-group" role="group" aria-label="actions">
             <a href="{{route('familias.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Novo cadastro</a>
             <a href="{{route('familias.index')}}" class="btn btn-secondary"><i class="fa fa-list"></i> Ver cadastros</a>
             <a href="#" class="btn btn-dark"><i class="fa fa-chart-bar"></i> Ver relatórios</a>
-          </div>
-        </div><!-- /.col -->
-    </div>
+        </div>
+    </div><!-- /.col -->
+</div>
 @stop
 
 @section('content')
-    <!--<p>Welcome to this beautiful admin panel.</p>-->
-    @can('ler','relatorios')
-    <div class="row card-top">
-        @if (isset($config['c_familias']['cards_home']))
-            @foreach ($config['c_familias']['cards_home'] as $k=>$v)
-            <div class="col-lg-{{$v['lg']}} col-{{$v['xs']}}">
+<!--<p>Welcome to this beautiful admin panel.</p>-->
+@can('ler','relatorios')
+<div class="row card-top">
+    @if (isset($config['c_familias']['cards_home']))
+    @foreach ($config['c_familias']['cards_home'] as $k=>$v)
+    <div class="col-lg-{{$v['lg']}} col-{{$v['xs']}}">
                 <!-- small box -->
                 <div class="small-box bg-{{$v['color']}}">
                   <div class="inner">

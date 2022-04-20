@@ -71,7 +71,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 'categoria'=>'',
-                'description'=>'Bairro',
+                'description'=>'Áreas',
                 'icon'=>'fas fa-list',
                 'actived'=>true,
                 'url'=>'bairros',

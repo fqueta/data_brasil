@@ -110,7 +110,7 @@ class QuadrasController extends Controller
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'nome'=>['label'=>'Numero da Quadra','active'=>true,'placeholder'=>'Ex.: 14','type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             'bairro'=>[
-                'label'=>'Bairro ou distrito*',
+                'label'=>'Área*',
                 'active'=>true,
                 'type'=>'selector',
                 'data_selector'=>[

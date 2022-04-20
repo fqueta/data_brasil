@@ -280,7 +280,7 @@ class FamiliaController extends Controller
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
             'bairro'=>[
-                'label'=>'Bairro',
+                'label'=>'Área',
                 'active'=>true,
                 'type'=>'select',
                 'data_selector'=>[

@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Relatorios de realidade social')
+@section('title', 'Familias')
 
 @section('content_header')
     <h3>{{$titulo}}</h3>
