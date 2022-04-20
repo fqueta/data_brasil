@@ -116,11 +116,11 @@ class MenuSeeder extends Seeder
             ],
             [
                 'categoria'=>'',
-                'description'=>'Geral',
+                'description'=>'Realidade Social',
                 'icon'=>'fas fa-file',
                 'actived'=>true,
-                'url'=>'relatorios_geral',
-                'route'=>'relatorios.geral',
+                'url'=>'relatorios_social',
+                'route'=>'relatorios.social',
                 'pai'=>'relatorios'
             ],
             [
@@ -132,6 +132,15 @@ class MenuSeeder extends Seeder
                 'route'=>'relatorios.evolucao',
                 'pai'=>'relatorios'
             ],
+            /*[
+                'categoria'=>'',
+                'description'=>'Listagem de Ocupantes',
+                'icon'=>'fa fa-chart-bar',
+                'actived'=>true,
+                'url'=>'relatorios_evolucao',
+                'route'=>'relatorios.evolucao',
+                'pai'=>'relatorios'
+            ],*/
             [
                 'categoria'=>'SISTEMA',
                 'description'=>'Configurações',

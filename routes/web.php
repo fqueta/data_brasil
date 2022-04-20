@@ -12,6 +12,7 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\EtapaController;
 use App\Http\Controllers\EscolaridadeController;
 use App\Http\Controllers\EstadocivilController;
+use App\Http\Controllers\RelatoriosController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
@@ -107,15 +108,15 @@ Route::prefix('etapas')->group(function(){
     Route::delete('/{id}',[EtapaController::class,'destroy'])->where('id', '[0-9]+')->name('etapas.destroy');
 });
 Route::prefix('relatorios')->group(function(){
-    Route::get('/',[EtapaController::class,'index'])->name('relatorios.index');
-    Route::get('/geral',[EtapaController::class,'index'])->name('relatorios.geral');
-    Route::get('/evolucao',[EtapaController::class,'create'])->name('relatorios.evolucao');
-    Route::post('/',[EtapaController::class,'store'])->name('relatorios.store');
-    Route::get('/{id}/show',[EtapaController::class,'show'])->name('relatorios.show');
-    Route::get('/{id}/edit',[EtapaController::class,'edit'])->name('relatorios.edit');
-    Route::put('/{id}',[EtapaController::class,'update'])->where('id', '[0-9]+')->name('relatorios.update');
-    Route::post('/{id}',[EtapaController::class,'update'])->where('id', '[0-9]+')->name('relatorios.update-ajax');
-    Route::delete('/{id}',[EtapaController::class,'destroy'])->where('id', '[0-9]+')->name('relatorios.destroy');
+    Route::get('/',[RelatoriosController::class,'index'])->name('relatorios.index');
+    Route::get('/social',[RelatoriosController::class,'realidadeSocial'])->name('relatorios.social');
+    Route::get('/evolucao',[RelatoriosController::class,'create'])->name('relatorios.evolucao');
+    //Route::post('/',[RelatoriosController::class,'store'])->name('relatorios.store');
+    //Route::get('/{id}/show',[RelatoriosController::class,'show'])->name('relatorios.show');
+    //Route::get('/{id}/edit',[RelatoriosController::class,'edit'])->name('relatorios.edit');
+    //Route::put('/{id}',[RelatoriosController::class,'update'])->where('id', '[0-9]+')->name('relatorios.update');
+    //Route::post('/{id}',[RelatoriosController::class,'update'])->where('id', '[0-9]+')->name('relatorios.update-ajax');
+    //Route::delete('/{id}',[RelatoriosController::class,'destroy'])->where('id', '[0-9]+')->name('relatorios.destroy');
 });
 Route::prefix('sistema')->group(function(){
     Route::get('/pefil',[EtapaController::class,'index'])->name('sistema.perfil');

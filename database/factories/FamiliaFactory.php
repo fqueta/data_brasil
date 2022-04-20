@@ -20,7 +20,7 @@ class FamiliaFactory extends Factory
             'area_alvo' => $this->getArea(),
             'etapa'=> $this->getData('etapa'),
             'loteamento'=> [$this->getData('loteamento')],
-            //'lotes'=>[],
+            'bairro'=>1,
             'quadra'=> $this->getData('quadra'),
             'lote'=> $this->getData('quadra'),
             'nome_completo'=>$this->faker->name($gender),
@@ -60,7 +60,7 @@ class FamiliaFactory extends Factory
     private function getData($campo=false) : string {
         if(isset($campo)){
             if($campo=='quadra'){
-                $arr = ['70.1','70.4','80.6'];
+                $arr = ['1','2','3','4','5'];
             }elseif($campo=='loteamento'){
                 $arr = ['1','2','3','4'];
             }elseif($campo=='tags'){

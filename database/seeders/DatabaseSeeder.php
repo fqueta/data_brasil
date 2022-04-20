@@ -14,13 +14,14 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         //\App\Models\User::factory(1000)->create();
-        \App\Models\Familia::factory(1000)->create();
+        \App\Models\Familia::factory(3000)->create();
 
         $this->call([
             UserSeeder::class,
             escolaridadeSeeder::class,
             estadocivilSeeder::class,
             bairroSeeder::class,
+            QuadraSeeder::class,
             etapaSeeder::class,
             tagSeeder::class,
             MenuSeeder::class,
