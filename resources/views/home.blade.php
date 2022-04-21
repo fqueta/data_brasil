@@ -11,7 +11,7 @@
         <div class="btn-group" role="group" aria-label="actions">
             <a href="{{route('familias.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Novo cadastro</a>
             <a href="{{route('familias.index')}}" class="btn btn-secondary"><i class="fa fa-list"></i> Ver cadastros</a>
-            <a href="#" class="btn btn-dark"><i class="fa fa-chart-bar"></i> Ver relatórios</a>
+            <a href="{{route('relatorios.social')}}" class="btn btn-dark"><i class="fa fa-chart-bar"></i> Ver relatórios</a>
         </div>
     </div><!-- /.col -->
 </div>
