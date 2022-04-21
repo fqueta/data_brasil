@@ -30,8 +30,10 @@
                                     $nk = str_replace('[]','',$kd);
                                     $arr = $familia->$nk;
                                     $td = false;
-                                    foreach ($arr as $k => $v) {
-                                        $td .= $vd['arr_opc'][$v].',';
+                                    if(is_array($arr)){
+                                        foreach ($arr as $k => $v) {
+                                            $td .= $vd['arr_opc'][$v].',';
+                                        }
                                     }
                                 @endphp
                                 <td class="{{$kd}}">{{@$td}}</td>
