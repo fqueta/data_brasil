@@ -407,7 +407,7 @@ function alerta(msg,id,title,tam,fechar,time,fecha){
         $('#'+id).remove();
 	  var bodys = $(document.body).append(modalHtml);
 
-	  $("#"+id).modal('show');
+	  $("#"+id).modal({backdrop: 'static'});
 	if(fecha == true)
 	setTimeout(function(){$("#"+id).modal("hide")}, time);
 }
@@ -889,7 +889,7 @@ function lib_funError(res){
 }
 function modalGeral(id,titulo,conteudo){
     var m = $(id);
-    m.modal('show');
+    m.modal({backdrop:'static'});
     m.find('.modal-title').html(titulo);
     m.find('.conteudo').html(conteudo);
 
@@ -911,9 +911,13 @@ function renderForm(config,alvo,funCall){
             modalGeral(m,'Cadastrar '+d.label,tf);
             $('[f-submit]').remove();
             $(b).insertAfter(m+' .modal-footer button');
-            $('[mask-cpf]').inputmask('999.999.999-99');
-            $('[mask-data]').inputmask('99/99/9999');
-            $('[mask-cep]').inputmask('99.999-999');
+            try {
+                $('[mask-cpf]').inputmask('999.999.999-99');
+                $('[mask-data]').inputmask('99/99/9999');
+                $('[mask-cep]').inputmask('99.999-999');
+            } catch (error) {
+
+            }
             carregaMascaraMoeda(".moeda");
             $('#'+d.id_form+' #inp-nome').focus();
             $('[f-submit]').on('click',function(){

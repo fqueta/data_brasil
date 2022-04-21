@@ -11,7 +11,7 @@ use App\Http\Requests\StoreFamilyRequest;
 use App\Qlib\Qlib;
 use Illuminate\Support\Str;
 use App\Exports\FamiliasExport;
-use App\Exports\FamiliasExportView;
+use App\Exports\SocialExportView;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -35,30 +35,21 @@ class RelatoriosController extends Controller
         $this->user = $user;
         $this->routa = 'familias';
         $this->label = 'Familia';
-        $this->view = $this->routa;
+        $this->view = 'relatorios';
         $this->tab = $this->routa;
     }
     public function realidadeSocial($config = null)
     {
-        /*
-        $dados = $this->queryFamilias($config);
-        //dd($dados);
-        $ret = [
-            'campos'=>$dados,
-            'titulo_tabela'=>__('Relatório de realidade social'),
-        ];
 
-        return view('relatorios.social',['config'=>$ret]);
-        */
-        //$this->authorize('is_admin', $user);
         $this->authorize('ler', $this->routa);
-        $title = 'Famílias Cadastradas';
+        $title = 'Relatório de realidade social';
         $titulo = $title;
         $queryFamilias = $this->queryFamilias($_GET);
         $queryFamilias['config']['exibe'] = 'html';
         $routa = $this->routa;
         $view = 'familias.export.tabela';
-        return view($view,[
+        $view = $this->view;
+        return view($view.'.social',[
             'dados'=>$queryFamilias['familia'],
             'familias'=>$queryFamilias['familia'],
             'title'=>$title,
@@ -92,6 +83,7 @@ class RelatoriosController extends Controller
         $config = [
             'limit'=>isset($get['limit']) ? $get['limit']: 50,
             'order'=>isset($get['order']) ? $get['order']: 'desc',
+            'quadra'=>isset($get['filter']['quadra']) ? $get['filter']['quadra']: 'desc',
         ];
 
         DB::enableQueryLog();
@@ -188,18 +180,6 @@ class RelatoriosController extends Controller
             }
         }
         $familia_totais->completos = $completos;
-        //dd($familia[0]['config']);
-        /*
-        foreach ($familia as $key => $value) {
-            if(is_array($value['config'])){
-                //$familia[$key]['config'] = Qlib::lib_json_array($value['config']);
-                foreach ($familia[$key]['config'] as $k => $val) {
-                    if(!is_array($val))
-                        $familia[$key]['config['.$k.']'] = $val;
-                }
-            }
-        }*/
-        $arr_fm = [];
         foreach ($familia as $k1 => $v1) {
             foreach ($campos as $k2 => $v2) {
                 if($v2['type']=='text'){
@@ -215,7 +195,7 @@ class RelatoriosController extends Controller
                             }
                         }
                     }
-                    if(($k2=='nome' || $k2=='cpf') && (isset($v1[$v2['valor']]))){
+                    if(($k2=='nome' || $k2=='cpf'  || $k2=='cpf_conjuge' || $k2=='escolaridade') && (isset($v1[$v2['valor']]))){
                         $familia[$k1][$k2] = Qlib::buscaValorDb([
                             'tab'=>$v2['tab'],
                             'campos_bus'=>'id',
@@ -223,9 +203,17 @@ class RelatoriosController extends Controller
                             'select'=>$v2['select'],
                         ]);
                     }
-                }
-                if($v2['type']=='array'){
-                    if(($k2=='telefone') && (isset($v2['cp_b']))){
+                }elseif($v2['type']=='array' && isset($v1[$v2['valor']])){
+                    $familia[$k1][$k2] = Qlib::buscaValorDb([
+                        'tab'=>$v2['tab'],
+                        'campos_bus'=>'id',
+                        'valor'=>$v1[$v2['valor']],
+                        'select'=>$v2['select'],
+                    ]);
+                }elseif($v2['type']=='chave_checkbox' && isset($v2['arr_opc'])){
+                    $familia[$k1][$k2] = $v2['arr_opc'][$v1[$k2]];
+                }elseif($v2['type']=='json'){
+                    if((isset($v2['cp_b']))){
                         $ab = explode('][',$v2['cp_b']);
                         if($ab[1]){
                             $valor = Qlib::buscaValorDb([
@@ -234,10 +222,23 @@ class RelatoriosController extends Controller
                                 'valor'=>$v1[$v2['valor']],
                                 'select'=>$v2['select'],
                             ]);
+
                             if(Qlib::isJson($valor)){
                                 $valor = Qlib::lib_json_array($valor);
                             }
-                            $familia[$k1][$k2] = @$valor[$ab[1]];
+                            $value = @$valor[$ab[1]];
+                            if($ab[1]=='telefone' && !empty(@$valor['telefone2'])){
+                                $value .= ', '.$valor['telefone2'];
+                            }
+                            if($k2=='escolaridades' || $k2=='estadocivils'){
+                                $value = Qlib::buscaValorDb([
+                                    'tab'=>$k2,
+                                    'campos_bus'=>'id',
+                                    'valor'=>$value,
+                                    'select'=>'nome',
+                                ]);
+                            }
+                            $familia[$k1][$k2] = $value;
                         }
                     }
                 }
@@ -313,7 +314,7 @@ class RelatoriosController extends Controller
     {
         //$this->authorize('is_admin', $user);
         $this->authorize('ler', $this->routa);
-        $title = 'Famílias Cadastradas';
+        $title = 'Relatório de realidade social';
         $titulo = $title;
         $queryFamilias = $this->queryFamilias($_GET);
         $queryFamilias['config']['exibe'] = 'html';
@@ -341,9 +342,9 @@ class RelatoriosController extends Controller
     public function exportFilter(User $user)
     {
         $this->authorize('is_admin', $user);
-        $dados = new FamiliasExportView;
+        $dados = new SocialExportView;
         //return $dados->view();
-        return Excel::download(new FamiliasExportView, 'Familias_'.date('d_m_Y').'.xlsx');
+        return Excel::download(new SocialExportView, 'Realidade_social_'.date('d_m_Y').'.xlsx');
     }
     public function campos(){
         $user = Auth::user();
@@ -354,9 +355,9 @@ class RelatoriosController extends Controller
         $estadocivil = new EstadocivilController($user);
         $lote = new LotesController($user);
         return [
-            'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
+            //'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
             'bairro'=>[
-                'label'=>'Área',
+                'label'=>'ÁREA',
                 'active'=>true,
                 'type'=>'select',
                 'data_selector'=>[
@@ -373,39 +374,10 @@ class RelatoriosController extends Controller
                 'tam'=>'6',
                 'class'=>'select2'
             ],
-            /*'etapa'=>[
-                'label'=>'Etapa',
-                'active'=>true,
-                'type'=>'select',
-                'data_selector'=>[
-                    'campos'=>$etapa->campos(),
-                    'route_index'=>route('etapas.index'),
-                    'id_form'=>'frm-etapas',
-                    'action'=>route('etapas.store'),
-                    'campo_id'=>'id',
-                    'campo_bus'=>'nome',
-                    'label'=>'Etapa',
-                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM etapas WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
-                'tam'=>'6',
-                //'class'=>'select2'
-            ],
-            'tipo_residencia'=>[
-                'label'=>'tipo de residência*',
-                'active'=>true,
-                'type'=>'select',
-                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='2'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
-                'tam'=>'6',
-                'class'=>'',
-                'option_select'=>false,
-            ],*/
-            'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
-            //'area_alvo'=>['label'=>'Área Alvo','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'2','placeholder'=>''],
-            //'endereco'=>['label'=>'Rua','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'10'],
-            //'numero'=>['label'=>'Número','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'quadra'=>['label'=>'QUADRA','active'=>true,'type'=>'array','exibe_busca'=>'d-block','tam'=>'4','tab'=>'quadras','valor'=>'quadra','select'=>'nome'],
+            'matricula'=>['label'=>'MATRÍCULA','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
             'tags[]'=>[
-                'label'=>'Situação',
+                'label'=>'SITUAÇÃO',
                 'active'=>true,
                 'type'=>'select_multiple',
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='1'",'nome','id'),'exibe_busca'=>'d-block',
@@ -418,89 +390,23 @@ class RelatoriosController extends Controller
             'lote'=>['label'=>'LOTE','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
             'nome'=>['label'=>'NOME COMPLETO','active'=>true,'type'=>'text','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'nome'],
             'cpf'=>['label'=>'CPF','active'=>true,'type'=>'text','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'cpf'],
-            'telefone'=>['label'=>'TELEFONE','active'=>true,'type'=>'array','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][telefone'],
-            'id_conjuge'=>[
-                'label'=>'Cônjuge ou Parceiro(a)',
-                'active'=>false,
-                'type'=>'html_vinculo',
-                'exibe_busca'=>'d-none',
-                'event'=>'',
-                'tam'=>'12',
-                'script'=>'',
-                'data_selector'=>[
-                    'campos'=>$beneficiario->campos_parceiro(),
-                    'route_index'=>route('beneficiarios.index').'?filter[tipo]=2',
-                    'id_form'=>'frm-conjuge',
-                    'action'=>route('beneficiarios.store'),
-                    'campo_id'=>'id',
-                    'campo_bus'=>'nome',
-                    'campo'=>'id_conjuge',
-                    'value'=>['tipo'=>2],
-                    'label'=>'Cônjuge ou Parceiro(a)',
-                    'table'=>[
-                        'id'=>['label'=>'Id','type'=>'text'],
-                        'nome'=>['label'=>'Nome','type'=>'text'],
-                        'cpf'=>['label'=>'CPF','type'=>'text']
-                    ],
-                    'tab' =>'beneficiarios',
-                ],
-            ],
-            'config[registro]'=>['label'=>'Registro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][registro'],
+            'telefone'=>['label'=>'TELEFONE','active'=>true,'type'=>'json','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][telefone'],
+            'escolaridades'=>['label'=>'ESCOLARDADE','active'=>true,'type'=>'json','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][escolaridade'],
+            'estadocivils'=>['label'=>'ESTADO CIVIL','active'=>true,'type'=>'json','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][estado_civil'],
+            'profissao'=>['label'=>'SITUAÇÃO PROFISSIONAL','active'=>true,'type'=>'json','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][profissao'],
+            'config[registro]'=>['label'=>'REGISTRO','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][registro'],
             'config[livro]'=>['label'=>'Livro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][livro'],
-            //'quadra'=>['label'=>'Quadra*','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            //'lote'=>['label'=>'Lote*','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            //'nome_completo'=>['label'=>'Proprietário','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            //'cpf'=>['label'=>'CPF proprietário','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            //'nome_conjuge'=>['label'=>'Nome do Cônjuge','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            //'cpf_conjuge'=>['label'=>'CPF do Cônjuge','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            //'telefone'=>['label'=>'Telefone','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'onblur=mask(this,clientes_mascaraTelefone); onkeypress=mask(this,clientes_mascaraTelefone);'],
-            //'config[telefone2]'=>['label'=>'Telefone2','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'onblur=mask(this,clientes_mascaraTelefone); onkeypress=mask(this,clientes_mascaraTelefone);','cp_busca'=>'config][telefone2'],
-            /*
-            'escolaridade'=>[
-                'label'=>'Escolaridade',
-                'active'=>true,
-                'type'=>'selector',
-                'data_selector'=>[
-                    'campos'=>$escolaridade->campos(),
-                    'route_index'=>route('escolaridades.index'),
-                    'id_form'=>'frm-escolaridades',
-                    'action'=>route('escolaridades.store'),
-                    'campo_id'=>'id',
-                    'campo_bus'=>'nome',
-                    'label'=>'Escolaridade',
-                ],
-                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM escolaridades WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
-                'tam'=>'3',
-                'class'=>'select2',
-            ],
-            'estado_civil'=>[
-                'label'=>'Estado Civil',
-                'active'=>true,
-                'type'=>'selector',
-                'data_selector'=>[
-                    'campos'=>$estadocivil->campos(),
-                    'route_index'=>route('estado-civil.index'),
-                    'id_form'=>'frm-estado-civil',
-                    'action'=>route('estado-civil.store'),
-                    'campo_id'=>'id',
-                    'campo_bus'=>'nome',
-                    'label'=>'Estado Civil',
-                ],
-                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM estadocivils WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
-                'tam'=>'3',
-                'class'=>'select2',
-            ],*/
             //'situacao_profissional'=>['label'=>'Situação Profissional','type'=>'text','active'=>true,'exibe_busca'=>'d-block','event'=>'','tam'=>'4'],
-            'bcp_bolsa_familia'=>['label'=>'BPC ou Bolsa Família','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'bcp_bolsa_familia'=>['label'=>'BPC OU BOLSA FAMÍLIA','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
             'renda_familiar'=>['label'=>'Renda Fam.','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','class'=>''],
-            'doc_imovel'=>['label'=>'Doc Imóvel','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            'qtd_membros'=>['label'=>'Membros','active'=>true,'type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            'membros'=>['label'=>'lista de Membros','active'=>false,'type'=>'html','exibe_busca'=>'d-none','event'=>'','tam'=>'12','script'=>'familias.lista_membros','script_show'=>'familias.show_membros'],
-            'idoso'=>['label'=>'Idoso','active'=>true,'type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-none','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
-            'crianca_adolescente'=>['label'=>'Criança e Adolescente','active'=>true,'exibe_busca'=>'d-none','event'=>'','type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
-            'obs'=>['label'=>'Observação','active'=>true,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','rows'=>'4','cols'=>'80','tam'=>'12'],
+            'doc_imovel'=>['label'=>'DOC IMÓVEL','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
+            'qtd_membros'=>['label'=>'MEMBROS','active'=>true,'type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
+            'idoso'=>['label'=>'IDOSO','active'=>true,'type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-none','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+            'crianca_adolescente'=>['label'=>'CRIANÇA E ADOLESCENTE','active'=>true,'exibe_busca'=>'d-none','event'=>'','type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+            'nome_conjuge'=>['label'=>'NOME DO CÔNJUGE','active'=>true,'type'=>'array','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_conjuge','select'=>'nome'],
+            'cpf_conjuge'=>['label'=>'CPF','active'=>true,'type'=>'text','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_conjuge','select'=>'cpf'],
+
+            'obs'=>['label'=>'OBSERVAÇÕES','active'=>true,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','rows'=>'4','cols'=>'80','tam'=>'12'],
         ];
     }
 }

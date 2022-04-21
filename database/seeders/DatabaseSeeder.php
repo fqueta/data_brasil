@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             UserSeeder::class,
-            //escolaridadeSeeder::class,
-            //estadocivilSeeder::class,
+            escolaridadeSeeder::class,
+            estadocivilSeeder::class,
             bairroSeeder::class,
             //QuadraSeeder::class,
             etapaSeeder::class,

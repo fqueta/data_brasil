@@ -111,6 +111,7 @@ Route::prefix('relatorios')->group(function(){
     Route::get('/',[RelatoriosController::class,'index'])->name('relatorios.index');
     Route::get('/social',[RelatoriosController::class,'realidadeSocial'])->name('relatorios.social');
     Route::get('/evolucao',[RelatoriosController::class,'create'])->name('relatorios.evolucao');
+    Route::get('export/filter', [RelatoriosController::class, 'exportFilter'])->name('relatorios.export_filter');
     //Route::post('/',[RelatoriosController::class,'store'])->name('relatorios.store');
     //Route::get('/{id}/show',[RelatoriosController::class,'show'])->name('relatorios.show');
     //Route::get('/{id}/edit',[RelatoriosController::class,'edit'])->name('relatorios.edit');

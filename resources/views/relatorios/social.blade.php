@@ -22,7 +22,7 @@
       }
   </style>
   <div class="row">
-    @include('qlib.config_exibe')
+    @include('relatorios.config_exibe')
     <div class="col-md-12 mens">
     </div>
     @can('is_admin')
@@ -76,7 +76,7 @@
 
             @can('is_admin')
             <div class="card-tools d-flex d-print-none">
-                    @include('familias.dropdow_actions')
+                    @include('relatorios.dropdow_actions')
                     @include('qlib.dropdow_acaomassa')
             </div>
             @endcan
