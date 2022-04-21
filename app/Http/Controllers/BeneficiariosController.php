@@ -166,7 +166,7 @@ class BeneficiariosController extends Controller
                 'event'=>'',
                 'tam'=>'6',
                 'exibe_busca'=>true,
-                'option_select'=>true,
+                'option_select'=>false,
                 'cp_busca'=>'config][escolaridade',
                 'class'=>'select2',
             ],
