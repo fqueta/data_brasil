@@ -9,6 +9,7 @@
 <script src="{{url('/')}}/js/jquery.maskMoney.min.js"></script>
 <script src="{{url('/')}}/js/jquery-ui.min.js"></script>
 <script src="{{url('/')}}/js/jquery.inputmask.bundle.min.js"></script>
+<script src="{{url('/')}}/summernote/summernote.min.js"></script>
 <script src=" {{url('/')}}/js/lib.js"></script>
 <script>
     $(function(){
@@ -29,6 +30,10 @@
                 //var sec = $(this).attr('sec');
                 lib_listarCadastro(ui.item,$(this));
             },
+        });
+        $('.summernote').summernote({
+            height: 400,
+            placeholder: 'Digite o conteudo',
         });
     });
 </script>

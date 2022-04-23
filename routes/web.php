@@ -156,10 +156,17 @@ Route::resource('lotes','\App\Http\Controllers\LotesController',['parameters' =>
 Route::resource('quadras','\App\Http\Controllers\QuadrasController',['parameters' => [
 'quadras' => 'id'
 ]]);
-
+Route::resource('documentos','\App\Http\Controllers\DocumentosController',['parameters' => [
+    'documentos' => 'id'
+]]);
+Route::resource('qoptions','\App\Http\Controllers\admin\QoptionsController',['parameters' => [
+    'qoptions' => 'id'
+]]);
 Route::resource('permissions','\App\Http\Controllers\admin\UserPermissions',['parameters' => [
     'permissions' => 'id'
 ]]);
+
+
 Auth::routes();
 
 Route::get('/',function(){

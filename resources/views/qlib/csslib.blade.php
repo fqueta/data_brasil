@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{url('/')}}/summernote/summernote.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/jquery-ui.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/lib.css">
 @if (isset($_GET['popup']) && $_GET['popup'])

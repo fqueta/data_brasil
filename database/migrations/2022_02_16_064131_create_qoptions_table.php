@@ -16,11 +16,13 @@ class CreateQoptionsTable extends Migration
         Schema::create('qoptions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('option_name','64')->nullable();
-            $table->longText('option_value')->nullable();
+            $table->string('token','64')->nullable();
+            $table->string('nome','64')->nullable();
+            $table->string('url','64')->nullable();
+            $table->longText('valor')->nullable();
             $table->text('obs')->nullable();
-            $table->text('config')->nullable();
             $table->string('painel','2')->nullable();
+            $table->enum('ativo',['s','n']);
             $table->enum('excluido',['n','s']);
             $table->text('reg_excluido')->nullable();
             $table->enum('deletado',['n','s']);

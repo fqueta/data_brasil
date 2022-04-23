@@ -5,9 +5,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Permission;
+use App\Models\Qoption;
+
 class Qlib
 {
-  public function lib_print($data){
+    static public function lib_print($data){
       if(is_array($data) || is_object($data)){
         echo '<pre>';
         print_r($data);
@@ -15,7 +17,43 @@ class Qlib
       }else{
         echo $data;
       }
-  }
+    }
+    static public function qoption($valor = false, $type = false){
+        //type é o tipo de respsta
+		$ret = false;
+		if($valor){
+			//if($valor=='dominio_site'){
+			//	$ret = dominio();
+			//}elseif($valor==''){
+			//	$ret = dominio().'/admin';
+			//}else{
+				//$sql = "SELECT valor FROM qoptions WHERE url = '$valor' AND ativo='s' AND excluido='n' AND deletado='n'";
+
+                //$result = Qlib::dados_tab('qoptions',['sql'=>$sql]);
+                $result = Qoption::where('url','=',$valor)->
+                where('ativo','=','s')->
+                where('excluido','=','n')->
+                where('deletado','=','n')->
+                select('valor')->
+                get();
+
+				if(isset($result[0]->valor)) {
+						// output data of each row
+						$ret = $result[0]->valor;
+						if($valor=='urlroot'){
+							$ret = str_replace('/home/ctloja/public_html/lojas/','/home/ctdelive/lojas/',$ret);
+						}
+                        if($type=='array'){
+                            $ret = Qlib::lib_json_array($ret);
+                        }
+                        if($type=='json'){
+                            $ret = Qlib::lib_array_json($ret);
+                        }
+				}
+			//}
+		}
+		return $ret;
+	}
   static function dtBanco($data) {
 			$data = trim($data);
 			if (strlen($data) != 10)
@@ -471,5 +509,167 @@ class Qlib
                 $ret = $d[0]->$select;
         }
         return $ret;
+    }
+    static function lib_valorPorExtenso($valor=0) {
+		$singular = array("centavo", "real", "mil", "milhão", "bilhão", "trilhão", "quatrilhão");
+		$plural = array("centavos", "reais", "mil", "milhões", "bilhões", "trilhões","quatrilhões");
+
+		$c = array("", "cem", "duzentos", "trezentos", "quatrocentos","quinhentos", "seiscentos", "setecentos", "oitocentos", "novecentos");
+		$d = array("", "dez", "vinte", "trinta", "quarenta", "cinquenta","sessenta", "setenta", "oitenta", "noventa");
+		$d10 = array("dez", "onze", "doze", "treze", "quatorze", "quinze","dezesseis", "dezesete", "dezoito", "dezenove");
+		$u = array("", "um", "dois", "três", "quatro", "cinco", "seis","sete", "oito", "nove");
+
+		$z=0;
+
+		$valor = @number_format($valor, 2, ".", ".");
+		$inteiro = explode(".", $valor);
+		for($i=0;$i<count($inteiro);$i++)
+			for($ii=strlen($inteiro[$i]);$ii<3;$ii++)
+				$inteiro[$i] = "0".$inteiro[$i];
+
+		// $fim identifica onde que deve se dar junção de centenas por "e" ou por "," 😉
+		$fim = count($inteiro) - ($inteiro[count($inteiro)-1] > 0 ? 1 : 2);
+		$rt=false;
+		for ($i=0;$i<count($inteiro);$i++) {
+			$valor = $inteiro[$i];
+			$rc = (($valor > 100) && ($valor < 200)) ? "cento" : $c[$valor[0]];
+			$rd = ($valor[1] < 2) ? "" : $d[$valor[1]];
+			$ru = ($valor > 0) ? (($valor[1] == 1) ? $d10[$valor[2]] : $u[$valor[2]]) : "";
+			$r = $rc.(($rc && ($rd || $ru)) ? " e " : "").$rd.(($rd && $ru) ? " e " : "").$ru;
+			$t = count($inteiro)-1-$i;
+			$r .= $r ? " ".($valor > 1 ? $plural[$t] : $singular[$t]) : "";
+			if ($valor == "000")$z++; elseif ($z > 0) $z--;
+			if (($t==1) && ($z>0) && ($inteiro[0] > 0)) $r .= (($z>1) ? " de " : "").$plural[$t];
+			if ($r) $rt = $rt . ((($i > 0) && ($i <= $fim) && ($inteiro[0] > 0) && ($z < 1)) ? ( ($i < $fim) ? ", " : " e ") : " ") . $r;
+		}
+		return($rt ? $rt : "zero");
+	}
+	static function convert_number_to_words($number) {
+
+		$hyphen      = '-';
+		$conjunction = ' e ';
+		$separator   = ', ';
+		$negative    = 'menos ';
+		$decimal     = ' ponto ';
+		$dictionary  = array(
+			0                   => 'zero',
+			1                   => 'um',
+			2                   => 'dois',
+			3                   => 'três',
+			4                   => 'quatro',
+			5                   => 'cinco',
+			6                   => 'seis',
+			7                   => 'sete',
+			8                   => 'oito',
+			9                   => 'nove',
+			10                  => 'dez',
+			11                  => 'onze',
+			12                  => 'doze',
+			13                  => 'treze',
+			14                  => 'quatorze',
+			15                  => 'quinze',
+			16                  => 'dezesseis',
+			17                  => 'dezessete',
+			18                  => 'dezoito',
+			19                  => 'dezenove',
+			20                  => 'vinte',
+			30                  => 'trinta',
+			40                  => 'quarenta',
+			50                  => 'cinquenta',
+			60                  => 'sessenta',
+			70                  => 'setenta',
+			80                  => 'oitenta',
+			90                  => 'noventa',
+			100                 => 'cento',
+			200                 => 'duzentos',
+			300                 => 'trezentos',
+			400                 => 'quatrocentos',
+			500                 => 'quinhentos',
+			600                 => 'seiscentos',
+			700                 => 'setecentos',
+			800                 => 'oitocentos',
+			900                 => 'novecentos',
+			1000                => 'mil',
+			1000000             => array('milhão', 'milhões'),
+			1000000000          => array('bilhão', 'bilhões'),
+			1000000000000       => array('trilhão', 'trilhões'),
+			1000000000000000    => array('quatrilhão', 'quatrilhões'),
+			1000000000000000000 => array('quinquilhão', 'quinquilhões')
+		);
+
+		if (!is_numeric($number)) {
+			return false;
+		}
+
+		if (($number >= 0 && (int) $number < 0) || (int) $number < 0 - PHP_INT_MAX) {
+			// overflow
+			trigger_error(
+				'convert_number_to_words só aceita números entre ' . PHP_INT_MAX . ' à ' . PHP_INT_MAX,
+				E_USER_WARNING
+			);
+			return false;
+		}
+
+		if ($number < 0) {
+			return $negative . Qlib::convert_number_to_words(abs($number));
+		}
+
+		$string = $fraction = null;
+
+		if (strpos($number, '.') !== false) {
+			list($number, $fraction) = explode('.', $number);
+		}
+
+		switch (true) {
+			case $number < 21:
+				$string = $dictionary[$number];
+				break;
+			case $number < 100:
+				$tens   = ((int) ($number / 10)) * 10;
+				$units  = $number % 10;
+				$string = $dictionary[$tens];
+				if ($units) {
+					$string .= $conjunction . $dictionary[$units];
+				}
+				break;
+			case $number < 1000:
+				$hundreds  = floor($number / 100)*100;
+				$remainder = $number % 100;
+				$string = $dictionary[$hundreds];
+				if ($remainder) {
+					$string .= $conjunction . Qlib::convert_number_to_words($remainder);
+				}
+				break;
+			default:
+				$baseUnit = pow(1000, floor(log($number, 1000)));
+				$numBaseUnits = (int) ($number / $baseUnit);
+				$remainder = $number % $baseUnit;
+				if ($baseUnit == 1000) {
+					$string = Qlib::convert_number_to_words($numBaseUnits) . ' ' . $dictionary[1000];
+				} elseif ($numBaseUnits == 1) {
+					$string = Qlib::convert_number_to_words($numBaseUnits) . ' ' . $dictionary[$baseUnit][0];
+				} else {
+					$string = Qlib::convert_number_to_words($numBaseUnits) . ' ' . $dictionary[$baseUnit][1];
+				}
+				if ($remainder) {
+					$string .= $remainder < 100 ? $conjunction : $separator;
+					$string .= Qlib::convert_number_to_words($remainder);
+				}
+				break;
+		}
+
+		if (null !== $fraction && is_numeric($fraction)) {
+			$string .= $decimal;
+			$words = array();
+			foreach (str_split((string) $fraction) as $number) {
+				$words[] = $dictionary[$number];
+			}
+			$string .= implode(' ', $words);
+		}
+
+		return $string;
+	}
+    static function limpar_texto($str){
+        return preg_replace("/[^0-9]/", "", $str);
     }
 }

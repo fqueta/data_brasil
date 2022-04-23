@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class BeneficiarioSeeder extends Seeder
 {
@@ -13,6 +14,12 @@ class BeneficiarioSeeder extends Seeder
      */
     public function run()
     {
-        //
+        DB::table('beneficiarios')->insert([
+            [
+                'tipo'=>1,
+                'nome'=>'Não Localizado',
+                'ativo'=>'s',
+            ]
+        ]);
     }
 }

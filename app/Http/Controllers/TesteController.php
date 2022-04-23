@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Familia;
+use App\Models\User;
 use App\Qlib\Qlib;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,30 +25,23 @@ class TesteController extends Controller
         //$dados = DB::select("SELECT * FROM familias WHERE excluido='n' AND deletado='n' ORDER BY id DESC");
         //$dados = Familia::where('excluido','=','n')->where('deletado','=','n')->OrderBy('id','desc')->get();
         //$dados = DB::table('familias')->where('excluido','=','n')->where('deletado','=','n')->OrderBy('id','desc')->get();
-        $arrPermiss = [
-            "master"=>
-            [
-                "ler"=>["cadastros"=>"s","familias"=>"s","bairros"=>"s","etapas"=>"s","escolaridade"=>"s","estado-civil"=>"s","relatorios"=>"s","relatorios_geral"=>"s","relatorios_evolucao"=>"s","config"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s"],
-                "create"=>["familias"=>"s","bairros"=>"s","etapas"=>"s","escolaridade"=>"s","estado-civil"=>"s","relatorios_geral"=>"s","relatorios_evolucao"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s"],
-                "update"=>["familias"=>"s","bairros"=>"s","etapas"=>"s","escolaridade"=>"s","estado-civil"=>"s","relatorios_geral"=>"s","relatorios_evolucao"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s"],
-                "delete"=>["familias"=>"s","bairros"=>"s","etapas"=>"s","escolaridade"=>"s","estado-civil"=>"s","relatorios_geral"=>"s","relatorios_evolucao"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s"]
-            ],
-            "adminstrador"=>
-            [
-                "ler"=>["cadastros"=>"s","familias"=>"s","bairros"=>"s","etapas"=>"s","escolaridade"=>"s","estado-civil"=>"s","relatorios"=>"n","relatorios_geral"=>"n","relatorios_evolucao"=>"n","config"=>"s","sistema"=>"n","users"=>"s","permissions"=>"s"],
-                "create"=>["familias"=>"s","bairros"=>"s","etapas"=>"s","escolaridade"=>"s","estado-civil"=>"s","relatorios_geral"=>"s","relatorios_evolucao"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s"],
-                "update"=>["familias"=>"s","bairros"=>"s","etapas"=>"s","escolaridade"=>"s","estado-civil"=>"s","relatorios_geral"=>"s","relatorios_evolucao"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s"],
-                "delete"=>["familias"=>"s","bairros"=>"s","etapas"=>"s","escolaridade"=>"s","estado-civil"=>"s","relatorios_geral"=>"s","relatorios_evolucao"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s"]
-            ],
-        ];
-        dd($arrPermiss);
+        //$op = Qlib::qoption('cad_municipio','array');
+
+        //Qlib::lib_print($op);
+
         /*
         $url = 'https://po.presidenteolegario.mg.gov.br/api/pages/o-que-e-covid-19';
         $d = file_get_contents($url);
         $arr = Qlib::lib_json_array($d);
         $arr['cont'] = Qlib::lib_json_array($arr['content']);
         Qlib::lib_print($arr['cont']);*/
-        //return view('teste');
+        $user = Auth::user();
+        $doc = new LotesController($user);
+        $lote = isset($_GET['lote'])?$_GET['lote']:201;
+        $config = [
+            'docs'=>$doc->docBeneficiario($lote),
+        ];
+        return view('teste',$config);
     }
     public function ajax(){
         $limit = isset($_GET['limit']) ?$_GET['limit'] : 50;

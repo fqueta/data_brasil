@@ -818,6 +818,9 @@ function getAjax(config,funCall,funError){
         url: config.url,
         data: config.data,
         dataType: 'json',
+        beforeSend: function(){
+            $('#preload').fadeIn();
+        },
         success: function (data) {
             funCall(data);
         },
@@ -854,10 +857,15 @@ function submitFormularioCSRF(objForm,funCall,funError){
         url: route,
         data: objForm.serialize()+'&ajax=s',
         dataType: 'json',
+        beforeSend: function(){
+            $('#preload').fadeIn();
+        },
         success: function (data) {
+            $('#preload').fadeOut("fast");
             funCall(data);
         },
         error: function (data) {
+            $('#preload').fadeOut("fast");
             if(data.responseJSON.errors){
                 funError(data.responseJSON.errors);
                 console.log(data.responseJSON.errors);
@@ -1054,28 +1062,33 @@ function qFormCampos(config){
                     r = r.replaceAll('{op}',op);
                     r = r.replaceAll('{placeholder}',placeholder);
                 }else{
-                    var type = v.type;
-                    var checked = '';
-                    if(type == 'chave_checkbox'){
-                        if(v.valor_padrao==v.value){
-                            checked = 'checked';
+                    try {
+
+                        var type = v.type;
+                        var checked = '';
+                        if(type == 'chave_checkbox'){
+                            if(v.valor_padrao==v.value){
+                                checked = 'checked';
+                            }
                         }
+                        r += tema[type].replaceAll('{type}',v.type);
+                        var label = tl.replaceAll('{campo}',key);
+                        label.replaceAll('{label}',);
+                        var value = v.value?v.value:'';
+                        var classe = v.class?v.class:'';
+                        var placeholder = v.placeholder?v.placeholder:'';
+                        r = r.replaceAll('{campo}',key);
+                        r = r.replaceAll('{label}',v.label);
+                        r = r.replaceAll('{value}',value);
+                        r = r.replaceAll('{tam}',v.tam);
+                        r = r.replaceAll('{event}',v.event);
+                        r = r.replaceAll('{col}','md');
+                        r = r.replaceAll('{class}',classe);
+                        r = r.replaceAll('{checked}',checked);
+                        r = r.replaceAll('{placeholder}',placeholder);
+                    } catch (e) {
+                        console.log(e);
                     }
-                    r += tema[type].replaceAll('{type}',v.type);
-                    var label = tl.replaceAll('{campo}',key);
-                    label.replaceAll('{label}',);
-                    var value = v.value?v.value:'';
-                    var classe = v.class?v.class:'';
-                    var placeholder = v.placeholder?v.placeholder:'';
-                    r = r.replaceAll('{campo}',key);
-                    r = r.replaceAll('{label}',v.label);
-                    r = r.replaceAll('{value}',value);
-                    r = r.replaceAll('{tam}',v.tam);
-                    r = r.replaceAll('{event}',v.event);
-                    r = r.replaceAll('{col}','md');
-                    r = r.replaceAll('{class}',classe);
-                    r = r.replaceAll('{checked}',checked);
-                    r = r.replaceAll('{placeholder}',placeholder);
                 }
             }
         });
@@ -1226,7 +1239,11 @@ function lib_htmlVinculo(ac,campos,lin){
                         if(cp=c.campos[k].cp_busca){
                             let ar = cp.split('][');
                             if(ar[1]){
-                                c.campos[k].value = c.list[lin][ar[0]][ar[1]];
+                                try {
+                                    c.campos[k].value = c.list[lin][ar[0]][ar[1]];
+                                } catch (error) {
+                                    console.log(error);
+                                }
                             }
                         }
                     }
@@ -1237,7 +1254,11 @@ function lib_htmlVinculo(ac,campos,lin){
                         if(cp=c.campos[k].cp_busca){
                             let ar = cp.split('][');
                             if(ar[1]){
-                                c.campos[k].value = c.list[ar[0]][ar[1]];
+                                try {
+                                    c.campos[k].value = c.list[ar[0]][ar[1]];
+                                } catch (error) {
+                                    console.log(error);
+                                }
                             }
                         }
                     }

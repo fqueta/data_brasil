@@ -16,7 +16,7 @@ class StoreFamilyRequest extends FormRequest
     public function rules()
     {
         return [
-            //'loteamento'=>['required',new familyRules],
+            'bairro'=>['required'],
             'etapa'=>['required',new familyRules],
             'tipo_residencia'=>['required',new familyRules],
             //'area_alvo'=>['required'],
@@ -34,6 +34,7 @@ class StoreFamilyRequest extends FormRequest
     {
         return [
             'etapa.required' => 'A seleção da Etapa é obrigatória',
+            'bairro.required' => 'A seleção do Bairro é obrigatório',
             'tel.required' => 'O Telefone é obrigatório',
             'cpf.unique' => 'Este CPF já está sendo utilizado',
             'cpf.required' => 'O CPF é obrigatório',

@@ -9,28 +9,9 @@
 @section('content')
 <section class="content">
     <div class="row">
-        <div id="conteudo" class="col-md-12">
 
-            <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
+        {!! $docs !!}
 
-        </div>
-        <a href="" target="_blank" rel="mais">Veja mais</a>
-        <tema2 style="display: none">{{base64_encode('<p>{data} - html {nome} </p>')}}</tema2>
-         <div id="preload" style="display: none">Carregando...</div>
     </div>
 
 

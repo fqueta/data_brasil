@@ -152,6 +152,15 @@ class MenuSeeder extends Seeder
             ],
             [
                 'categoria'=>'',
+                'description'=>'Documentos',
+                'icon'=>'fas fa-file-word',
+                'actived'=>true,
+                'url'=>'documentos',
+                'route'=>'documentos.index',
+                'pai'=>'config'
+            ],
+            [
+                'categoria'=>'',
                 'description'=>'Perfil',
                 'icon'=>'fas fa-user',
                 'actived'=>true,
@@ -175,6 +184,15 @@ class MenuSeeder extends Seeder
                 'actived'=>true,
                 'url'=>'permissions',
                 'route'=>'permissions.index',
+                'pai'=>'config'
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Avançado (Dev)',
+                'icon'=>'fas fa-user',
+                'actived'=>true,
+                'url'=>'qoptions',
+                'route'=>'qoptions.index',
                 'pai'=>'config'
             ],
         ]);

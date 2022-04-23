@@ -295,7 +295,7 @@ class FamiliaController extends Controller
                 //'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\');carregaMatricula($(this))',
                 'event'=>'onchange=carregaMatricula($(this).val())',
                 'tam'=>'6',
-                'class'=>'select2'
+                //'class'=>'select2'
             ],
             'etapa'=>[
                 'label'=>'Etapa',
@@ -315,13 +315,14 @@ class FamiliaController extends Controller
                 //'class'=>'select2'
             ],
             'tipo_residencia'=>[
-                'label'=>'tipo de residência*',
+                'label'=>'Tipo de residência*',
                 'active'=>true,
                 'type'=>'select',
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='2'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
                 'tam'=>'6',
                 'class'=>'',
+                'exibe_busca'=>true,
                 'option_select'=>false,
             ],
             'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6','placeholder'=>''],
@@ -390,7 +391,8 @@ class FamiliaController extends Controller
                 'script'=>'',
                 'data_selector'=>[
                     'campos'=>$beneficiario->campos(),
-                    'route_index'=>route('beneficiarios.index').'?filter[tipo]=1',
+                    //'route_index'=>route('beneficiarios.index').'?filter[tipo]=1',
+                    'route_index'=>route('beneficiarios.index'),
                     'id_form'=>'frm-beneficiario',
                     'action'=>route('beneficiarios.store'),
                     'campo_id'=>'id',
@@ -415,8 +417,10 @@ class FamiliaController extends Controller
                 'tam'=>'12',
                 'script'=>'',
                 'data_selector'=>[
-                    'campos'=>$beneficiario->campos_parceiro(),
-                    'route_index'=>route('beneficiarios.index').'?filter[tipo]=2',
+                    //'campos'=>$beneficiario->campos_parceiro(),
+                    'campos'=>$beneficiario->campos(),
+                    //'route_index'=>route('beneficiarios.index').'?filter[tipo]=2',
+                    'route_index'=>route('beneficiarios.index'),
                     'id_form'=>'frm-conjuge',
                     'action'=>route('beneficiarios.store'),
                     'campo_id'=>'id',
@@ -795,8 +799,10 @@ class FamiliaController extends Controller
             }
             return $ret;
         }
-
-        Familia::where('id',$id)->delete();
+        $user = Auth::user();
+        $reg_excluido = ['data'=>date('d-m-Y'),'autor'=>$user->id];
+        //Familia::where('id',$id)->delete();
+        Familia::where('id',$id)->update(['excluido'=>'s','reg_excluido'=>Qlib::lib_array_json($reg_excluido)]);;
         if($ajax=='s'){
             $ret = response()->json(['mens'=>__('Registro '.$id.' deletado com sucesso!'),'color'=>'success','return'=>route('familias.index')]);
         }else{

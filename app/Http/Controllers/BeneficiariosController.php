@@ -210,7 +210,8 @@ class BeneficiariosController extends Controller
                 'tam'=>'6',
                 'class'=>'select2',
             ],
-            'config[tipo_uniao]'=>['label'=>'Tipo de união','cp_busca'=>'config][tipo_uniao','active'=>true,'type'=>'text','tam'=>'6','exibe_busca'=>'d-block','event'=>''],
+            'config[data_uniao]'=>['label'=>'Data da união','cp_busca'=>'config][data_uniao','active'=>true,'type'=>'date','tam'=>'6','exibe_busca'=>'d-block','event'=>''],
+            'config[tipo_uniao]'=>['label'=>'Tipo de união','cp_busca'=>'config][tipo_uniao','active'=>true,'type'=>'text','tam'=>'12','exibe_busca'=>'d-block','event'=>''],
             'config[mae]'=>['label'=>'Mãe','cp_busca'=>'config][mae','active'=>true,'type'=>'text','tam'=>'12','exibe_busca'=>'d-block','event'=>''],
             'config[pai]'=>['label'=>'Pai','cp_busca'=>'config][pai','active'=>true,'type'=>'text','tam'=>'12','exibe_busca'=>'d-block','event'=>''],
             /*
