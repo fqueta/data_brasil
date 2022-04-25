@@ -303,7 +303,7 @@ class LotesController extends Controller
         $ret = false;
         if($id_lote){
             $sql = "SELECT f.* FROM familias As f
-            WHERE f.loteamento LIKE '%\"$id_lote\"%' AND f.excluido='n' AND f.deletado='n' ORDER BY f.id ASC";
+            WHERE f.loteamento LIKE '%\"$id_lote\"%' AND f.excluido='n' AND f.deletado='n' ORDER BY f.complemento_lote ASC";
             $ocupantes = Qlib::dados_tab('familias',['sql'=>$sql]);
             if($ocupantes){
                 foreach ($ocupantes as $ko => $vo) {
@@ -494,9 +494,10 @@ class LotesController extends Controller
             WHERE f.loteamento LIKE '%\"$id_lote\"%' AND f.excluido='n' AND f.deletado='n'
             ";*/
             $sql = "SELECT f.* FROM familias As f
-            WHERE f.loteamento LIKE '%\"$id_lote\"%' AND f.excluido='n' AND f.deletado='n' ORDER BY f.id ASC
+            WHERE f.loteamento LIKE '%\"$id_lote\"%' AND f.excluido='n' AND f.deletado='n' ORDER BY f.complemento_lote ASC
             ";
-            $familia = Qlib::dados_tab('familias',['sql'=>$sql]);
+            //$familia = Qlib::dados_tab('familias',['sql'=>$sql]);
+            $familia = $this->ocupantes($id_lote);
             $dLote = Lote::FindOrFail($id_lote);
             if($familia && $dLote){
                 $tema = Documento::where('url','lista-beneficiario')->where('excluido','n')->where('deletado','n')->get();
@@ -543,7 +544,11 @@ class LotesController extends Controller
                                 $nascidoa = 'nascida';
                             }
                             if($tot_familias>1){
-                                $n_benficiario = "<b>".$i.")</b> ";
+                                if(empty($fm['complemento_lote'])){
+                                    $n_benficiario = "<b>".$i.")</b> ";
+                                }else{
+                                    $n_benficiario = "<b>".$fm['complemento_lote'].")</b> ";
+                                }
                             }
                             $arr_sh = [
                                 'lote'=>['lab'=>'Tipo','v'=>$lote],
@@ -614,7 +619,8 @@ class LotesController extends Controller
                 }
                 if(is_array($dLote['config'])){
                     foreach ($dLote['config'] as $kl => $vl) {
-                        $ret = str_replace('{'.$kl.'}',$vl,$ret);
+                        if(!is_array($vl))
+                            $ret = str_replace('{'.$kl.'}',$vl,$ret);
                     }
                 }
             }elseif($dLote){

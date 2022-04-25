@@ -46,6 +46,7 @@ class CreateFamiliasTable extends Migration
             $table->string('numero','100')->nullable();
             $table->string('bairro','200')->nullable();
             $table->string('cidade','100')->nullable();
+            $table->string('complemento_lote','100')->nullable();
             $table->integer('autor')->nullable();
             $table->longText('obs')->nullable();
             $table->json('tags')->nullable();

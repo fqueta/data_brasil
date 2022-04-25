@@ -117,7 +117,166 @@ class DocumentoSeeder extends Seeder
                 <p style="margin-bottom: 0cm; line-height: 100%" align="justify"><font face="Arial Narrow, serif"></font></p>
                 <p></p>',
                 'excluido'=>'n',
-            ]
+            ],
+            [
+                'nome'=>'Ficha de cadastro de ocupante',
+                'tipo'=>'html',
+                'url'=>'ficha-cadastro-ocupante',
+                'token'=>uniqid(),
+                'ativo'=>'s',
+                'conteudo'=>'<p class="western" style="margin-bottom: 0cm; line-height: 150%" align="center">
+                <font color="#000000"> <font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Ficha
+                de Cadastro de Ocupante</b></font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%"><br>
+
+                </p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <font color="#000000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Unidade
+                Imobiliária</b></font></font></font><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>:
+                </b></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Lote {lote} ({lote_extenso}) – Quadra {quadra} ({quadra_extenso})</b></font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Bairro: {bairro}</b></font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Lote: {area_lote} m²</b></font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Construção: {area_construcao} m²</b></font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <br>
+
+                </p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify"><a name="_Hlk82675389"></a>
+                {ocupantes}
+                </p><p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <br>
+
+                </p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <font color="#000000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Origem
+                da </b></font></font></font><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Unidade:
+                </b></font></font><font face="Arial, serif"><font style="font-size: 12pt" size="3">R-1
+                da Matrícula {matricula} do Cartório de Imóveis de </font></font><font color="#000000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">{cidade}-{uf}.</font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <br>
+
+                </p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <font color="#000000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Declarações
+                adicionais sobre a posse:</b></font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <font color="#000000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">1.
+                Os ocupantes acima adquiriram a unidade imobiliária por:</font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="left">
+                {declaracao_posse}</p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="left">
+                <br>
+
+                </p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="left">
+                <font color="#000000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">2.
+                Data do início da posse</font></font></font><font face="Arial, serif"><font style="font-size: 12pt" size="3">:
+                </font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">{data_posse}</font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <font color="#000000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">3.
+                Titulação a ser outorgada ao ocupante: Legitimação fundiária</font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <font color="#000000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">4.
+                Em caso de se tratar de Reurb-S sobre imóvel público ou privado com
+                titulação final em legitimação fundiária ou legitimação de
+                posse, declaramos: I - não somos beneficiários concessionários,
+                foreiros ou proprietários de imóvel urbano ou rural; II - não
+                fomos beneficiários contemplados por legitimação de posse ou
+                fundiária de imóvel urbano com a mesma finalidade, ainda que
+                situado em núcleo urbano distinto; e III - quanto a imóvel urbano
+                com finalidade não residencial, foi reconhecido pelo Poder Público
+                o interesse público de minha ocupação.</font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <font color="#000000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">5.
+                Declaro que identifico esse imóvel acima retratado, manifestando
+                minha concordância com as descrições, os confrontantes e a
+                titulação final.</font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <font color="#000000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">6.
+                Declaro ciente de que a partir da disponibilidade de equipamentos e
+                infraestrutura para prestação de serviço público, estamos
+                obrigados a realizar a conexão da edificação que ocupo à rede de
+                água, de coleta de esgoto ou de distribuição de energia elétrica
+                e adotarmos as demais providências necessárias à utilização do
+                serviço, exceto se houver disposição em contrário na legislação
+                municipal ou distrital, conforme art. 5º, § 10 do Decreto 9310/18.</font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <font color="#000000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">7.
+                Declaro, ainda, que tenho conhecimento das sanções penais que estou
+                sujeito caso inverídica declaração prestada, sobretudo a
+                disciplinada no artigo 299 do Código Penal.</font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <br>
+
+                </p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify">
+                <br>
+
+                </p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="center"><font color="#000000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">Conceição
+                do Mato Dentro, </font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">{dia}
+                de {mes_extenso} de {ano}.</font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="center"><a name="_GoBack"></a>
+                <br>
+
+                </p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="center"><br>
+
+                </p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="center"><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>___________________________________________</b></font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="center"><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>{nome_proprietario}</b></font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="center"><br>
+
+                </p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="center"><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>_______________________________</b></font></font></font></p>
+                <p class="western" style="margin-bottom: 0cm; line-height: 150%" align="center"><font color="#ff0000">
+                <font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>{nome_conjuge}</b></font></font></font></p>',
+                'excluido'=>'n',
+            ],
+            [
+                'nome'=>'Ocupante com parceiro',
+                'tipo'=>'html',
+                'url'=>'ocupante-com-parceiro',
+                'token'=>uniqid(),
+                'ativo'=>'s',
+                'conteudo'=>'<p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify"><a name="_Hlk82675389"></a>
+                <font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Ocupantes
+                identificados: </b></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Adriana
+                Rodrigues Oliveira De Almeida</b></font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">,
+                brasileira, casada, do lar, nascida aos 02/11/1982, filha de
+                Francisco Rodrigues de Santana e Ana Rita de Oliveira Santana,
+                RG:MG-15.149.433, CPF:069.827.996-46 </font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">e</font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>
+                Elisio Soares de Almeida, </b></font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">brasileiro,
+                casado, vidraceiro, nascido aos 27/08/1976, filho de Roberto de
+                Almeida Santana e Isabel Soares Santana, RG: MG-12.540.890,
+                CPF:031.317.176-96, casados sob o regime de comunhão parcial de bens
+                desde 05/11/1999, residentes e domiciliadas na Rua Soares Pacheco,
+                n°325, Bairro Matosinhos, no município de Conceição do Mato
+                Dentro-MG, CEP: 35.860-000.</font></font></font></p>
+                <p></p>',
+                'excluido'=>'n',
+            ],
+            [
+                'nome'=>'Ocupante sem parceiro',
+                'tipo'=>'html',
+                'url'=>'ocupante-sem-parceiro',
+                'token'=>uniqid(),
+                'ativo'=>'s',
+                'conteudo'=>'<p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify"><a name="_Hlk82675389"></a>
+                <font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Ocupante
+                identificado: </b></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Adriana
+                Rodrigues Oliveira De Almeida</b></font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">,
+                brasileira, casada, do lar, nascida aos 02/11/1982, filha de
+                Francisco Rodrigues de Santana e Ana Rita de Oliveira Santana,
+                RG:MG-15.149.433, CPF:069.827.996-46</font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">, residente e domiciliados na Rua Soares Pacheco,
+                n°325, Bairro Matosinhos, no município de Conceição do Mato
+                Dentro-MG, CEP: 35.860-000.</font></font></font></p>
+                <p></p>',
+                'excluido'=>'n',
+            ],
         ]);
     }
 }

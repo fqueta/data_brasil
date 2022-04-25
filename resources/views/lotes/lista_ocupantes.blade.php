@@ -24,13 +24,28 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <label for="proprietario">{{__('Proprietário')}}:</label>
+                                                <label for="proprietario">
+                                                    {{__('Proprietário')}}:
+                                                </label>
                                                 <span>
-                                                    {{@$v['beneficiario']}}
+                                                    <a title="{{__('Editar cadastro de proprietário')}}" href="{{route('beneficiarios.edit',['id'=>$v['id_beneficiario']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration:underline">
+                                                        {{@$v['beneficiario']}}
+                                                    </a>
                                                 </span>
                                                 <label for="conjuge">{{__('Conjuge')}}:</label>
                                                 <span>
-                                                    {{@$v['conjuge']}}
+                                                    <a title="{{__('Editar cadastro do Conjuge')}}" href="{{route('beneficiarios.edit',['id'=>$v['id_conjuge']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration:underline">
+                                                        {{@$v['conjuge']}}
+                                                    </a>
+                                                </span>
+                                                <label for="conjuge">{{__('Lote')}}:</label>
+                                                <span>
+                                                    {{@$_GET['dados']['nome']}}
+                                                    <b>
+                                                        <a title="{{__('Editar complemento')}}" href="{{route('familias.edit',['id'=>$v['id']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration: underline">
+                                                            {{@$v['complemento_lote']}}
+                                                        </a>
+                                                    </b>
                                                 </span>
                                             </div>
                                             <div class="col-md-12">

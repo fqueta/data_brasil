@@ -2,7 +2,9 @@
 @php
     if(isset($config['ac']) && $config['ac']=='alt'){
         $_GET['redirect'] = isset($_GET['redirect']) ? $_GET['redirect'] : route($config['route'].'.index').'?idCad='.$value['id'];
-
+        if(isset($_GET['redirectPos'])&&$_GET['redirectPos']=='n'){
+            $_GET['redirect'] = false;
+        }
     }
 @endphp
 <div class="col-md-12 div-salvar bg-light d-print-none">

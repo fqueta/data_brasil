@@ -30,7 +30,7 @@
                     @php
                         $cf = explode('][',$v['cp_busca']);
                         if(isset($cf[1])){
-                            $value[$k] = $value[$cf[0]][$cf[1]];
+                            $value[$k] = @$value[$cf[0]][$cf[1]];
                         }
                     @endphp
 

@@ -167,13 +167,6 @@
                                 />
                         </div>
 
-                        @if ($config['script'])
-                            @if(isset($config['dados']))
-                                @include($config['script'],@$config['dados'])
-                            @else
-                                @include($config['script'])
-                            @endif
-                        @endif
                         @if (isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
                         <div class="col-md-12 ">
                             @php
@@ -227,6 +220,14 @@
                             </table>
                         </div>
                         @endif
+                        @if ($config['script'])
+                        @if(isset($config['dados']))
+                            @include($config['script'],@$config['dados'])
+                        @else
+                            @include($config['script'])
+                        @endif
+                    @endif
+
                    </div>
                 </div>
                 <div class="card-footer text-muted">
@@ -239,7 +240,6 @@
         @if ($config['label'])
             <label for="{{$config['campo']}}">{{$config['label']}}</label>
         @endif
-        {{dd($config)}}
         <input type="{{$config['type']}}" class="form-control @error($config['campo']) is-invalid @enderror {{$config['class']}}" id="inp-{{$config['campo']}}" name="{{$config['campo']}}" aria-describedby="{{$config['campo']}}" placeholder="{{$config['placeholder']}}" value="@if(isset($config['value'])){{$config['value']}}@elseif($config['ac']=='cad'){{old($config['campo'])}}@endif" {{$config['event']}} />
         @error($config['campo'])
             <div class="alert alert-danger">{{ $message }}</div>

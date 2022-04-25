@@ -380,6 +380,7 @@ class FamiliaController extends Controller
                     ],
                     'salvar_primeiro' =>false,//exigir cadastro do vinculo antes de cadastrar este
                 ],
+                'script' =>'familias.loteamento',
             ],
             'id_beneficiario'=>[
                 'label'=>'Prorietário',
@@ -710,6 +711,7 @@ class FamiliaController extends Controller
                 }
             }
             //$dados[0]['tags'] = Qlib::lib_json_array($dados[0]['tags']);
+            $_GET['dados'] = $dados[0]; //para ter acesso em todas a views
             $ret = [
                 'value'=>$dados[0],
                 'config'=>$config,
