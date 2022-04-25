@@ -153,21 +153,11 @@ class BeneficiariosController extends Controller
                 'label'=>'Sexo',
                 'active'=>true,
                 'type'=>'select',
-                /*'data_selector'=>[
-                    'campos'=>$escolaridade->campos(),
-                    'route_index'=>route('escolaridades.index'),
-                    'id_form'=>'frm-escolaridades',
-                    'action'=>route('escolaridades.store'),
-                    'campo_id'=>'id',
-                    'campo_bus'=>'nome',
-                    'label'=>'Escolaridade',
-                ],*/
                 'arr_opc'=>['m'=>'Masculino','f'=>'Feminino'],
                 'event'=>'',
                 'tam'=>'6',
                 'exibe_busca'=>true,
                 'option_select'=>false,
-                'cp_busca'=>'config][escolaridade',
                 'class'=>'select2',
             ],
             'config[escolaridade]'=>[
