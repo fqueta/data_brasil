@@ -160,7 +160,7 @@ class LotesController extends Controller
                 'tam'=>'5',
                 'class'=>'select2'
             ],
-            'nome'=>['label'=>'N. do Lote','active'=>true,'placeholder'=>'Ex.: 14','type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'7'],
+            'nome'=>['label'=>'N. do Lote (Somente Números)','active'=>true,'placeholder'=>'Ex.: 14','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'7'],
             //'config[complemento]'=>['label'=>'Complemento','active'=>true,'placeholder'=>'Ex.: A','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','cp_busca'=>'config][complemento'],
             'cep'=>['label'=>'CEP','active'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-block','event'=>'mask-cep onchange=buscaCep1_0(this.value)','tam'=>'3'],
             'endereco'=>['label'=>'Endereço','active'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'7'],
