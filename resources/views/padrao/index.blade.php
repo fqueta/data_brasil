@@ -35,7 +35,8 @@
             </h4>
             @can('is_admin')
             <div class="card-tools d-flex d-print-none">
-                    @include('bairros.dropdow_actions')
+                @include('qlib.dropdow_actions')
+                @include('qlib.dropdow_acaomassa')
             </div>
             @endcan
         </div>

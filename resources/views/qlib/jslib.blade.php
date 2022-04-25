@@ -34,6 +34,11 @@
         $('.summernote').summernote({
             height: 400,
             placeholder: 'Digite o conteudo',
+            /*
+            onImageUpload: function(files, editor, welEditable) {
+                alert('enviar imagem')
+                //sendFile(files[0],editor,welEditable);
+            }*/
         });
     });
 </script>

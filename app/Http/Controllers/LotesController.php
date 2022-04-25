@@ -41,6 +41,7 @@ class LotesController extends Controller
         $config = [
             'limit'=>isset($get['limit']) ? $get['limit']: 50,
             'order'=>isset($get['order']) ? $get['order']: 'desc',
+            'acao_massa'=>[['link'=>'javascript:lib_abrirListaOcupantes();','event'=>false,'icon'=>'fa fa-list','label'=>__('Lista de ocupantes')]],
         ];
 
         if(isset($get['term'])){
@@ -136,6 +137,8 @@ class LotesController extends Controller
     public function campos(){
         $user = Auth::user();
         $quadra = new QuadrasController($user);
+        $arr_opc_ocupantes = Qlib::qoption('opc_declara_posse','array');
+
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
@@ -173,6 +176,8 @@ class LotesController extends Controller
             //'config[livro]'=>['label'=>'Livro','active'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','cp_busca'=>'config][livro'],
             'obs'=>['label'=>'Observação','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+            'ocupantes'=>['label'=>'lista de Ocupantes','active'=>false,'type'=>'html','exibe_busca'=>'d-none','event'=>'','tam'=>'12','script'=>'lotes.lista_ocupantes','script_show'=>'lotes.show_ocupantes','arr_opc'=>$arr_opc_ocupantes],
+
         ];
     }
     public function index(User $user)
@@ -230,6 +235,7 @@ class LotesController extends Controller
         ];
         $value = [
             'token'=>uniqid(),
+            //'loteamento'=>[123],
         ];
         $campos = $this->campos();
         return view($this->view.'.createedit',[
@@ -292,7 +298,39 @@ class LotesController extends Controller
     {
         //
     }
+    public function ocupantes( $id_lote = null)
+    {
+        $ret = false;
+        if($id_lote){
+            $sql = "SELECT f.* FROM familias As f
+            WHERE f.loteamento LIKE '%\"$id_lote\"%' AND f.excluido='n' AND f.deletado='n' ORDER BY f.id ASC";
+            $ocupantes = Qlib::dados_tab('familias',['sql'=>$sql]);
+            if($ocupantes){
+                foreach ($ocupantes as $ko => $vo) {
+                    if($vo['id_beneficiario']>0){
+                        $ocupantes[$ko]['beneficiario'] = Qlib::buscaValorDb([
+                            'tab'=>'beneficiarios',
+                            'campo_bus'=>'id',
+                            'valor'=>$vo['id_beneficiario'],
+                            'select'=>'nome',
+                        ]);
+                    }
+                    $ocupantes[$ko]['id_lote'] = $id_lote;
+                    if($vo['id_conjuge']>0){
+                        $ocupantes[$ko]['conjuge'] = Qlib::buscaValorDb([
+                            'tab'=>'beneficiarios',
+                            'campo_bus'=>'id',
+                            'valor'=>$vo['id_conjuge'],
+                            'select'=>'nome',
+                        ]);
+                    }
+                }
+            }
+            $ret = $ocupantes;
 
+        }
+        return $ret;
+    }
     public function edit($lote,User $user)
     {
         $id = $lote;
@@ -304,6 +342,7 @@ class LotesController extends Controller
             $title = 'Editar Cadastro de lotes';
             $titulo = $title;
             $dados[0]['ac'] = 'alt';
+            $dados[0]['ocupantes'] = $this->ocupantes($id);
             if(isset($dados[0]['config'])){
                 $dados[0]['config'] = Qlib::lib_json_array($dados[0]['config']);
             }
@@ -318,7 +357,7 @@ class LotesController extends Controller
                 'route'=>$this->routa,
                 'id'=>$id,
             ];
-
+            $_GET['dados'] = $dados[0]; //para ter acesso em todas a views
             $ret = [
                 'value'=>$dados[0],
                 'config'=>$config,
@@ -326,6 +365,7 @@ class LotesController extends Controller
                 'titulo'=>$titulo,
                 'listFiles'=>$listFiles,
                 'campos'=>$campos,
+                'id'=>$id,
                 'exec'=>true,
             ];
 
@@ -458,7 +498,6 @@ class LotesController extends Controller
             ";
             $familia = Qlib::dados_tab('familias',['sql'=>$sql]);
             $dLote = Lote::FindOrFail($id_lote);
-            //dd($familia);
             if($familia && $dLote){
                 $tema = Documento::where('url','lista-beneficiario')->where('excluido','n')->where('deletado','n')->get();
                 $tema2 = Documento::where('url','lista-beneficiario-2')->where('excluido','n')->where('deletado','n')->get();
@@ -551,16 +590,24 @@ class LotesController extends Controller
                                             'select'=>'nome',
                                         ]);
                                     }
+                                    if($kc=='data_uniao'){
+                                        $vc = Qlib::dataExibe($vc);
+                                    }
                                     if($kc=='nascimento')
                                         $vc = Qlib::dataExibe($vc);
                                     $doc = str_replace('{'.$kc.'}',$vc,$doc);
                                 }
                             }
                         }else{
-                            $doc .= 'Beneficiário ('.$fm['id_beneficiario'].') não foi encontrado!';
+                            $ret = $this->loteSemBeneficiario($id_lote,$dLote);
+                            return $ret;
                         }
+                    }else{
+                        $ret = $this->loteSemBeneficiario($id_lote,$dLote);
+                        return $ret;
                     }
                 }
+
                 $ret = str_replace('{dados_beneficiario}',$doc,$tm1);
                 foreach ($arr_sh as $ks => $vs) {
                     $ret = str_replace('{'.$ks.'}',$vs['v'],$ret);
@@ -570,8 +617,55 @@ class LotesController extends Controller
                         $ret = str_replace('{'.$kl.'}',$vl,$ret);
                     }
                 }
+            }elseif($dLote){
+                $ret = $this->loteSemBeneficiario($id_lote,$dLote);
+            }
+
+        }
+        return $ret;
+    }
+    public function loteSemBeneficiario($id_lote = null,$dLote=false)
+    {
+        $ret = false;
+        if(!$dLote){
+            $dLote = Lote::FindOrFail($id_lote);
+        }
+        $doc = false;
+        if($d = $dLote){
+            $tema = Documento::where('url','lote-sem-beneficiario')->where('excluido','n')->where('deletado','n')->get();
+            $tm = $tema[0]->conteudo;
+            $lote = $d['nome'];
+            $bairro = Qlib::buscaValorDb([
+                'tab'=>'bairros',
+                'campo_bus'=>'id',
+                'valor'=>$d['bairro'],
+                'select'=>'nome',
+            ]);
+            $quadra = Qlib::buscaValorDb([
+                'tab'=>'quadras',
+                'campo_bus'=>'id',
+                'valor'=>$d['quadra'],
+                'select'=>'nome',
+            ]);
+            $doc = str_replace('{lote}',$lote,$tm);
+            if(is_array($d['config'])){
+                foreach ($d['config'] as $kl => $vl) {
+                    $doc = str_replace('{'.$kl.'}',$vl,$doc);
+                }
+            }
+            $arr_sh = [
+                'lote'=>['lab'=>'Tipo','v'=>$lote],
+                'quadra'=>['lab'=>'Tipo','v'=>$quadra],
+                'lote_extenso'=>['lab'=>'Tipo','v'=>Qlib::convert_number_to_words(Qlib::limpar_texto($lote))],
+                'quadra_extenso'=>['lab'=>'Tipo','v'=>Qlib::convert_number_to_words($quadra)],
+                'valor_lote'=>['lab'=>'Tipo','v'=>'0,00'],
+                'valor_edificacao'=>['lab'=>'Tipo','v'=>'0,00'],
+            ];
+            foreach ($arr_sh as $ks => $vs) {
+                $doc = str_replace('{'.$ks.'}',$vs['v'],$doc);
             }
         }
+        $ret = $doc;
         return $ret;
     }
     public function docConjuge($dadosDeste = null,$tema=false,$dadosConjuge=false)
@@ -603,9 +697,10 @@ class LotesController extends Controller
                 $ret = str_replace('{'.$ks.'_conjuge}',$vs['v'],$ret);
             }
             if(is_array($dc['config'])){
-                if(empty(@$dc['config']['data_uniao'])){
-                    $dc['config']['data_uniao']=$dadCo['config']['data_uniao'];
-                }
+                /*$data_uniao = @$dc['config']['data_uniao'];
+                if(empty($data_uniao)){
+                    $data_uniao=@$dadCo['config']['data_uniao'];
+                }*/
                 foreach ($dc['config'] as $kco => $vco) {
                     if($kco=='escolaridade'||$kco=='estado_civil'){
                         if($kco=='escolaridade'){
@@ -628,5 +723,23 @@ class LotesController extends Controller
             }
         }
         return $ret;
+    }
+    public function listagemOcupantes($lotes = null)
+    {
+        $ret = false;
+        $arr=[];
+        $title = __('Listagem de ocupantes');
+        $titulo = '';
+        $tema = Documento::where('url','cabecario-lista-beneficiario')->where('excluido','n')->where('deletado','n')->get();
+        $cabecario = $tema[0]->conteudo;
+        if($lotes){
+            $arr_lotes = explode('_',$lotes);
+            if(is_array($arr_lotes)){
+                foreach ($arr_lotes as $k => $v) {
+                    $arr[$k] = $this->docBeneficiario($v);
+                }
+            }
+        }
+        return view('lotes.ocupantes',['cabecario'=>$cabecario,'arr'=>$arr,'titulo'=>$titulo,'title'=>$title]);
     }
 }

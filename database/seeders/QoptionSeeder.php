@@ -43,6 +43,19 @@ class QoptionSeeder extends Seeder
                         "cep":"35.680-000"
                     }
                 }',
+            ],
+            [
+                'nome'=>'Declarações adicionais sobre a posse',
+                'url'=>'opc_declara_posse',
+                'valor'=>'[
+                    {"label":"compra e venda particular"},
+                    {"label":"Permuta"},
+                    {"label":"doação particular sem contrato"},
+                    {"label":"herança de inventário pendente de abertura"},
+                    {"label":"herança de inventário concluído e não registrado"},
+                    {"label":"escritura pública de cessão de direitos hereditários"},
+                    {"label":"Invasão"}
+                ]',
             ]
         ]);
     }

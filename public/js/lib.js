@@ -1484,6 +1484,7 @@ function carregaMatricula(val){
     getAjax({
         url:'/bairros/'+val+'/edit?ajax=s',
     },function(res){
+        $('#preload').fadeOut("fast");
         if(m=res.value.matricula){
             $('[name="matricula"]').val(m);
             $('#txt-matricula').html(m);
@@ -1547,4 +1548,30 @@ function btVoltar(obj){
             window.location = href;
         }
     }
+}
+function lib_abrirListaOcupantes(){
+    var sel = coleta_checked($('.table .checkbox:checked'));
+    if(sel==''){
+        var msg = '<div class="row"><div id="exibe_etapas" class="col-md-12 text-center"><p>Por favor selecione um registro!</p></div></div>';
+        alerta(msg,'modal-etapa','Alerta','',true,3000,true)
+        return;
+    }else{
+        var url = '/lotes/lista-ocupantes/'+sel;
+        abrirjanelaPadraoConsulta(url,'lista-ocupantes');
+    }
+}
+function sendFile(file,editor,welEditable) {
+    data = new FormData();
+    data.append("file", file);
+    $.ajax({
+        data: data,
+        type: "POST",
+        url: "url/para/upload/",
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(url) {
+            editor.insertImage(welEditable, url);
+        }
+    });
 }

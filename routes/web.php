@@ -12,6 +12,7 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\EtapaController;
 use App\Http\Controllers\EscolaridadeController;
 use App\Http\Controllers\EstadocivilController;
+use App\Http\Controllers\LotesController;
 use App\Http\Controllers\RelatoriosController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -153,6 +154,7 @@ Route::resource('beneficiarios','\App\Http\Controllers\BeneficiariosController',
 Route::resource('lotes','\App\Http\Controllers\LotesController',['parameters' => [
 'lotes' => 'id'
 ]]);
+Route::get('/lotes/lista-ocupantes/{lotes}',[LotesController::class,'listagemOcupantes'])->name('lotes.ocupantes');
 Route::resource('quadras','\App\Http\Controllers\QuadrasController',['parameters' => [
 'quadras' => 'id'
 ]]);
