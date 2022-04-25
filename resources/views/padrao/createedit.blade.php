@@ -42,9 +42,9 @@
             </div>
             <div class="card-body">
                 {{App\Qlib\Qlib::gerUploadAquivos([
-                    'pasta'=>'bairros/'.date('Y').'/'.date('m'),
+                    'pasta'=>$config['route'].'/'.date('Y').'/'.date('m'),
                     'token_produto'=>$value['token'],
-                    'tab'=>'bairros',
+                    'tab'=>$config['route'],
                     'listFiles'=>@$listFiles,
                     'routa'=>@$routa,
                 ])}}
