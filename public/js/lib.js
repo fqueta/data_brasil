@@ -997,7 +997,7 @@ function lib_vinculoCad(obj){
         var tag_obj = '<obj class="d-none">'+obj.data('selector')+'</obj>';
         $('obj').remove();
         $(tag_obj).insertBefore('body');
-        abrirjanelaPadrao(url);
+        abrirjanelaPadraoConsulta(url,'vinculo');
     }else{
         renderForm(d,obj,function(res){
             if(res.mens){
@@ -1532,11 +1532,17 @@ function popupCallback_vinculo(res){
         lib_listDadosHtmlVinculo(res,obj,'cad');
     }
 }
+function popupCallback_redirect(url){
+    window.location=url;
+}
 function btVoltar(obj){
     var href = obj.attr('href'),redirect = obj.attr('redirect');
     if(redirect){
         if(pop){
-            alert(redirect);
+            if(redirect){
+                popupCallback_redirect(redirect);
+                window.close();
+            }
         }else{
             window.location = redirect;
         }
