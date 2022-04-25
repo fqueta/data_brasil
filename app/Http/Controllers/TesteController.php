@@ -18,28 +18,13 @@ class TesteController extends Controller
      */
     public function index()
     {
-        //Auth::logout();
-        //echo __FILE__;
-       // $dados = Auth::check();
-        //$dados = Qlib::sql_array("SELECT id,nome FROM escolaridades ORDER BY nome ", 'nome', 'id');
-        //$dados = DB::select("SELECT * FROM familias WHERE excluido='n' AND deletado='n' ORDER BY id DESC");
-        //$dados = Familia::where('excluido','=','n')->where('deletado','=','n')->OrderBy('id','desc')->get();
-        //$dados = DB::table('familias')->where('excluido','=','n')->where('deletado','=','n')->OrderBy('id','desc')->get();
-        //$op = Qlib::qoption('cad_municipio','array');
 
-        //Qlib::lib_print($op);
-
-        /*
-        $url = 'https://po.presidenteolegario.mg.gov.br/api/pages/o-que-e-covid-19';
-        $d = file_get_contents($url);
-        $arr = Qlib::lib_json_array($d);
-        $arr['cont'] = Qlib::lib_json_array($arr['content']);
-        Qlib::lib_print($arr['cont']);*/
         $user = Auth::user();
         $doc = new LotesController($user);
         $lote = isset($_GET['lote'])?$_GET['lote']:201;
+        $oc = isset($_GET['oc'])?$_GET['oc']:289;
         $config = [
-            'docs'=>$doc->docBeneficiario($lote),
+            'docs'=>$doc->fichaOcupante($lote,$oc),
         ];
         return view('teste',$config);
     }

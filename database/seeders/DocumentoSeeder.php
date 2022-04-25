@@ -244,18 +244,15 @@ class DocumentoSeeder extends Seeder
                 'ativo'=>'s',
                 'conteudo'=>'<p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify"><a name="_Hlk82675389"></a>
                 <font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Ocupantes
-                identificados: </b></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Adriana
-                Rodrigues Oliveira De Almeida</b></font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">,
-                brasileira, casada, do lar, nascida aos 02/11/1982, filha de
-                Francisco Rodrigues de Santana e Ana Rita de Oliveira Santana,
-                RG:MG-15.149.433, CPF:069.827.996-46 </font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">e</font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>
-                Elisio Soares de Almeida, </b></font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">brasileiro,
-                casado, vidraceiro, nascido aos 27/08/1976, filho de Roberto de
-                Almeida Santana e Isabel Soares Santana, RG: MG-12.540.890,
-                CPF:031.317.176-96, casados sob o regime de comunhão parcial de bens
-                desde 05/11/1999, residentes e domiciliadas na Rua Soares Pacheco,
-                n°325, Bairro Matosinhos, no município de Conceição do Mato
-                Dentro-MG, CEP: 35.860-000.</font></font></font></p>
+                identificados: </b></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>{nome_beneficiario}</b></font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">,
+                {nacionalidade}, {estado_civil}, {profissao}, {nascida} aos {nascimento}, filha de
+                {pai} e {mae},
+                RG:{rg}, CPF:{cpf} </font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">e</font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>
+                {nome_conjuge}, </b></font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">{nacionalidade_conjuge},
+                {estado_civil_conjuge}, {profissao_conjuge}, nascido aos {nascimento_conjuge}, filho de {pai_conjuge} e {mae_conjuge}, RG: {rg_conjuge},
+                CPF:{cpf_conjuge}, casados sob o regime de {tipo_uniao}
+                desde {data_uniao}, residentes e domiciliadas na {endereco},
+                n°{numero}, Bairro {bairro}, no {cidade}-MG, CEP: {cep}.</font></font></font></p>
                 <p></p>',
                 'excluido'=>'n',
             ],
@@ -266,14 +263,12 @@ class DocumentoSeeder extends Seeder
                 'token'=>uniqid(),
                 'ativo'=>'s',
                 'conteudo'=>'<p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify"><a name="_Hlk82675389"></a>
-                <font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Ocupante
-                identificado: </b></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Adriana
-                Rodrigues Oliveira De Almeida</b></font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">,
-                brasileira, casada, do lar, nascida aos 02/11/1982, filha de
-                Francisco Rodrigues de Santana e Ana Rita de Oliveira Santana,
-                RG:MG-15.149.433, CPF:069.827.996-46</font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">, residente e domiciliados na Rua Soares Pacheco,
-                n°325, Bairro Matosinhos, no município de Conceição do Mato
-                Dentro-MG, CEP: 35.860-000.</font></font></font></p>
+                <font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Ocupantes
+                identificados: </b></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>{nome_beneficiario}</b></font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">,
+                {nacionalidade}, {estado_civil}, {profissao}, {nascida} aos {nascimento}, filha de
+                {pai} e {mae},
+                RG:{rg}, CPF:{cpf}, </font></font></font><font color="#ff0000"><font face="Arial, serif"><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"> residentes e domiciliadas na {endereco},
+                n°{numero}, Bairro {bairro}, no {cidade}-MG, CEP: {cep}.</font></font></font></p>
                 <p></p>',
                 'excluido'=>'n',
             ],

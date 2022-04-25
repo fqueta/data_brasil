@@ -298,12 +298,18 @@ class LotesController extends Controller
     {
         //
     }
-    public function ocupantes( $id_lote = null)
+    public function ocupantes( $id_lote = null,$oc=false)
     {
+        /**$oc = o id do ocupamnte */
         $ret = false;
         if($id_lote){
-            $sql = "SELECT f.* FROM familias As f
-            WHERE f.loteamento LIKE '%\"$id_lote\"%' AND f.excluido='n' AND f.deletado='n' ORDER BY f.complemento_lote ASC";
+            if($oc){
+                $sql = "SELECT f.* FROM familias As f
+                WHERE f.loteamento LIKE '%\"$id_lote\"%' AND id_beneficiario='$oc' AND f.excluido='n' AND f.deletado='n' ORDER BY f.complemento_lote ASC";
+            }else{
+                $sql = "SELECT f.* FROM familias As f
+                WHERE f.loteamento LIKE '%\"$id_lote\"%' AND f.excluido='n' AND f.deletado='n' ORDER BY f.complemento_lote ASC";
+            }
             $ocupantes = Qlib::dados_tab('familias',['sql'=>$sql]);
             if($ocupantes){
                 foreach ($ocupantes as $ko => $vo) {
@@ -484,19 +490,165 @@ class LotesController extends Controller
         }
         return $ret;
     }
+    public function fichaOcupante($id_lote = false,$id_ocupante=false)
+    {
+        $ret = false;
+        if($id_lote&&$id_ocupante){
+            $oc=$id_ocupante;
+            $familia = $this->ocupantes($id_lote,$oc);
+            if($familia){
+                $tema = Documento::where('url','ficha-cadastro-ocupante')->where('excluido','n')->where('deletado','n')->get();
+                $parceiro = false;
+                //dd($familia);
+                if($familia[0]['id_conjuge']>0){
+                    $tema2 = Documento::where('url','ocupante-com-parceiro')->where('excluido','n')->where('deletado','n')->get();
+                    $parceiro = true;
+                }else{
+                    $tema2 = Documento::where('url','ocupante-sem-parceiro')->where('excluido','n')->where('deletado','n')->get();
+                }
+                $dLote = Lote::FindOrFail($id_lote);
+                $lote = $dLote['nome'];
+                $doc = false;
+                $bairro = Qlib::buscaValorDb([
+                    'tab'=>'bairros',
+                    'campo_bus'=>'id',
+                    'valor'=>$dLote['bairro'],
+                    'select'=>'nome',
+                ]);
+                $quadra = Qlib::buscaValorDb([
+                    'tab'=>'quadras',
+                    'campo_bus'=>'id',
+                    'valor'=>$dLote['quadra'],
+                    'select'=>'nome',
+                ]);
+                $arr_sh=[];
+                foreach ($familia as $key => $fm) {
+                    if($tm1=$tema[0]->conteudo){
+                        if($tm2=$tema2[0]->conteudo){
+
+                            $dadosBen = Beneficiario::FindOrFail($fm['id_beneficiario']);
+                            $dadosCon = false;
+                            if($parceiro>0){
+                                $dadosCon = Beneficiario::FindOrFail($fm['id_conjuge']);
+                            }
+                            if($b = $dadosBen){
+                                //Qlib::lib_print($b);
+                                //Qlib::lib_print($dLote);
+                                $lote = $dLote['nome'];
+                                $tipo_beneficiario = 'REURB (S)';
+                                $nome_beneficiario = $b['nome'];
+                                $filhoa_de = 'filho de';
+                                $nascidoa = 'nascido';
+                                if($b['sexo']=='f'){
+                                    $filhoa_de = 'filha de';
+                                    $nascidoa = 'nascida';
+                                }
+                                /*
+                                if($tot_familias>1){
+                                    if(empty($fm['complemento_lote'])){
+                                        $n_benficiario = "<b>".$i.")</b> ";
+                                    }else{
+                                        $n_benficiario = "<b>".$fm['complemento_lote'].")</b> ";
+                                    }
+                                }*/
+                                $n_benficiario = false;
+                                $arr_sh = [
+                                    'lote'=>['lab'=>'Tipo','v'=>$lote],
+                                    'quadra'=>['lab'=>'Tipo','v'=>$quadra],
+                                    'lote_extenso'=>['lab'=>'Tipo','v'=>Qlib::convert_number_to_words(Qlib::limpar_texto($lote))],
+                                    'quadra_extenso'=>['lab'=>'Tipo','v'=>Qlib::convert_number_to_words($quadra)],
+                                    'tipo_beneficiario'=>['lab'=>'Tipo','v'=>$tipo_beneficiario],
+                                    'nome_beneficiario'=>['lab'=>'Nome','v'=>$n_benficiario.$nome_beneficiario],
+                                    'cpf'=>['lab'=>'CPF','v'=>$b['cpf']],
+                                    'endereco'=>['lab'=>'Endereço','v'=>$dLote['endereco']],
+                                    'numero'=>['lab'=>'numero','v'=>$dLote['numero']],
+                                    'cidade'=>['lab'=>'cidade','v'=>$dLote['cidade']],
+                                    'cep'=>['lab'=>'cep','v'=>$dLote['cep']],
+                                    'bairro'=>['lab'=>'bairro','v'=>$bairro],
+                                    'area'=>['lab'=>'bairro','v'=>$bairro],
+                                    'filha de'=>['lab'=>'','v'=>$filhoa_de],
+                                    'filho de'=>['lab'=>'','v'=>$filhoa_de],
+                                    'nascida'=>['lab'=>'','v'=>$nascidoa],
+                                    'nascido'=>['lab'=>'','v'=>$nascidoa],
+                                ];
+                                if($dadosCon){
+                                    $doc .= str_replace('{lote}',$lote,$tm2);
+                                    $doc = $this->docConjuge($dadosCon,$doc,$b);
+                                }else{
+                                    $doc .= str_replace('{lote}',$lote,$tm2);
+                                }
+                                foreach ($arr_sh as $ks => $vs) {
+                                    $doc = str_replace('{'.$ks.'}',$vs['v'],$doc);
+                                }
+                                //$doc = str_replace('{nome_beneficiario}',$nome_beneficiario,$doc);
+                                if(is_array($b['config'])){
+                                    foreach ($b['config'] as $kc => $vc) {
+                                        if($kc=='escolaridade'||$kc=='estado_civil'){
+                                            if($kc=='escolaridade'){
+                                                $ta = 'escolaridades';
+                                            }
+                                            if($kc=='estado_civil'){
+                                                $ta = 'estadocivils';
+                                            }
+                                            $vc=Qlib::buscaValorDb([
+                                                'tab'=>$ta,
+                                                'campo_bus'=>'id',
+                                                'valor'=>$vc,
+                                                'select'=>'nome',
+                                            ]);
+                                        }
+                                        if($kc=='data_uniao'){
+                                            $vc = Qlib::dataExibe($vc);
+                                        }
+                                        if($kc=='nascimento')
+                                        $vc = Qlib::dataExibe($vc);
+                                        $doc = str_replace('{'.$kc.'}',$vc,$doc);
+                                    }
+                                }
+                            }else{
+                                $ret = $this->loteSemBeneficiario($id_lote,$dLote);
+                                return $ret;
+                            }
+
+                        }
+                    }
+                }
+                $ret = str_replace('{ocupantes}',$doc,$tm1);
+                foreach ($arr_sh as $ks => $vs) {
+                    $ret = str_replace('{'.$ks.'}',$vs['v'],$ret);
+                }
+                if(is_array($b['config'])){
+                    foreach ($b['config'] as $kc => $vc) {
+                        if($kc=='escolaridade'||$kc=='estado_civil'){
+                            if($kc=='escolaridade'){
+                                $ta = 'escolaridades';
+                            }
+                            if($kc=='estado_civil'){
+                                $ta = 'estadocivils';
+                            }
+                            $vc=Qlib::buscaValorDb([
+                                'tab'=>$ta,
+                                'campo_bus'=>'id',
+                                'valor'=>$vc,
+                                'select'=>'nome',
+                            ]);
+                        }
+                        if($kc=='data_uniao'){
+                            $vc = Qlib::dataExibe($vc);
+                        }
+                        if($kc=='nascimento')
+                            $vc = Qlib::dataExibe($vc);
+                        $ret = str_replace('{'.$kc.'}',$vc,$ret);
+                    }
+                }
+            }
+        }
+        return $ret;
+    }
     public function docBeneficiario($id_lote = false,$config=false)
     {
         $ret = false;
         if($id_lote){
-            //$familia = Familia::where('loteamento','LIKE','%"'.$id_lote.'"%')->get();
-            /*$sql = "SELECT f.*,b.* FROM familias As f
-            JOIN beneficiarios b ON f.id_beneficiario=b.id
-            WHERE f.loteamento LIKE '%\"$id_lote\"%' AND f.excluido='n' AND f.deletado='n'
-            ";*/
-            $sql = "SELECT f.* FROM familias As f
-            WHERE f.loteamento LIKE '%\"$id_lote\"%' AND f.excluido='n' AND f.deletado='n' ORDER BY f.complemento_lote ASC
-            ";
-            //$familia = Qlib::dados_tab('familias',['sql'=>$sql]);
             $familia = $this->ocupantes($id_lote);
             $dLote = Lote::FindOrFail($id_lote);
             if($familia && $dLote){
