@@ -20,12 +20,6 @@
         </div>
         @if (isset($campos) && is_array($campos))
             @foreach ($campos as $k=>$v)
-                @if ($v['type']=='select_multiple')
-                    @php
-                        $nk = str_replace('[]','',$k);
-                        $value[$k] = isset($value[$nk])?$value[$nk]:false;
-                    @endphp
-                @endif
                 @if (isset($v['cp_busca'])&&!empty($v['cp_busca']))
                     @php
                         $cf = explode('][',$v['cp_busca']);
@@ -33,7 +27,12 @@
                             $value[$k] = @$value[$cf[0]][$cf[1]];
                         }
                     @endphp
-
+                @endif
+                @if ($v['type']=='select_multiple')
+                    @php
+                        $nk = str_replace('[]','',$k);
+                        $value[$k] = isset($value[$nk])?$value[$nk]:false;
+                    @endphp
                 @endif
 
             {{App\Qlib\Qlib::qForm([

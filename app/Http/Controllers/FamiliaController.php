@@ -723,6 +723,7 @@ class FamiliaController extends Controller
                 'campos'=>$campos,
                 'routa'=>$this->routa,
                 'exec'=>true,
+                'redirect'=>'relatorios',
             ];
             return view($this->routa.'.createedit',$ret);
         }else{

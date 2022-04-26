@@ -61,7 +61,7 @@
                                                     <div class="form-check">
                                                         <label class="form-check-label">
                                                         <input type="radio" class="form-check-input" name="config[declaracao_posse][{{$v['id']}}]" id="" value="{{$k2}}"
-                                                        @if (@$_GET['dados']['config']['declaracao_posse'][$v['id']]==$k2)
+                                                        @if (isset($_GET['dados']['config']['declaracao_posse'][$v['id']]) && $_GET['dados']['config']['declaracao_posse'][$v['id']]==$k2)
                                                         checked
                                                         @endif
                                                         >
@@ -72,6 +72,18 @@
                                                 @endif
 
                                             </div>
+                                            {{App\Qlib\Qlib::qForm([
+                                                'type'=>'date',
+                                                'campo'=>'config[data_posse]['.$v['id'].']',
+                                                'label'=>'Data da posse',
+                                                'placeholder'=>'',
+                                                'ac'=>$config['ac'],
+                                                'value'=>@$_GET['dados']['config']['data_posse'][$v['id']],
+                                                'tam'=>'12',
+                                                'event'=>'',
+                                                'class'=>'',
+                                                'class_div'=>'',
+                                            ])}}
                                         </div>
                                     </div>
                                     <div class="card-footer text-muted text-right">

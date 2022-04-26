@@ -12,7 +12,6 @@
       <a href="{{ route('grupos-create') }}" class="btn btn-success"> Novo grupo </a>
     </div>
     <div class="col-md-12">
-
       <table class="table table-bordered table-hover">
         <thead>
           <tr>

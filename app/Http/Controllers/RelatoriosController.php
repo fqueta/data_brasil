@@ -60,6 +60,7 @@ class RelatoriosController extends Controller
             'arr_titulo'=>$queryFamilias['arr_titulo'],
             'config'=>$queryFamilias['config'],
             'routa'=>$routa,
+            'redirect'=>'relatorios',
             'view'=>$this->view,
             'i'=>0,
         ]);
@@ -180,18 +181,27 @@ class RelatoriosController extends Controller
             }
         }
         $familia_totais->completos = $completos;
+        $iv = 0;
         foreach ($familia as $k1 => $v1) {
             foreach ($campos as $k2 => $v2) {
                 if($v2['type']=='text'){
                     if($k2=='lote' && isset($v1['loteamento'])){
                         if(is_array($v1['loteamento'])){
                             foreach ($v1['loteamento'] as $kl => $lote) {
-                                $familia[$k1][$k2] .= Qlib::buscaValorDb([
+                                $lote = Qlib::buscaValorDb([
                                     'tab'=>'lotes',
                                     'campos_bus'=>'id',
                                     'valor'=>$lote,
                                     'select'=>'nome',
-                                ]).',';
+                                ]);
+                                if($iv>0){
+                                    $vg = ', ';
+                                }else{
+                                    $vg = false;
+                                }
+
+                                $familia[$k1][$k2] .= $vg.$lote.$v1['complemento_lote'];
+                                $iv++;
                             }
                         }
                     }

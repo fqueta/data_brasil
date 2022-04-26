@@ -180,6 +180,9 @@ class Qlib
                 if(@$config['checked'] == null && isset($config['valor_padrao']))
                 $config['checked'] = $config['valor_padrao'];
             }
+            //if($config['type']=='select_multiple'){
+                //dd($config);
+            //}
             if(@$config['type']=='html_vinculo' && @$config['ac']=='alt'){
                 $tab = $config['data_selector']['tab'];
                 $config['data_selector']['placeholder'] = isset($config['data_selector']['placeholder'])?$config['data_selector']['placeholder']:'Digite para iniciar a consulta...';
@@ -619,7 +622,7 @@ class Qlib
 		if (strpos($number, '.') !== false) {
 			list($number, $fraction) = explode('.', $number);
 		}
-
+        $number = (int)$number;
 		switch (true) {
 			case $number < 21:
 				$string = $dictionary[$number];

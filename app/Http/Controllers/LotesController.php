@@ -555,13 +555,15 @@ class LotesController extends Controller
                                 $arr_sh = [
                                     'lote'=>['lab'=>'Tipo','v'=>$lote],
                                     'quadra'=>['lab'=>'Tipo','v'=>$quadra],
+                                    'matricula'=>['lab'=>'Tipo','v'=>$fm['matricula']],
                                     'lote_extenso'=>['lab'=>'Tipo','v'=>Qlib::convert_number_to_words(Qlib::limpar_texto($lote))],
                                     'quadra_extenso'=>['lab'=>'Tipo','v'=>Qlib::convert_number_to_words($quadra)],
                                     'tipo_beneficiario'=>['lab'=>'Tipo','v'=>$tipo_beneficiario],
                                     'nome_beneficiario'=>['lab'=>'Nome','v'=>$n_benficiario.$nome_beneficiario],
                                     'cpf'=>['lab'=>'CPF','v'=>$b['cpf']],
                                     'endereco'=>['lab'=>'Endereço','v'=>$dLote['endereco']],
-                                    'numero'=>['lab'=>'numero','v'=>$dLote['numero']],
+                                    'numero'=>['lab'=>'numero','v'=>$dLote['numero'].' '.$dLote['complemento']],
+                                    'complemento'=>['lab'=>'complemento','v'=>$dLote['complemento']],
                                     'cidade'=>['lab'=>'cidade','v'=>$dLote['cidade']],
                                     'cep'=>['lab'=>'cep','v'=>$dLote['cep']],
                                     'bairro'=>['lab'=>'bairro','v'=>$bairro],
@@ -616,6 +618,12 @@ class LotesController extends Controller
                 $ret = str_replace('{ocupantes}',$doc,$tm1);
                 foreach ($arr_sh as $ks => $vs) {
                     $ret = str_replace('{'.$ks.'}',$vs['v'],$ret);
+                }
+                if(is_array($dLote['config'])){
+                    foreach ($dLote['config'] as $kl => $vl) {
+                        if(!is_array($vl))
+                            $ret = str_replace('{'.$kl.'}',$vl,$ret);
+                    }
                 }
                 if(is_array($b['config'])){
                     foreach ($b['config'] as $kc => $vc) {
