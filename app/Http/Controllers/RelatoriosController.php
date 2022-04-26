@@ -201,7 +201,8 @@ class RelatoriosController extends Controller
                                 }
 
                                 $familia[$k1][$k2] .= $vg.$lote.$v1['complemento_lote'];
-                                $iv++;
+                                if($lote)
+                                    $iv++;
                             }
                         }
                     }
