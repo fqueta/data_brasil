@@ -194,15 +194,14 @@ class RelatoriosController extends Controller
                                     'valor'=>$lote,
                                     'select'=>'nome',
                                 ]);
-                                if($iv>0){
+                                if($iv>0 && !empty($lote)){
                                     $vg = ', ';
                                 }else{
                                     $vg = false;
                                 }
 
                                 $familia[$k1][$k2] .= $vg.$lote.$v1['complemento_lote'];
-                                if($lote)
-                                    $iv++;
+                                $iv++;
                             }
                         }
                     }
