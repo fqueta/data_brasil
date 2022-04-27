@@ -48,11 +48,25 @@ class DocumentoSeeder extends Seeder
                 'url'=>'lista-beneficiario',
                 'token'=>uniqid(),
                 'ativo'=>'s',
-                'conteudo'=>'<p style="margin-bottom: 0cm; line-height: 100%" align="justify"><a name="_Hlk82675389"></a>
+                'conteudo'=>'<p style="margin-bottom: 0cm; line-height: 100%" align="justify">
                 <font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3"><b>{lote}-
                 BENEFICIÁRIO(A): {tipo_beneficiario}:</b></font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3">
                 </font></font>{dados_beneficiario} residente e domiciliado na {endereco}, n°{numero},
-                Bairro {bairro}, no município de {cidade}-{uf}, CEP: {cep}.</p><div><font face="Arial Narrow, serif"></font></div><p></p>',
+                Bairro {bairro}, no município de {cidade}-{uf}, CEP: {cep}.</p><p style="margin-bottom: 0cm; line-height: 100%" align="justify">
+<br>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%" align="justify"><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3"><b>IMÓVEL</b></font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3">:
+LOTE {lote} ({lote_extenso}) – QUADRA {quadra} ({quadra_extenso}), conforme memorial
+descritivo do PRF.  </font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3"><b>Valor
+Lote</b></font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3">:
+</font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3"><b>R$</b></font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3">
+</font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3"><b>{valor_lote}</b></font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3">
+ </font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3"><b>Valor
+Edificação</b></font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3">:
+</font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3"><b>R$</b></font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3">
+</font></font><font face="Arial Narrow, serif"><font style="font-size: 12pt" size="3"><b>{valor_edificacao}.</b></font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%" align="justify"></p><div><font face="Arial Narrow, serif"></font></div><p></p>',
                 'excluido'=>'n',
             ],
             [

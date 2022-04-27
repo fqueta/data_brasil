@@ -302,6 +302,7 @@ class LotesController extends Controller
     {
         /**$oc = o id do ocupamnte */
         $ret = false;
+
         if($id_lote){
             if($oc){
                 $sql = "SELECT f.* FROM familias As f
@@ -492,11 +493,14 @@ class LotesController extends Controller
     }
     public function fichaOcupante($id_lote = false,$id_ocupante=false)
     {
+        $retu['familia'] = false;
+        $retu['html'] = false;
         $ret = false;
         if($id_lote&&$id_ocupante){
             $oc=$id_ocupante;
             $familia = $this->ocupantes($id_lote,$oc);
             if($familia){
+                $retu['familia'] = $familia[0];
                 $tema = Documento::where('url','ficha-cadastro-ocupante')->where('excluido','n')->where('deletado','n')->get();
                 $parceiro = false;
                 //dd($familia);
@@ -607,15 +611,26 @@ class LotesController extends Controller
                                         $doc = str_replace('{'.$kc.'}',$vc,$doc);
                                     }
                                 }
-                            }else{
-                                $ret = $this->loteSemBeneficiario($id_lote,$dLote);
-                                return $ret;
                             }
-
                         }
                     }
                 }
                 $ret = str_replace('{ocupantes}',$doc,$tm1);
+                if($id_familia = $familia[0]['id']){
+                    $meses = Qlib::Meses();
+                    $arr_sh['declaracao_posse'] = ['lab'=>'Declaração','v'=>$this->declaracaoPosse($id_lote,$id_familia,$dLote)];
+                    $data_posse = isset($dLote['config']['data_posse'][$id_familia])?$dLote['config']['data_posse'][$id_familia]:false;
+                    $arr_sh['data_posse'] = ['lab'=>'Data posse','v'=>Qlib::dataExibe($data_posse)];
+                    $arr_sh['dia'] = ['lab'=>'Dia','v'=>date('d')];
+                    $arr_sh['mes_extenso'] = ['lab'=>'Mês','v'=>$meses[date('m')]];
+                    $arr_sh['ano'] = ['lab'=>'Ano','v'=>date('Y')];
+                    if(isset($familia[0]['beneficiario'])){
+                        $arr_sh['nome_proprietario'] = ['lab'=>'Ano','v'=>$familia[0]['beneficiario']];
+                    }
+                    if(isset($familia[0]['conjuge'])){
+                        $arr_sh['nome_conjuge'] = ['lab'=>'Ano','v'=>$familia[0]['conjuge']];
+                    }
+                }
                 foreach ($arr_sh as $ks => $vs) {
                     $ret = str_replace('{'.$ks.'}',$vs['v'],$ret);
                 }
@@ -650,6 +665,35 @@ class LotesController extends Controller
                     }
                 }
             }
+        }
+        $retu['html'] = $ret;
+        return $retu;
+    }
+    public function declaracaoPosse($id_lote = null,$id_familia,$dLote=false)
+    {
+        $ret = false;
+        if($id_lote&&$id_familia){
+            if(!$dLote)
+                $dLote = lote::FindOrFail($id_lote);
+            if(!isset($dLote['config']['declaracao_posse'][$id_familia])){
+                $ret = ' <span class="text-danger">Declaração não informada </span><br>';
+                return $ret;
+            }
+            $arr_opc_ocupantes = Qlib::qoption('opc_declara_posse','array');
+            $tema1 = '<ul>{li}</ul>';
+            $tema2 = '<li>( {mark} ) {label}</li>';
+            $li = false;
+            if(is_array($arr_opc_ocupantes)){
+                foreach ($arr_opc_ocupantes as $k => $v) {
+                    $mark = '&nbsp;&nbsp;';
+                    if($k==$dLote['config']['declaracao_posse'][$id_familia]){
+                        $mark = 'x';
+                    }
+                    $li .= str_replace('{mark}',$mark,$tema2);
+                    $li = str_replace('{label}',$v['label'],$li);
+                }
+            }
+            $ret = str_replace('{li}',$li,$tema1);
         }
         return $ret;
     }
@@ -772,7 +816,6 @@ class LotesController extends Controller
                         return $ret;
                     }
                 }
-
                 $ret = str_replace('{dados_beneficiario}',$doc,$tm1);
                 foreach ($arr_sh as $ks => $vs) {
                     $ret = str_replace('{'.$ks.'}',$vs['v'],$ret);
@@ -816,7 +859,11 @@ class LotesController extends Controller
             $doc = str_replace('{lote}',$lote,$tm);
             if(is_array($d['config'])){
                 foreach ($d['config'] as $kl => $vl) {
-                    $doc = str_replace('{'.$kl.'}',$vl,$doc);
+                    if(is_array($vl)){
+
+                    }else{
+                        $doc = str_replace('{'.$kl.'}',$vl,$doc);
+                    }
                 }
             }
             $arr_sh = [
@@ -892,7 +939,6 @@ class LotesController extends Controller
     }
     public function listagemOcupantes($lotes = null)
     {
-        $ret = false;
         $arr=[];
         $title = __('Listagem de ocupantes');
         $titulo = '';
@@ -907,5 +953,15 @@ class LotesController extends Controller
             }
         }
         return view('lotes.ocupantes',['cabecario'=>$cabecario,'arr'=>$arr,'titulo'=>$titulo,'title'=>$title]);
+    }
+    public function FichaOcupantes($lote = null,$familia)
+    {
+
+        $dados = $this->fichaOcupante($lote,$familia);
+        $ben = isset($dados['familia']['beneficiario'])?$dados['familia']['beneficiario']:__('Ficha de ocupante');
+        $title = $lote.'-'.strtoupper($ben);
+        $titulo = '';
+        return view('lotes.ficha_ocupantes',['dados'=>$dados['html'],'titulo'=>$titulo,'title'=>$title]);
+        //return view $ret;
     }
 }

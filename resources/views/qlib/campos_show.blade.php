@@ -93,7 +93,6 @@
                         @endphp
                         @if (isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
                         <div class="col-md-12 ">
-
                                 @if (isset($config['data_selector']['list']) && is_array($config['data_selector']['list']) && isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
                                     @if (@$config['data_selector']['tipo']=='array')
                                         @foreach ($config['data_selector']['list'] as $klis=>$vlis)
@@ -248,6 +247,14 @@
                                                 @endif
                                             @endforeach
                                         </div>
+                                    @endif
+                                @endif
+                                @if ($config['script'])
+
+                                    @if(isset($config['dados']))
+                                        @include($config['script'],@$config['dados'])
+                                    @else
+                                        @include($config['script'])
                                     @endif
                                 @endif
                         </div>

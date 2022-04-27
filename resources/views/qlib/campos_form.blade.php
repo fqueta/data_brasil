@@ -221,12 +221,12 @@
                         </div>
                         @endif
                         @if ($config['script'])
-                        @if(isset($config['dados']))
-                            @include($config['script'],@$config['dados'])
-                        @else
-                            @include($config['script'])
+                            @if(isset($config['dados']))
+                                @include($config['script'],@$config['dados'])
+                            @else
+                                @include($config['script'])
+                            @endif
                         @endif
-                    @endif
 
                    </div>
                 </div>

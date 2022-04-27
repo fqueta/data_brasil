@@ -12,6 +12,7 @@
                         </tr>
                     </thead>
                     <tbody>
+
                         @foreach ($config['value'] as $k=>$v)
                         <tr>
                             <td>
@@ -19,6 +20,15 @@
                                     <div class="card-header">
                                         <h4 class="card-title">{{__('Ficha de cadastro de ocupante')}}</h4>
                                         <div class="card-tools">
+                                            <label for="conjuge">{{__('Lote')}}:</label>
+                                                <span>
+                                                    {{@$_GET['dados']['nome']}}
+                                                    <b>
+                                                        <a title="{{__('Editar complemento')}}" href="{{route('familias.edit',['id'=>$v['id']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration: underline">
+                                                            {{@$v['complemento_lote']}}
+                                                        </a>
+                                                    </b>
+                                                </span>
                                         </div>
                                     </div>
                                     <div class="card-body">
@@ -28,24 +38,23 @@
                                                     {{__('Proprietário')}}:
                                                 </label>
                                                 <span>
-                                                    <a title="{{__('Editar cadastro de proprietário')}}" href="{{route('beneficiarios.edit',['id'=>$v['id_beneficiario']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration:underline">
-                                                        {{@$v['beneficiario']}}
-                                                    </a>
+                                                    @if ($v['id_beneficiario'])
+                                                        <a title="{{__('Editar cadastro de proprietário')}}" href="{{route('beneficiarios.edit',['id'=>$v['id_beneficiario']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration:underline">
+                                                            {{@$v['beneficiario']}}
+                                                        </a>
+                                                    @else
+                                                        {{__('Não informado')}}
+                                                    @endif
                                                 </span>
                                                 <label for="conjuge">{{__('Conjuge')}}:</label>
                                                 <span>
-                                                    <a title="{{__('Editar cadastro do Conjuge')}}" href="{{route('beneficiarios.edit',['id'=>$v['id_conjuge']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration:underline">
-                                                        {{@$v['conjuge']}}
-                                                    </a>
-                                                </span>
-                                                <label for="conjuge">{{__('Lote')}}:</label>
-                                                <span>
-                                                    {{@$_GET['dados']['nome']}}
-                                                    <b>
-                                                        <a title="{{__('Editar complemento')}}" href="{{route('familias.edit',['id'=>$v['id']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration: underline">
-                                                            {{@$v['complemento_lote']}}
+                                                    @if ($v['id_conjuge'])
+                                                        <a title="{{__('Editar cadastro do Conjuge')}}" href="{{route('beneficiarios.edit',['id'=>$v['id_conjuge']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration:underline">
+                                                            {{@$v['conjuge']}}
                                                         </a>
-                                                    </b>
+                                                    @else
+                                                        {{__('Não informado')}}
+                                                    @endif
                                                 </span>
                                             </div>
                                             <div class="col-md-12">
@@ -72,6 +81,7 @@
                                                 @endif
 
                                             </div>
+
                                             {{App\Qlib\Qlib::qForm([
                                                 'type'=>'date',
                                                 'campo'=>'config[data_posse]['.$v['id'].']',
@@ -90,7 +100,7 @@
                                         <a href="{{route('familias.edit',['id'=>$v['id']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" title="{{__('Editar')}}" class="btn btn-outline-primary">
                                             <i class="fa fa-pen" aria-hidden="true"></i> {{__('Editar')}}
                                         </a>
-                                        <a href="" title="{{__('Emitir')}}" class="btn btn-outline-secondary">
+                                        <a href="javascript:abrirjanelaPadraoConsulta('{{route('lotes.ficha_ocupantes',['lote'=>@$_GET['dados']['id'],'familia'=>$v['id_beneficiario']])}}')" title="{{__('Emitir')}}" class="btn btn-outline-secondary">
                                             <i class="fa fa-print" aria-hidden="true"></i> {{__('Imprimir')}}
                                         </a>
                                     </div>

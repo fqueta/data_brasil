@@ -155,6 +155,7 @@ Route::resource('lotes','\App\Http\Controllers\LotesController',['parameters' =>
 'lotes' => 'id'
 ]]);
 Route::get('/lotes/lista-ocupantes/{lotes}',[LotesController::class,'listagemOcupantes'])->name('lotes.ocupantes');
+Route::get('/lotes/ficha-ocupantes/{lote}/{familia}',[LotesController::class,'FichaOcupantes'])->name('lotes.ficha_ocupantes');
 Route::resource('quadras','\App\Http\Controllers\QuadrasController',['parameters' => [
 'quadras' => 'id'
 ]]);

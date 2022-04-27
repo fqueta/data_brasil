@@ -261,17 +261,17 @@ class Qlib
                             if($config['data_selector']['list'][$ki] && isset($config['data_selector']['table']) && is_array($config['data_selector']['table'])){
                                 foreach ($config['data_selector']['table'] as $key => $v) {
                                     if(isset($v['type']) && $v['type']=='arr_tab' && isset($config['data_selector']['list'][$ki][$key]) && isset($v['conf_sql'])){
+                                        $valse = $config['data_selector']['list'][$ki][$key];
                                         $config['data_selector']['list'][$ki][$key.'_valor'] = Qlib::buscaValorDb([
                                             'tab'=>$v['conf_sql']['tab'],
                                             'campo_bus'=>$v['conf_sql']['campo_bus'],
                                             'select'=>$v['conf_sql']['select'],
-                                            'valor'=>$config['data_selector']['list'][$ki][$key],
+                                            'valor'=>$valse,
                                         ]);
                                     }
                                 }
                             }
                         }
-                        //dd($config['data_selector']);
                     }
                 }else{
                     $config['data_selector']['list'] = Qlib::dados_tab($tab,['id'=>$id]);

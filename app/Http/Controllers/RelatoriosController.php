@@ -181,28 +181,23 @@ class RelatoriosController extends Controller
             }
         }
         $familia_totais->completos = $completos;
-        $iv = 0;
         foreach ($familia as $k1 => $v1) {
             foreach ($campos as $k2 => $v2) {
                 if($v2['type']=='text'){
                     if($k2=='lote' && isset($v1['loteamento'])){
                         if(is_array($v1['loteamento'])){
                             foreach ($v1['loteamento'] as $kl => $lote) {
-                                $lote = Qlib::buscaValorDb([
+                                $loteN = Qlib::buscaValorDb([
                                     'tab'=>'lotes',
                                     'campos_bus'=>'id',
                                     'valor'=>$lote,
                                     'select'=>'nome',
                                 ]);
-                                if($iv>0 && !empty($lote)){
-                                    $vg = ', ';
-                                }else{
-                                    $vg = false;
-                                }
 
-                                $familia[$k1][$k2] .= $vg.$lote.$v1['complemento_lote'];
-                                $iv++;
+                                $loteN = $loteN.$v1['complemento_lote'].',';
+                                $familia[$k1][$k2] .= $loteN;
                             }
+                            $familia[$k1][$k2] = substr($familia[$k1][$k2], 0, -1);
                         }
                     }
                     if(($k2=='nome' || $k2=='cpf'  || $k2=='cpf_conjuge' || $k2=='escolaridade') && (isset($v1[$v2['valor']]))){
