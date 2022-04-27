@@ -259,14 +259,14 @@ Edificação</b></font></font><font face="Arial Narrow, serif"><font style="font
                 'conteudo'=>'<p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify"><a name="_Hlk82675389"></a>
                 <font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Ocupantes
                 identificados: </b></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>{nome_beneficiario}</b></font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">,
-                {nacionalidade}, {estado_civil}, {profissao}, {nascida} aos {nascimento}, filha de
+                {nacionalidade}, {estado_civil}, {profissao}, {nascida} aos {nascimento}, {filha de}
                 {pai} e {mae},
                 RG:{rg}, CPF:{cpf} </font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">e</font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>
                 {nome_conjuge}, </b></font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">{nacionalidade_conjuge},
                 {estado_civil_conjuge}, {profissao_conjuge}, nascido aos {nascimento_conjuge}, filho de {pai_conjuge} e {mae_conjuge}, RG: {rg_conjuge},
-                CPF:{cpf_conjuge}, casados sob o regime de {tipo_uniao}
+                CPF:{cpf_conjuge}, {casados} sob o regime de {tipo_uniao}
                 desde {data_uniao}, residentes e domiciliadas na {endereco},
-                n°{numero}, Bairro {bairro}, no {cidade}-MG, CEP: {cep}.</font></font></font></p>
+                n°{numero}, Bairro {bairro}, no município de {cidade}-MG, CEP: {cep}.</font></font></font></p>
                 <p></p>',
                 'excluido'=>'n',
             ],
@@ -279,11 +279,11 @@ Edificação</b></font></font><font face="Arial Narrow, serif"><font style="font
                 'conteudo'=>'<p class="western" style="margin-bottom: 0cm; line-height: 150%" align="justify"><a name="_Hlk82675389"></a>
                 <font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>Ocupantes
                 identificados: </b></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"><b>{nome_beneficiario}</b></font></font></font><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3">,
-                {nacionalidade}, {estado_civil}, {profissao}, {nascida} aos {nascimento}, filha de
+                {nacionalidade}, {estado_civil}, {profissao}, {nascida} aos {nascimento}, {filha de}
                 {pai} e {mae},
                 RG:{rg}, CPF:{cpf}, </font></font></font><font color="#ff0000"><font face="Arial, serif"><font color="#ff0000"><font face="Arial, serif"><font style="font-size: 12pt" size="3"> residentes e domiciliadas na {endereco},
-                n°{numero}, Bairro {bairro}, no {cidade}-MG, CEP: {cep}.</font></font></font></p>
-                <p></p>',
+                n°{numero}, Bairro {bairro}, no município de {cidade}-MG, CEP: {cep}.</font></font></font></font></font></p><font color="#ff0000"><font face="Arial, serif">
+                <p></p></font></font>',
                 'excluido'=>'n',
             ],
         ]);

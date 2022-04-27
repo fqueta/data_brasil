@@ -542,11 +542,16 @@ class LotesController extends Controller
                                 $tipo_beneficiario = 'REURB (S)';
                                 $nome_beneficiario = $b['nome'];
                                 $filhoa_de = 'filho de';
+                                $casados = 'casados';
                                 $nascidoa = 'nascido';
                                 if($b['sexo']=='f'){
                                     $filhoa_de = 'filha de';
                                     $nascidoa = 'nascida';
                                 }
+                                if(isset($b['config']['estado_civil']) && $b['config']['estado_civil']!=2){
+                                    $casados = 'vivendo';
+                                }
+
                                 /*
                                 if($tot_familias>1){
                                     if(empty($fm['complemento_lote'])){
@@ -556,6 +561,10 @@ class LotesController extends Controller
                                     }
                                 }*/
                                 $n_benficiario = false;
+                                $complemento = '';
+                                if(!empty($dLote['complemento'])){
+                                    $complemento = ' '.$dLote['complemento'];
+                                }
                                 $arr_sh = [
                                     'lote'=>['lab'=>'Tipo','v'=>$lote],
                                     'quadra'=>['lab'=>'Tipo','v'=>$quadra],
@@ -566,12 +575,13 @@ class LotesController extends Controller
                                     'nome_beneficiario'=>['lab'=>'Nome','v'=>$n_benficiario.$nome_beneficiario],
                                     'cpf'=>['lab'=>'CPF','v'=>$b['cpf']],
                                     'endereco'=>['lab'=>'Endereço','v'=>$dLote['endereco']],
-                                    'numero'=>['lab'=>'numero','v'=>$dLote['numero'].' '.$dLote['complemento']],
+                                    'numero'=>['lab'=>'numero','v'=>$dLote['numero'].$complemento],
                                     'complemento'=>['lab'=>'complemento','v'=>$dLote['complemento']],
                                     'cidade'=>['lab'=>'cidade','v'=>$dLote['cidade']],
                                     'cep'=>['lab'=>'cep','v'=>$dLote['cep']],
                                     'bairro'=>['lab'=>'bairro','v'=>$bairro],
                                     'area'=>['lab'=>'bairro','v'=>$bairro],
+                                    'casados'=>['lab'=>'','v'=>$casados],
                                     'filha de'=>['lab'=>'','v'=>$filhoa_de],
                                     'filho de'=>['lab'=>'','v'=>$filhoa_de],
                                     'nascida'=>['lab'=>'','v'=>$nascidoa],
@@ -620,7 +630,11 @@ class LotesController extends Controller
                     $meses = Qlib::Meses();
                     $arr_sh['declaracao_posse'] = ['lab'=>'Declaração','v'=>$this->declaracaoPosse($id_lote,$id_familia,$dLote)];
                     $data_posse = isset($dLote['config']['data_posse'][$id_familia])?$dLote['config']['data_posse'][$id_familia]:false;
-                    $arr_sh['data_posse'] = ['lab'=>'Data posse','v'=>Qlib::dataExibe($data_posse)];
+                    if($data_posse){
+                        $arr_sh['data_posse'] = ['lab'=>'Data posse','v'=>Qlib::dataExibe($data_posse)];
+                    }else{
+                        $arr_sh['data_posse'] = ['lab'=>'Data posse','v'=>'00/00/0000'];
+                    }
                     $arr_sh['dia'] = ['lab'=>'Dia','v'=>date('d')];
                     $arr_sh['mes_extenso'] = ['lab'=>'Mês','v'=>$meses[date('m')]];
                     $arr_sh['ano'] = ['lab'=>'Ano','v'=>date('Y')];
@@ -676,7 +690,7 @@ class LotesController extends Controller
             if(!$dLote)
                 $dLote = lote::FindOrFail($id_lote);
             if(!isset($dLote['config']['declaracao_posse'][$id_familia])){
-                $ret = ' <span class="text-danger">Declaração não informada </span><br>';
+                $ret = ' <span class="text-danger">Declarações adicionais sobre a posse não informada! </span><br>';
                 return $ret;
             }
             $arr_opc_ocupantes = Qlib::qoption('opc_declara_posse','array');

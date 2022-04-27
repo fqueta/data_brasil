@@ -97,11 +97,11 @@
                                         </div>
                                     </div>
                                     <div class="card-footer text-muted text-right">
+                                        <a title="{{__('Imprimir a ficha de ocupante')}}" href="javascript:abrirjanelaPadraoConsulta('{{route('lotes.ficha_ocupantes',['lote'=>@$_GET['dados']['id'],'familia'=>$v['id_beneficiario']])}}')" title="{{__('Emitir')}}" class="btn btn-outline-secondary">
+                                            <i class="fa fa-print" aria-hidden="true"></i> {{__('Ficha de ocupante')}}
+                                        </a>
                                         <a href="{{route('familias.edit',['id'=>$v['id']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" title="{{__('Editar')}}" class="btn btn-outline-primary">
                                             <i class="fa fa-pen" aria-hidden="true"></i> {{__('Editar')}}
-                                        </a>
-                                        <a href="javascript:abrirjanelaPadraoConsulta('{{route('lotes.ficha_ocupantes',['lote'=>@$_GET['dados']['id'],'familia'=>$v['id_beneficiario']])}}')" title="{{__('Emitir')}}" class="btn btn-outline-secondary">
-                                            <i class="fa fa-print" aria-hidden="true"></i> {{__('Imprimir')}}
                                         </a>
                                     </div>
                                 </div>
