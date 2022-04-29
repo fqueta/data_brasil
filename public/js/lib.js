@@ -810,6 +810,7 @@ function getAjax(config,funCall,funError){
     }
     if(typeof funError == 'undefined'){
         funError = function(res){
+            $('#preload').fadeOut("fast");
             lib_funError(res);
         }
     }
@@ -1233,8 +1234,14 @@ function lib_htmlVinculo(ac,campos,lin){
         if(Object.entries(arr).length>0){
             Object.entries(arr).forEach(([k, v]) => {
                 if(tipo=='array'){
-                    if(c.list[lin][k]){
-                        c.campos[k].value = c.list[lin][k];
+                    var l = '';
+                    try {
+                       l = c.list[lin][k]
+                    } catch (error) {
+                        console.log(error);
+                    }
+                    if(l){
+                        c.campos[k].value = l;
                     }else{
                         if(cp=c.campos[k].cp_busca){
                             let ar = cp.split('][');
@@ -1276,12 +1283,21 @@ function lib_htmlVinculo(ac,campos,lin){
                 }
             });
             if(tipo=='array' && lin){
-                if(c.list[lin].id){
+                try {
+                    var tid='';
+                    if(c.list[lin].id){
+                        tid=c.list[lin].id;
+                    }else if(c.list.id){
+                        tid=c.list.id;
+                    }
                     frm = $(idf)
                     var m = '<input type="hidden" name="_method" value="PUT">';
-                    frm.attr('action',c.action+'/'+c.list[lin].id);
+                    frm.attr('action',c.action+'/'+c.tid);
                     frm.find('[name="_method"]').remove();
                     frm.append(m);
+
+                } catch (error) {
+                    console.log(error);
                 }
             }else{
                 if(c.list.id){
@@ -1316,6 +1332,7 @@ function calculaLinCad(seleTr){
 }
 function lib_listDadosHtmlVinculo(res,campos,ac,lin){
     //lin é o numero da linha para o caso do tipo array
+    //alert(lin);
     if(typeof ac=='undefined'){
         ac = 'alt';
     }
@@ -1335,6 +1352,7 @@ function lib_listDadosHtmlVinculo(res,campos,ac,lin){
     if((d=res.dados) && ac =='cad'){
         var table = $('#table-html_vinculo-'+dt.campo);
         lin = calculaLinCad('#table-html_vinculo-'+dt.campo+' tbody tr');
+       // alert(lin);
         var tm = $('tm').html();
         var tm0 = '<tr id="tr-{id}">{td}</tr>';
         var tm = '<td id="td-{k}" class="{class}">{v}</td>';
@@ -1398,6 +1416,7 @@ function lib_listDadosHtmlVinculo(res,campos,ac,lin){
     if((d=res.dados) && ac =='alt'){
         var table = $('#table-html_vinculo-'+dt.campo);
         if(tipo=='array' && lin){
+            //alert(lin)
             var seltr = '#tr-'+lin+'-'+d.id;
             dt.list[lin] = d;
             //console.log(dt.list[lin]);
@@ -1479,7 +1498,7 @@ function lib_autocomplete(obs){
     });
 }
 function carregaMatricula(val){
-    if(val==''|| val=='cad'|| val=='ger')
+    if(val==''|| val=='cad'|| val=='ger' || !val)
         return ;
     getAjax({
         url:'/bairros/'+val+'/edit?ajax=s',
@@ -1492,6 +1511,28 @@ function carregaMatricula(val){
             $('[name="matricula"]').val('');
             $('#txt-matricula').html('');
         }
+    });
+}
+function carregaBairro(val){
+    if(val==''|| val=='cad'|| val=='ger' || !val)
+        return ;
+    getAjax({
+        url:'/quadras/'+val+'/edit?ajax=s',
+    },function(res){
+        $('#preload').fadeOut("fast");
+        try {
+            if(b=res.value.bairro){
+
+                $('[name="bairro"]').val(b);
+                $('#txt-bairro').html(res.value.bairro_nome);
+            }else{
+                $('[name="bairro"]').val('');
+                $('#txt-bairro').html('');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
     });
 }
 function buscaCep1_0(cep_code){

@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Relatorios de realidade social')
+@section('title', 'Familias')
 
 @section('content_header')
     <h3>{{$titulo}}</h3>
@@ -22,7 +22,7 @@
       }
   </style>
   <div class="row">
-    @include($view.'.config_exibe')
+    @include('relatorios.config_exibe')
     <div class="col-md-12 mens">
     </div>
     @can('is_admin')
@@ -76,19 +76,19 @@
 
             @can('is_admin')
             <div class="card-tools d-flex d-print-none">
-                    @include('familias.dropdow_actions')
-                    @include('qlib.dropdow_acaomassa')
+                    @include('relatorios.dropdow_actions')
+                    <!--include('qlib.dropdow_acaomassa')-->
             </div>
             @endcan
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                {{
-                    App\Qlib\Qlib::listaTabela([
+                {{App\Qlib\Qlib::listaTabela([
                     'campos_tabela'=>$campos_tabela,
                     'config'=>$config,
                     'dados'=>$dados,
                     'routa'=>$routa,
+                    'redirect'=>$redirect,
                 ])}}
             </div>
         </div>

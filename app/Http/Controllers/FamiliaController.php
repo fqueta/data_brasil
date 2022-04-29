@@ -69,7 +69,9 @@ class FamiliaController extends Controller
         //$familia =  DB::table('familias')->where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
 
         $familia_totais = new stdClass;
-        $campos = isset($_SESSION['campos_familias_exibe']) ? $_SESSION['campos_familias_exibe'] : $this->campos();
+        //$campos = isset($_SESSION['campos_familias_exibe']) ? $_SESSION['campos_familias_exibe'] : $this->campos();
+        $rel = new RelatoriosController($this->user);
+        $campos = isset($_SESSION['campos_familias_exibe']) ? $_SESSION['campos_familias_exibe'] : $rel->campos();
         $tituloTabela = 'Lista de todos cadastros';
         $arr_titulo = false;
 
@@ -93,11 +95,16 @@ class FamiliaController extends Controller
                                 }
                             }
                         }else{
+
                             $familia->where($key,'LIKE','%'. $value. '%');
                             if(isset($campos[$key]['type']) && $campos[$key]['type']=='select'){
                                 $value = $campos[$key]['arr_opc'][$value];
                             }
-                            $arr_titulo[$campos[$key]['label']] = $value;
+                            if($key=='quadra'){
+                                $arr_titulo[$campos[$key]['label']] = Qlib::valorTabDb('quadras','id',$value,'nome');
+                            }else{
+                                $arr_titulo[$campos[$key]['label']] = $value;
+                            }
                             $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                         }
                         $i++;
@@ -156,19 +163,10 @@ class FamiliaController extends Controller
             }
         }
         $familia_totais->completos = $completos;
-        //dd($familia[0]['config']);
-        /*
-        foreach ($familia as $key => $value) {
-            if(is_array($value['config'])){
-                //$familia[$key]['config'] = Qlib::lib_json_array($value['config']);
-                foreach ($familia[$key]['config'] as $k => $val) {
-                    if(!is_array($val))
-                        $familia[$key]['config['.$k.']'] = $val;
-                }
-            }
-        }*/
-        //dd($familia[0]['config']);
-        $ret['familia'] = $familia;
+
+        $colTabela = $rel->colTabela($familia);
+        //$ret['familia'] = $familia;
+        $ret['familia'] = $colTabela;
         $ret['familia_totais'] = $familia_totais;
         $ret['arr_titulo'] = $arr_titulo;
         $ret['campos'] = $campos;
@@ -218,6 +216,86 @@ class FamiliaController extends Controller
         $ret['config']['acao_massa'] = [
             ['link'=>'#edit_etapa','event'=>'edit_etapa','icon'=>'fa fa-pencil','label'=>'Editar etapa'],
         ];
+        //dd($ret);
+        return $ret;
+    }
+    public function colTabela($familia = null,$campos=false)
+    {
+        $ret = false;
+        if($familia){
+            if(!$campos){
+                $campos = $this->campos();
+            }
+            foreach ($familia as $k1 => $v1) {
+                foreach ($campos as $k2 => $v2) {
+                    if($v2['type']=='text'){
+                        if($k2=='lote' && isset($v1['loteamento'])){
+                            if(is_array($v1['loteamento'])){
+                                foreach ($v1['loteamento'] as $kl => $lote) {
+                                    $loteN = Qlib::buscaValorDb([
+                                        'tab'=>'lotes',
+                                        'campos_bus'=>'id',
+                                        'valor'=>$lote,
+                                        'select'=>'nome',
+                                    ]);
+
+                                    $loteN = $loteN.$v1['complemento_lote'].',';
+                                    $familia[$k1][$k2] .= $loteN;
+                                }
+                                $familia[$k1][$k2] = substr($familia[$k1][$k2], 0, -1);
+                            }
+                        }
+                        if(($k2=='nome' || $k2=='cpf'  || $k2=='cpf_conjuge' || $k2=='escolaridade') && (isset($v1[$v2['valor']]))){
+                            $familia[$k1][$k2] = Qlib::buscaValorDb([
+                                'tab'=>$v2['tab'],
+                                'campos_bus'=>'id',
+                                'valor'=>$v1[$v2['valor']],
+                                'select'=>$v2['select'],
+                            ]);
+                        }
+                    }elseif($v2['type']=='array' && isset($v1[$v2['valor']])){
+                        $familia[$k1][$k2] = Qlib::buscaValorDb([
+                            'tab'=>$v2['tab'],
+                            'campos_bus'=>'id',
+                            'valor'=>$v1[$v2['valor']],
+                            'select'=>$v2['select'],
+                        ]);
+                    }elseif($v2['type']=='chave_checkbox' && isset($v2['arr_opc'])){
+                        $familia[$k1][$k2] = $v2['arr_opc'][$v1[$k2]];
+                    }elseif($v2['type']=='json'){
+                        if((isset($v2['cp_b']))){
+                            $ab = explode('][',$v2['cp_b']);
+                            if($ab[1]){
+                                $valor = Qlib::buscaValorDb([
+                                    'tab'=>$v2['tab'],
+                                    'campos_bus'=>'id',
+                                    'valor'=>$v1[$v2['valor']],
+                                    'select'=>$v2['select'],
+                                ]);
+
+                                if(Qlib::isJson($valor)){
+                                    $valor = Qlib::lib_json_array($valor);
+                                }
+                                $value = @$valor[$ab[1]];
+                                if($ab[1]=='telefone' && !empty(@$valor['telefone2'])){
+                                    $value .= ', '.$valor['telefone2'];
+                                }
+                                if($k2=='escolaridades' || $k2=='estadocivils'){
+                                    $value = Qlib::buscaValorDb([
+                                        'tab'=>$k2,
+                                        'campos_bus'=>'id',
+                                        'valor'=>$value,
+                                        'select'=>'nome',
+                                    ]);
+                                }
+                                $familia[$k1][$k2] = $value;
+                            }
+                        }
+                    }
+                }
+            }
+            $ret = $familia;
+        }
         return $ret;
     }
     public function colorPorcento($val=0){
@@ -242,7 +320,7 @@ class FamiliaController extends Controller
         $queryFamilias = $this->queryFamilias($_GET);
         $queryFamilias['config']['exibe'] = 'html';
         $routa = $this->routa;
-        return view($routa.'.index',[
+        $ret = [
             'dados'=>$queryFamilias['familia'],
             'familias'=>$queryFamilias['familia'],
             'title'=>$title,
@@ -255,7 +333,9 @@ class FamiliaController extends Controller
             'routa'=>$routa,
             'view'=>$this->view,
             'i'=>0,
-        ]);
+        ];
+        //dd($ret);
+        return view($routa.'.index',$ret);
     }
     public function exportAll(User $user)
     {

@@ -3,12 +3,12 @@
         <form action="" id="frm-consulta" method="GET">
             <div class="row mr-0 ml-0">
                 <!--
-                <div class="col-md-4 pt-4 pl-2">
+                <div class="col-md-2 pt-4 pl-2">
                     <a class="btn @if(isset($_GET['filter'])) btn-link @else btn-default @endif" data-toggle="collapse" href="#busca-id" aria-expanded="false" aria-controls="busca-id">
                         <i class="fas fa-search-location    "></i> @if(isset($_GET['filter'])) Mostrar Critérios de pesquisa @else Pesquisar @endif
                     </a>
                 </div>
-                -->
+            -->
                 {{App\Qlib\Qlib::qForm([
                     'type'=>'select',
                     'campo'=>'filter[quadra]',

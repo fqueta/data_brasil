@@ -513,6 +513,28 @@ class Qlib
         }
         return $ret;
     }
+    static public function valorTabDb($tab = false,$campo_bus,$valor,$select,$compleSql=false)
+    {
+
+        $ret=false;
+        /*
+        $tab = isset($config['tab'])?$config['tab']:false;
+        $campo_bus = isset($config['campo_bus'])?$config['campo_bus']:'id';//campo select
+        $valor = isset($config['valor'])?$config['valor']:false;
+        $select = isset($config['select'])?$config['select']:false; //
+        $compleSql = isset($config['compleSql'])?$config['compleSql']:false; //
+        */
+        if($tab && $campo_bus && $valor && $select){
+            $sql = "SELECT $select FROM $tab WHERE $campo_bus='$valor' $compleSql";
+            if(isset($config['debug'])&&$config['debug']){
+                echo $sql;
+            }
+            $d = DB::select($sql);
+            if($d)
+                $ret = $d[0]->$select;
+        }
+        return $ret;
+    }
     static function lib_valorPorExtenso($valor=0) {
 		$singular = array("centavo", "real", "mil", "milhão", "bilhão", "trilhão", "quatrilhão");
 		$plural = array("centavos", "reais", "mil", "milhões", "bilhões", "trilhões","quatrilhões");
@@ -674,5 +696,13 @@ class Qlib
 	}
     static function limpar_texto($str){
         return preg_replace("/[^0-9]/", "", $str);
+    }
+    static function compleDelete($var = null)
+    {
+        if($var){
+            return "$var.excluido='n' AND $var.deletado='n'";
+        }else{
+            return "excluido='n' AND deletado='n'";
+        }
     }
 }

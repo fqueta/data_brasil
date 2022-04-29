@@ -5,7 +5,7 @@ namespace App\Rules;
 use App\Qlib\Qlib;
 use Illuminate\Contracts\Validation\Rule;
 
-class LoteRequest implements Rule
+class QuadraRequest implements Rule
 {
     /**
      * Create a new rule instance.
@@ -30,14 +30,14 @@ class LoteRequest implements Rule
         $dados = $this->dadosForm;
         $ret = true;
         //echo $attribute.' '. $value;
-        if(isset($dados['quadra'])){
+        if(isset($dados['bairro'])){
             //$sql = "SELECT * FROM lotes WHERE $attribute ='$value' AND quadra='".$dados['quadra']."'";
             $totalReg = Qlib::buscaValorDb([
-                'tab'=>'lotes',
+                'tab'=>'quadras',
                 'campo_bus'=>$attribute,
                 'valor'=>$value,
                 'select'=>'nome',
-                'compleSql'=>" AND quadra='".$dados['quadra']."' AND ".Qlib::compleDelete(),
+                'compleSql'=>" AND bairro='".$dados['bairro']."' AND ".Qlib::compleDelete(),
                 'debug'=>false,
             ]);
             if(!empty($totalReg)){
@@ -55,15 +55,15 @@ class LoteRequest implements Rule
     public function message()
     {
         $d = $this->dadosForm;
-        $nomeQuadra = Qlib::buscaValorDb([
-            'tab'=>'quadras',
+        $nomeBairro = Qlib::buscaValorDb([
+            'tab'=>'bairros',
             'campo_bus'=>'id',
-            'valor'=>$d['quadra'],
+            'valor'=>$d['bairro'],
             'select'=>'nome',
             'compleSql'=>'',
             'debug'=>false,
         ]);
-        $nquadra = $nomeQuadra?$nomeQuadra:$d['quadra'];
-        return 'O <b>Lote '.$d['nome'].'</b> na Quadra <b>'.$nquadra.'</b> já foi cadastrado!';
+        $bairro = $nomeBairro?$nomeBairro:$d['bairro'];
+        return 'A <b>quadra '.$d['nome'].'</b> no Bairro <b>'.$bairro.'</b> já foi cadastrada!';
     }
 }

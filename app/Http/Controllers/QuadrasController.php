@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreQuadraRequest;
 use Illuminate\Http\Request;
 use stdClass;
 use App\Models\Quadra;
@@ -175,18 +176,18 @@ class QuadrasController extends Controller
             'value'=>$value,
         ]);
     }
-    public function store(Request $request)
+    public function store(StoreQuadraRequest $request)
     {
+        /*
         $validatedData = $request->validate([
             'nome' => ['required','string','unique:quadras'],
-        ]);
+        ]);*/
 
         //$valida
         $dados = $request->all();
         $ajax = isset($dados['ajax'])?$dados['ajax']:'n';
         $dados['ativo'] = isset($dados['ativo'])?$dados['ativo']:'n';
 
-        //dd($dados);
         $salvar = Quadra::create($dados);
         $route = $this->routa.'.index';
         $ret = [
@@ -216,6 +217,8 @@ class QuadrasController extends Controller
         $id = $quadra;
         $dados = Quadra::where('id',$id)->get();
         $routa = 'quadras';
+        $ajax = isset($_GET['ajax'])?$_GET['ajax']:false;
+
         $this->authorize('ler', $this->routa);
 
         if(!empty($dados)){
@@ -224,6 +227,16 @@ class QuadrasController extends Controller
             $dados[0]['ac'] = 'alt';
             if(isset($dados[0]['config'])){
                 $dados[0]['config'] = Qlib::lib_json_array($dados[0]['config']);
+            }
+            if(isset($dados[0]['bairro'])){
+                $dados[0]['bairro_nome'] = Qlib::buscaValorDb([
+                    'tab'=>'bairros',
+                    'campo_bus'=>'id',
+                    'valor'=>$dados[0]['bairro'],
+                    'select'=>'nome',
+                    'compleSql'=>'',
+                    'debug'=>false,
+                ]);
             }
             $listFiles = false;
             $campos = $this->campos();
@@ -247,7 +260,11 @@ class QuadrasController extends Controller
                 'exec'=>true,
             ];
 
-            return view($this->view.'.createedit',$ret);
+            if($ajax=='s'){
+                return response()->json($ret);
+            }else{
+                return view($this->view.'.createedit',$ret);
+            }
         }else{
             $ret = [
                 'exec'=>false,

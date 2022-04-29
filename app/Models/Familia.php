@@ -20,7 +20,7 @@ class Familia extends Model
         'tipo_residencia',
         'etapa',
         'loteamento',
-        //'id_loteamento',
+        'complemento_lote',
         'id_beneficiario',
         'id_conjuge',
         'matricula',

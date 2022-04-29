@@ -142,7 +142,7 @@ class LotesController extends Controller
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            //'bairro'=>['label'=>'Bairro','active'=>false,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'bairro'=>['label'=>'Bairro','active'=>false,'type'=>'hidden_text','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             'quadra'=>[
                 'label'=>'Quadra',
                 'active'=>true,
@@ -156,7 +156,7 @@ class LotesController extends Controller
                     'campo_bus'=>'nome',
                     'label'=>'Quadra',
                 ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
+                'event'=>'onchange=carregaBairro($(this).val());',
                 'tam'=>'5',
                 'class'=>'select2'
             ],
@@ -196,9 +196,18 @@ class LotesController extends Controller
             if($queryLote['lote']){
                //$ret = $queryLote['lote'];
                 foreach ($queryLote['lote'] as $key => $v) {
-                    $ret[$key]['value'] = ' Lote: '.$v->nome.' | quadra: '.$v->quadra_valor;
-                    //$ret[$key]['id'] = $v['id'];
-                    $ret[$key]['dados'] = $v;
+                    $bairro = false;
+                    if($id_bairro = $v->bairro){
+
+                        $bairro = Qlib::buscaValorDb([
+                            'tab'=>'bairros',
+                            'campo_bus'=>'id',
+                            'valor'=>$id_bairro,
+                            'select'=>'nome',
+                        ]);
+                        $ret[$key]['dados'] = $v;
+                    }
+                    $ret[$key]['value'] = ' Lote: '.$v->nome.' | quadra: '.$v->quadra_valor.' | Bairro: '.$bairro;
                     //if(id_array($v))
                 }
             }
