@@ -11,13 +11,28 @@
             -->
                 {{App\Qlib\Qlib::qForm([
                     'type'=>'select',
+                    'campo'=>'filter[bairro]',
+                    'placeholder'=>'',
+                    'label_option_select'=>'Todas',
+                    'label'=>'Áreas',
+                    'ac'=>'alt',
+                    'value'=>@$_GET['filter']['bairro'],
+                    'tam'=>'2',
+                    'arr_opc'=>App\Qlib\Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),
+                    'event'=>'onchange=carregaQuadras($(this).val(),\'filter[quadra]\')',
+                    'option_select'=>true,
+                    'class'=>'text-left',
+                    'class_div'=>'text-left',
+                ])}}
+                {{App\Qlib\Qlib::qForm([
+                    'type'=>'select',
                     'campo'=>'filter[quadra]',
                     'placeholder'=>'',
                     'label_option_select'=>'Todas',
                     'label'=>'Quadras',
                     'ac'=>'alt',
                     'value'=>@$_GET['filter']['quadra'],
-                    'tam'=>'4',
+                    'tam'=>'2',
                     'arr_opc'=>App\Qlib\Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s'",'nome','id'),
                     'event'=>'onchange=$(\'#frm-consulta\').submit();',
                     'option_select'=>true,
@@ -60,9 +75,18 @@
                     </a>
                 </div>
                 @endcan
-                <div class="collapse" id="busca-id">
-                    <!--include('qlib.busca')-->
+                <div class="col-md-12 mb-3">
+                    <div class="btn-group">
+                        <button class="btn btn-primary" type="submit"> <i class="fas fa-search"></i> Localizar</button>
+                        <a href=" {{route('familias.index')}} " class="btn btn-default" title="Limpar Filtros" type="button"> <i class="fas fa-times"></i> Limpar</a>
+                        <!--include('familias.dropdow_actions')-->
+                    </div>
                 </div>
+                <!--
+                <div class="collapse" id="busca-id">
+                        include('qlib.busca')
+                </div>
+                -->
             </div>
         </form>
     </div>

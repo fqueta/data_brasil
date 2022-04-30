@@ -22,7 +22,7 @@ class StoreFamilyRequest extends FormRequest
             //'area_alvo'=>['required'],
             'loteamento'=>['required'],
             //'matricula'=>['required'],
-            //'quadra'=>['required'],
+            'quadra'=>['required'],
             //'lote'=>['required'],
             //'nome_completo'=>[new FullName],
             //'escolaridade'=>['required'],
@@ -34,7 +34,8 @@ class StoreFamilyRequest extends FormRequest
     {
         return [
             'etapa.required' => 'A seleção da Etapa é obrigatória',
-            'bairro.required' => 'A seleção do Bairro é obrigatório',
+            'bairro.required' => 'A seleção da Área é obrigatório',
+            'quadra.required' => 'A seleção da Quadra é obrigatória',
             'tel.required' => 'O Telefone é obrigatório',
             'cpf.unique' => 'Este CPF já está sendo utilizado',
             'cpf.required' => 'O CPF é obrigatório',

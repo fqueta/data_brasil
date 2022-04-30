@@ -85,7 +85,7 @@ function abrirjanela(url, nome, w, h, param){
 		var popname = window.open(url, nome, 'width='+w+', height='+h+', scrollbars=yes, '+param);
 	else
 		var popname = window.open(url, nome, 'width='+w+', height='+h+', scrollbars=yes');
-	 popname.window.focus();
+	popname.window.focus();
 }
 function abrirjanela1(url, nome, w, h, param){
 	var largura = $( window ).width() - w;
@@ -767,7 +767,7 @@ function submitFormulario(objForm,funCall,funError){
         }
     }
     var route = objForm.attr('action');
-    console.log(route);
+    //console.log(route);
     $.ajax({
         type: 'POST',
         url: route,
@@ -826,6 +826,7 @@ function getAjax(config,funCall,funError){
             funCall(data);
         },
         error: function (data) {
+            $('#preload').fadeOut("fast");
             if(data.errors){
                 funError(data.errors);
                 console.log(data.errors);
@@ -879,7 +880,7 @@ function submitFormularioCSRF(objForm,funCall,funError){
 function lib_funError(res){
     var mens = '';
     Object.entries(res).forEach(([key, value]) => {
-        console.log(key + ' ' + value);
+        //console.log(key + ' ' + value);
         var s = $('[name="'+key+'"]');
         var v = s.val();
         mens += value+'<br>';
@@ -924,8 +925,13 @@ function renderForm(config,alvo,funCall){
                 $('[mask-cpf]').inputmask('999.999.999-99');
                 $('[mask-data]').inputmask('99/99/9999');
                 $('[mask-cep]').inputmask('99.999-999');
+                if(n=d.value_transport){
+                    var vl = $('[name="'+n+'"]').val();
+                    if(vl)
+                    $('[name="'+n+'"]').find('option[value='+vl+']').attr('selected','selected');
+                }
             } catch (error) {
-
+                console.log(error);
             }
             carregaMascaraMoeda(".moeda");
             $('#'+d.id_form+' #inp-nome').focus();
@@ -941,7 +947,7 @@ function renderForm(config,alvo,funCall){
                                 value: res.idCad,
                                 text: res.dados[d.campo_bus]
                             }));
-                            alvo.find('option[value='+res.idCad+']').attr('selected','selected');
+                            alvo.find('option[value='+res.idCad+']').attr('selected','selected').addClass('opcs');
                         }
                     }
                 }
@@ -954,6 +960,7 @@ function renderForm(config,alvo,funCall){
 function initSelector(alvo,funCall){
     if(alvo.val()=='cad'){
         var d = decodeArray(alvo.data('selector'));
+        //console.log(alvo);
         renderForm(d,alvo);
         alvo.find('option[value=\'\']').attr('selected','selected');
     }
@@ -1027,7 +1034,7 @@ function qFormCampos(config){
         chave_checkbox : '<div class="form-group col-{col}-{tam}"><div class="custom-control custom-switch  {class}"><input type="checkbox" class="custom-control-input" {checked} value="{value}"  name="{campo}" id="{campo}"><label class="custom-control-label" for="{campo}">{label}</label></div></div>',
         select : {
             tm1 : '<div class="form-group col-{col}-{tam} {class_div}" div-id="{campo}" >{label}<select name="{campo}" {event} class="form-control custom-select {class}">{op}</select></div>',
-            tm2 : '<option value="{k}" {selected}>{v}</option>'
+            tm2 : '<option value="{k}" class="opcs" {selected}>{v}</option>'
         }
     };
     var r = '';
@@ -1236,23 +1243,24 @@ function lib_htmlVinculo(ac,campos,lin){
                 if(tipo=='array'){
                     var l = '';
                     try {
-                       l = c.list[lin][k]
-                    } catch (error) {
-                        console.log(error);
-                    }
-                    if(l){
-                        c.campos[k].value = l;
-                    }else{
-                        if(cp=c.campos[k].cp_busca){
-                            let ar = cp.split('][');
-                            if(ar[1]){
-                                try {
-                                    c.campos[k].value = c.list[lin][ar[0]][ar[1]];
-                                } catch (error) {
-                                    console.log(error);
+                        var list = $('#tr-'+lin+'-')
+                        if(l = c.list[lin][k]){
+                            c.campos[k].value = l;
+                        }else{
+                            if(cp=c.campos[k].cp_busca){
+                                let ar = cp.split('][');
+                                if(ar[1]){
+                                    try {
+                                        c.campos[k].value = c.list[lin][ar[0]][ar[1]];
+                                    } catch (error) {
+                                        console.log(error);
+                                    }
                                 }
                             }
                         }
+                        console.log(c);
+                    } catch (error) {
+                        console.log(error);
                     }
                 }else{
                     if(c.list[k]){
@@ -1293,6 +1301,129 @@ function lib_htmlVinculo(ac,campos,lin){
                     frm = $(idf)
                     var m = '<input type="hidden" name="_method" value="PUT">';
                     frm.attr('action',c.action+'/'+c.tid);
+                    frm.find('[name="_method"]').remove();
+                    frm.append(m);
+
+                } catch (error) {
+                    console.log(error);
+                }
+            }else{
+                if(c.list.id){
+                    frm = $(idf)
+                    var m = '<input type="hidden" name="_method" value="PUT">';
+                    frm.attr('action',c.action+'/'+c.list.id);
+                    frm.find('[name="_method"]').remove();
+                    frm.append(m);
+                }
+            }
+        }
+    }
+}
+function lib_htmlVinculo2(ac,campos,id,lin){
+    var c = decodeArray(campos),idf='#'+c.id_form,arr=c.campos;
+    try {
+        if(typeof lin == 'undefined'){
+            lin='';
+        }
+        if(typeof id == 'undefined'){
+            return 'dados lista indefinida';
+        }
+        var seleinp = '#inp-list-'+lin+'-'+id;
+        var inpli = $(seleinp).val();
+        var dl = decodeArray(inpli);
+        var tipo=c.tipo;
+    } catch (e) {
+        var tipo='int';
+        console.log(e);
+    }
+    if(typeof tipo =='undefined'){
+        var tipo='int';
+    }
+    if(ac=='del'){
+        if(tipo=='array' && lin){
+            var id = id,trsel = '#tr-'+lin+'-'+id;
+        }else{
+            var id = c.list.id,trsel = '#tr-'+id;
+        }
+        if(id){
+            var msg = '<div class="row"><div id="mens-id" class="col-md-12 text-center"><h5>Deseja Remover da lista?</h5><p>Para completar é necessário salvar</p><p>Remover da lista não exclui o cadastro</p></div><div class="col-md-12 mt-3 text-center"></div></div>';
+            var btnr = '<button type="button" class="btn btn-danger" deletar>Remover Agora!</button>';
+            alerta(msg,'modal-del-html_vinculo','Atenção','',true);
+            $(btnr).insertAfter('#modal-del-html_vinculo .modal-footer button');
+            $('[deletar]').on('click',function(){
+                if(tipo=='array' && lin){
+                    $('#table-html_vinculo-'+c.campo+' '+trsel).remove();
+                }else{
+                    $('#table-html_vinculo-'+c.campo+' '+trsel+' td').html('');
+                }
+                $('#modal-del-html_vinculo').modal('hide');
+                $('[name="'+c.campo+'"]').val('');
+            });
+        }
+    }
+    if(ac=='alt'){
+        if(Object.entries(arr).length>0){
+            Object.entries(arr).forEach(([k, v]) => {
+                if(tipo=='array'){
+                    var l = '';
+                    try {
+                        if(l = dl[k]){
+                            c.campos[k].value = l;
+                        }else{
+                            if(cp=c.campos[k].cp_busca){
+                                let ar = cp.split('][');
+                                if(ar[1]){
+                                    try {
+                                        c.campos[k].value = dl[ar[0]][ar[1]];
+                                    } catch (error) {
+                                        console.log(error);
+                                    }
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }else{
+                    if(c.list[k]){
+                        c.campos[k].value = c.list[k];
+                    }else{
+                        if(cp=c.campos[k].cp_busca){
+                            let ar = cp.split('][');
+                            if(ar[1]){
+                                try {
+                                    c.campos[k].value = c.list[ar[0]][ar[1]];
+                                } catch (error) {
+                                    console.log(error);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            renderForm(c,campos,function(res){
+                if(res.mens){
+                    lib_formatMensagem('.mens',res.mens,res.color);
+                }
+                if(res.exec){
+                    var mod = '#modal-geral';
+                    $(mod).modal('hide');
+                    lib_listDadosHtmlVinculo(res,campos,ac,lin);
+                }
+            });
+            if(tipo=='array' && dl){
+                try {
+                    /*
+                    var tid='';
+                    if(dl[id]){
+                        tid=dl[id];
+                    }
+                    console.log(dl);
+                    */
+                    frm = $(idf)
+                    var m = '<input type="hidden" name="_method" value="PUT">';
+                    frm.attr('action',c.action+'/'+dl['id']);
                     frm.find('[name="_method"]').remove();
                     frm.append(m);
 
@@ -1356,6 +1487,7 @@ function lib_listDadosHtmlVinculo(res,campos,ac,lin){
         var tm = $('tm').html();
         var tm0 = '<tr id="tr-{id}">{td}</tr>';
         var tm = '<td id="td-{k}" class="{class}">{v}</td>';
+        var data_list = encodeArray(d);
         if(t = dt.table){
             var td = '';
             $.each(t,function(k,v){
@@ -1365,7 +1497,6 @@ function lib_listDadosHtmlVinculo(res,campos,ac,lin){
                     td = td.replaceAll('{class}','');
                 }else if(v.type=='arr_tab'){
                     var kv = k+'_valor';
-                    //console.log(d);
                     td += tm.replaceAll('{k}',kv);
                     td = td.replaceAll('{v}',d[kv]);
                     td = td.replaceAll('{class}','');
@@ -1374,7 +1505,8 @@ function lib_listDadosHtmlVinculo(res,campos,ac,lin){
             if (tipo=='array'&&lin){
                 if(lin=='0')
                     lin=0;
-                try {
+                /*try {
+
                     if(typeof dt.list[lin]=='undefined'){
                         dt.list = [d];
                     }else{
@@ -1384,25 +1516,28 @@ function lib_listDadosHtmlVinculo(res,campos,ac,lin){
                 } catch (e) {
                     dt.list = [d];
                     console.log(e);
-                }
+                }*/
             }else{
                 dt.list = d;
             }
             var e = encodeArray(dt);
-            var btnsAc = '<button type="button" btn-alt="" onclick="lib_htmlVinculo(\'alt\',\''+e+'\',\''+lin+'\')" title="Editar" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button> '+
-            '<button type="button" onclick="lib_htmlVinculo(\'del\',\''+e+'\',\''+lin+'\')" class="btn btn-outline-danger" title="Remover"> <i class="fa fa-trash" aria-hidden="true"></i> </button>';
+            var btnsAc = '<button type="button" btn-alt="" onclick="lib_htmlVinculo2(\'alt\',\''+e+'\',\''+d['id']+'\',\''+lin+'\')" title="Editar" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button> '+
+            '<button type="button" onclick="lib_htmlVinculo2(\'del\',\''+e+'\',\''+d['id']+'\',\''+lin+'\')" class="btn btn-outline-danger" title="Remover"> <i class="fa fa-trash" aria-hidden="true"></i> </button>';
             var tdacao = tm.replaceAll('{k}','tr-acao');
             tdacao = tdacao.replaceAll('{v}',btnsAc);
             tdacao = tdacao.replaceAll('{class}','text-right');
             if(tipo=='array'){
                 var tr = tm0.replaceAll('{id}',lin+'-'+d.id);
-                var inp = '<input type="hidden" name="'+dt.campo+'[]" value="'+d.id+'" />';
+                var inp = '<input type="hidden" name="'+dt.campo+'[]" value="'+d.id+'" />'+
+                '<input type="hidden" value="'+data_list+'" id="inp-list-'+lin+'-'+d.id+'">';
                 var tr = tr.replaceAll('{td}',td+inp+tdacao);
+                //var tr = tr.replaceAll('{data_list}',data_list);
                 table.find('tbody').append(tr);
             }else{
                 var tr = tm0.replaceAll('{id}',d.id);
                 var tr = tr.replaceAll('{td}',td+tdacao);
                 var inp = '<input type="hidden" name="'+dt.campo+'" value="'+d.id+'" />';
+                var tr = tr.replaceAll('{data_list}',data_list);
                 table.find('tbody tr').remove();
                 table.find('tbody').html(tr);
                 if(dt.campo){
@@ -1416,9 +1551,8 @@ function lib_listDadosHtmlVinculo(res,campos,ac,lin){
     if((d=res.dados) && ac =='alt'){
         var table = $('#table-html_vinculo-'+dt.campo);
         if(tipo=='array' && lin){
-            //alert(lin)
             var seltr = '#tr-'+lin+'-'+d.id;
-            dt.list[lin] = d;
+            //dt.list = d;
             //console.log(dt.list[lin]);
         }else{
             var seltr = '#tr-'+d.id;
@@ -1430,7 +1564,10 @@ function lib_listDadosHtmlVinculo(res,campos,ac,lin){
         var e = encodeArray(dt);
 
         table.find(seltr+' [btn-alt]').attr('data_selector',e);
-        table.find(seltr+' [btn-alt]').attr('onclick','lib_htmlVinculo(\'alt\',"'+e+'","'+lin+'")');
+        table.find(seltr+' #inp-list-'+lin+'-'+d.id).val(encodeArray(d));
+
+        //table.find(seltr+' [btn-alt]').attr('onclick','lib_htmlVinculo(\'alt\',"'+e+'","'+lin+'")');
+        table.find(seltr+' [btn-alt]').attr('onclick','lib_htmlVinculo2(\'alt\',"'+e+'","'+d.id+'","'+lin+'")');
         //console.log(dt);
         //alert(ac);
     }
@@ -1440,9 +1577,19 @@ function lib_listarCadastro(res,obj){
     {
         return;
     }
-    if(res.dados){
-        lib_listDadosHtmlVinculo(res,obj.data('selector'),'cad');
-        obj.val('');
+    try {
+        if(res.id=='cad'){
+            var dt = decodeArray(obj.data('selector'));
+            $('[div-id="'+dt.campo+'"] [data-ac="cad"]').click();
+            //console.log(dt);
+            return;
+        }
+        if(res.dados){
+            lib_listDadosHtmlVinculo(res,obj.data('selector'),'cad');
+            obj.val('');
+        }
+    } catch (error) {
+        console.log(error);
     }
 }
 function lib_abrirModalConsultaVinculo(campo,ac){
@@ -1467,9 +1614,7 @@ function lib_autocomplete(obs){
     var urlAuto = obs.attr('url');
     var data_selector = obs.data('selector'),d=decodeArray(data_selector);
     try {
-        //callYourLibHere();
         if(typeof d.janela != 'undefined'){
-            //d.janela='';
             if(pr=d.janela.param){
                 //console.log(d.janela.param);
                 for (let i = 0; i < pr.length; i++) {
@@ -1486,20 +1631,26 @@ function lib_autocomplete(obs){
     catch (e) {
         console.log(e);
     }
-    console.log(urlAuto);
+    //console.log(urlAuto);
      obs.autocomplete({
         source: urlAuto,
         search  : function(){$(this).addClass('ui-autocomplete-loading');},
         open    : function(){$(this).removeClass('ui-autocomplete-loading');},
         select: function (event, ui) {
-            //var sec = $(this).attr('sec');
             lib_listarCadastro(ui.item,$(this));
         },
     });
 }
-function carregaMatricula(val){
+function carregaMatricula(val,local){
+    if(typeof local=='undefined'){
+        local='';
+    }
     if(val==''|| val=='cad'|| val=='ger' || !val)
         return ;
+    if(local=='familias'){
+        carregaQuadras(val);
+        lib_abrirModalConsultaVinculo('loteamento','fechar');
+    }
     getAjax({
         url:'/bairros/'+val+'/edit?ajax=s',
     },function(res){
@@ -1535,6 +1686,43 @@ function carregaBairro(val){
 
     });
 }
+function carregaQuadras(val,selQuadra){
+    if(typeof selQuadra=='undefined'){
+        selQuadra='quadra';
+    }
+    if(val==''){
+        $('[div-id="'+selQuadra+'"] option.opcs').each(function(){
+            $(this).remove();
+        });
+        return
+    }
+    getAjax({
+        url:'/quadras?ajax=s&filter[bairro]='+val+'&campo_order=id&order=ASC',
+    },function(res){
+        $('#preload').fadeOut("fast");
+        var option_select = '<option value="{value}" class="opcs">{label}</option>';
+        var opc = '';
+        $('[div-id="'+selQuadra+'"] option.opcs').each(function(v,k){
+            $(this).remove();
+        });
+        if(d=res.dados.data){
+            $.each(d,function(k,v){
+                //console.log(v);
+                opc += option_select.replaceAll('{label}',v.nome);
+                opc = opc.replaceAll('{value}',v.id);
+            });
+            //$(opc).insertAfter('[div-id="'+selQuadra+'"] option[disabled]');
+            $(opc).insertAfter('[div-id="'+selQuadra+'"] option.option_select');
+
+            //$(selector).insertAfter('[div-id="bairro"]');
+        }
+    });
+    $.ajax({
+        url:'/quadras?ajax=s&filter[bairro]=1',
+        type:'GET',
+        success:'GET',
+    });
+}
 function buscaCep1_0(cep_code){
     if( cep_code.length <= 0 ) return;
     cep_code = cep_code.replaceAll('.','').replaceAll('-','');
@@ -1565,7 +1753,7 @@ function buscaCep1_0(cep_code){
 function popupCallback_vinculo(res){
     var obj = $('obj').html();
     var d = decodeArray(obj);
-    console.log(d);
+    //console.log(d);
     if(res.mens){
         lib_formatMensagem('.mens',res.mens,res.color);
     }

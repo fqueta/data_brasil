@@ -105,7 +105,8 @@
   @stop
 
   @section('css')
-      <link rel="stylesheet" href="{{url('/')}}/css/lib.css">
+      <!--<link rel="stylesheet" href="{{url('/')}}/css/lib.css">-->
+      @include('qlib.csslib')
   @stop
 
   @section('js')

@@ -7,10 +7,10 @@
             @endif
             <select name="{{$config['campo']}}" {{$config['event']}} id="sele-{{$config['campo']}} @error($config['campo']) is-invalid @enderror" class="form-control custom-select selectpicker {{$config['class']}}">
                 @if ($config['option_select'])
-                    <option value=""> {{$config['label_option_select']}} </option>
+                    <option value="" class="option_select"> {{$config['label_option_select']}} </option>
                 @endif
                 @foreach ($config['arr_opc'] as $k=>$v)
-                    <option value="{{$k}}" @if(isset($config['value']) && $config['value'] == $k) selected @endif>{{$v}}</option>
+                    <option value="{{$k}}" class="opcs" @if(isset($config['value']) && $config['value'] == $k) selected @endif>{{$v}}</option>
                 @endforeach
             </select>
             @error($config['campo'])
@@ -29,10 +29,10 @@
             @endif
             <select name="{{$config['campo']}}" multiple="true" {{$config['event']}} id="sele-{{$config['campo']}} @error($config['campo']) is-invalid @enderror" class="form-control custom-select select2 {{$config['class']}}">
                 @if ($config['option_select'])
-                    <option value=""> {{$config['label_option_select']}} </option>
+                    <option value="" class="option_select"> {{$config['label_option_select']}} </option>
                 @endif
                 @foreach ($config['arr_opc'] as $k=>$v)
-                    <option value="{{$k}}" @if(isset($config['value']) && is_array($config['value']) && in_array($k,$config['value'])) selected @endif>{{$v}}</option>
+                    <option class="opcs" value="{{$k}}" @if(isset($config['value']) && is_array($config['value']) && in_array($k,$config['value'])) selected @endif>{{$v}}</option>
                 @endforeach
             </select>
             @error($config['campo'])
@@ -52,10 +52,10 @@
                     @endif
                     <option value="cad"> {{__('Cadastrar')}} {{$config['label']}}</option>
                     <option value="ger"> {{__('Gerenciar Cadastros ')}} </option>
-                    <option value="" disabled>--------------</option>
+                    <option value="" disabled class="option_select">--------------</option>
 
                     @foreach ($config['arr_opc'] as $k=>$v)
-                        <option value="{{$k}}" @if(isset($config['value']) && $config['value'] == $k) selected @endif>{{$v}}</option>
+                        <option value="{{$k}}" class="opcs" @if(isset($config['value']) && $config['value'] == $k) selected @endif>{{$v}}</option>
                     @endforeach
                 </select>
                 @error($config['campo'])
@@ -92,7 +92,11 @@
                 <label for="{{$config['campo']}}">{{$config['label']}}:</label>
             @endif
             <span id="txt-{{$config['campo']}}">
+                @if (isset($config['arr_opc']) && is_array($config['arr_opc']))
+                {{@$config['arr_opc'][$config['value']]}}
+                @else
                 {{$config['value']}}
+                @endif
             </span>
             <input type="hidden" class="form-control @error($config['campo']) is-invalid @enderror {{$config['class']}}" id="inp-{{$config['campo']}}" name="{{$config['campo']}}" aria-describedby="{{$config['campo']}}" placeholder="{{$config['placeholder']}}" value="@if(isset($config['value'])){{$config['value']}}@elseif($config['ac']=='cad'){{old($config['campo'])}}@endif" {{$config['event']}} />
             @error($config['campo'])
@@ -186,7 +190,7 @@
                                 @if (isset($config['data_selector']['list']) && is_array($config['data_selector']['list']) && isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
                                     @if (@$config['data_selector']['tipo']=='array')
                                         @foreach ($config['data_selector']['list'] as $klis=>$vlis)
-                                            <tr id="tr-{{$klis}}-{{@$config['data_selector']['list'][$klis]['id']}}"><input id="inp-{{$klis}}-{{@$config['data_selector']['list'][$klis]['id']}}" type="hidden" name="{{@$config['campo']}}[]" value="{{@$config['data_selector']['list'][$klis]['id']}}">
+                                            <tr id="tr-{{$klis}}-{{@$config['data_selector']['list'][$klis]['id']}}"><input id="inp-{{$klis}}-{{@$config['data_selector']['list'][$klis]['id']}}" type="hidden" name="{{@$config['campo']}}[]" value="{{@$config['data_selector']['list'][$klis]['id']}}"><input type="hidden" value="{{App\Qlib\Qlib::encodeArray(@$config['data_selector']['list'][$klis])}}" id="inp-list-{{$klis}}-{{@$config['data_selector']['list'][$klis]['id']}}">
                                                 @foreach ($config['data_selector']['table'] as $kb=>$vb)
                                                     @if ($vb['type']=='text')
                                                         <td id="td-{{$kb}}">{{@$config['data_selector']['list'][$klis][$kb]}}</td>
@@ -195,8 +199,8 @@
                                                     @endif
                                                 @endforeach
                                                 <td class="text-right">
-                                                    <button type="button" btn-alt onclick="lib_htmlVinculo('alt','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}','{{$klis}}')" title="{{__('Editar')}}" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button>
-                                                    <button type="button" onclick="lib_htmlVinculo('del','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}','{{$klis}}')" class="btn btn-outline-danger" title="{{__('Remover')}}" > <i class="fa fa-trash" aria-hidden="true"></i> </button>
+                                                    <button type="button" btn-alt onclick="lib_htmlVinculo2('alt','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}','{{@$config['data_selector']['list'][$klis]['id']}}','{{$klis}}')" title="{{__('Editar')}}" class="btn btn-outline-secondary"><i class="fas fa-pencil-alt"></i> </button>
+                                                    <button type="button" onclick="lib_htmlVinculo2('del','{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}','{{@$config['data_selector']['list'][$klis]['id']}}','{{$klis}}')" class="btn btn-outline-danger" title="{{__('Remover')}}" > <i class="fa fa-trash" aria-hidden="true"></i> </button>
                                                 </td>
                                             </tr>
                                         @endforeach

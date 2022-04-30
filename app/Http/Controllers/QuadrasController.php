@@ -36,9 +36,10 @@ class QuadrasController extends Controller
         $config = [
             'limit'=>isset($get['limit']) ? $get['limit']: 50,
             'order'=>isset($get['order']) ? $get['order']: 'desc',
+            'campo_order'=>isset($get['campo_order']) ? $get['campo_order']: 'id',
         ];
 
-        $quadra =  Quadra::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
+        $quadra =  Quadra::where('excluido','=','n')->where('deletado','=','n')->orderBy($config['campo_order'],$config['order']);
         //$quadra =  DB::table('quadras')->where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
 
         $quadra_totais = new stdClass;
@@ -135,12 +136,13 @@ class QuadrasController extends Controller
     public function index(User $user)
     {
         $this->authorize('ler', $this->routa);
+        $ajax = isset($_GET['ajax'])?$_GET['ajax']:'n';
         $title = 'Quadras Cadastradas';
         $titulo = $title;
         $queryQuadra = $this->queryQuadra($_GET);
         $queryQuadra['config']['exibe'] = 'html';
         $routa = $this->routa;
-        return view($this->view.'.index',[
+        $ret = [
             'dados'=>$queryQuadra['quadra'],
             'title'=>$title,
             'titulo'=>$titulo,
@@ -152,7 +154,12 @@ class QuadrasController extends Controller
             'routa'=>$routa,
             'view'=>$this->view,
             'i'=>0,
-        ]);
+        ];
+        if($ajax=='s'){
+            return response()->json($ret);
+        }else{
+            return view($this->view.'.index',$ret);
+        }
     }
     public function create(User $user)
     {

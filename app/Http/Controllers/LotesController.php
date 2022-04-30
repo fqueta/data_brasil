@@ -46,18 +46,14 @@ class LotesController extends Controller
 
         if(isset($get['term'])){
             //Autocomplete
-            if(isset($get['bairro']) && !empty($get['bairro'])){
-                $sql = "SELECT l.*,q.nome quadra_valor,b.nome nome_bairro,b.matricula FROM lotes as l
-                JOIN quadras as q ON q.id=l.quadra
-                JOIN bairros as b ON b.id=q.id
-                WHERE (l.nome LIKE '%".$get['term']."%' OR q.nome LIKE '%".$get['term']."%' ) AND (l.bairro='".$get['bairro']."') AND l.excluido !='s' AND l.deletado
-                ";
+            if(isset($get['bairro']) && !empty($get['bairro']) && isset($get['quadra']) && !empty($get['quadra'])){
+                $sql = "SELECT * FROM lotes WHERE (nome LIKE '%".$get['term']."%') AND bairro=".$get['bairro']." AND quadra=".$get['quadra']." AND ".Qlib::compleDelete();
+            }elseif(isset($get['bairro']) && !empty($get['bairro'])){
+                $sql = "SELECT * FROM lotes WHERE (nome LIKE '%".$get['term']."%') AND bairro=".$get['bairro']." AND ".Qlib::compleDelete();
             }else{
-                //$lote =  Lote::join('quadras','quadras.id','=','lotes.quadra')->where('lotes.excluido','=','n')->where('lotes.deletado','=','n')->orderBy('id',$config['order'])->select('lotes.nome');
                 $sql = "SELECT l.*,q.nome quadra_valor FROM lotes as l
                 JOIN quadras as q ON q.id=l.quadra
-                WHERE (l.nome LIKE '%".$get['term']."%' OR q.nome LIKE '%".$get['term']."%' ) AND l.excluido !='s' AND l.deletado
-                ";
+                WHERE (l.nome LIKE '%".$get['term']."%' OR q.nome LIKE '%".$get['term']."%' ) AND l.excluido !='s' AND l.deletado AND ".Qlib::compleDelete('l');
             }
             $lote = DB::select($sql);
             $ret['lote'] = $lote;
@@ -142,7 +138,7 @@ class LotesController extends Controller
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            'bairro'=>['label'=>'Bairro','active'=>false,'type'=>'hidden_text','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
+            'bairro'=>['label'=>'Bairro','active'=>false,'type'=>'hidden_text','exibe_busca'=>'d-block','event'=>'','tam'=>'12','arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'value'=>@$_GET['bairro']],
             'quadra'=>[
                 'label'=>'Quadra',
                 'active'=>true,
@@ -155,9 +151,11 @@ class LotesController extends Controller
                     'campo_id'=>'id',
                     'campo_bus'=>'nome',
                     'label'=>'Quadra',
-                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                ],
+                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'onchange=carregaBairro($(this).val());',
                 'tam'=>'5',
+                'value'=>@$_GET['quadra'],
                 'class'=>'select2'
             ],
             'nome'=>['label'=>'N. do Lote (Somente Números)','active'=>true,'placeholder'=>'Ex.: 14','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'7'],
@@ -195,21 +193,45 @@ class LotesController extends Controller
             $campos = $this->campos();
             if($queryLote['lote']){
                //$ret = $queryLote['lote'];
-                foreach ($queryLote['lote'] as $key => $v) {
-                    $bairro = false;
-                    if($id_bairro = $v->bairro){
+                if(isset($_GET['bairro']) && empty($_GET['bairro'])){
+                    $ret[0]['value'] = 'Por favor selecione a Área! ';
+                    $ret[0]['id'] = '';
+                }elseif(isset($_GET['quadra']) && empty($_GET['quadra'])){
+                    $ret[0]['value'] = 'Por favor selecione a Quadra! ';
+                    $ret[0]['id'] = 'cad';
+                }else{
+                    foreach ($queryLote['lote'] as $key => $v) {
+                        $bairro = false;
+                        if(isset($v->config)){
+                            $v->config = Qlib::lib_json_array($v->config);
+                        }
+                        if($id_bairro = $v->bairro){
+                            $bairro = Qlib::buscaValorDb([
+                                'tab'=>'bairros',
+                                'campo_bus'=>'id',
+                                'valor'=>$id_bairro,
+                                'select'=>'nome',
+                            ]);
+                            $ret[$key]['dados'] = $v;
+                        }
+                        $nome_quadra = false;
+                        if($id_quadra = $v->quadra){
 
-                        $bairro = Qlib::buscaValorDb([
-                            'tab'=>'bairros',
-                            'campo_bus'=>'id',
-                            'valor'=>$id_bairro,
-                            'select'=>'nome',
-                        ]);
-                        $ret[$key]['dados'] = $v;
+                            $nome_quadra = Qlib::buscaValorDb([
+                                'tab'=>'quadras',
+                                'campo_bus'=>'id',
+                                'valor'=>$id_quadra,
+                                'select'=>'nome',
+                            ]);
+                            $ret[$key]['dados'] = $v;
+                            $ret[$key]['dados']->quadra_valor = $nome_quadra;
+                        }
+                        $ret[$key]['value'] = ' Lote: '.$v->nome.' | quadra: '.$nome_quadra.' | Bairro: '.$bairro;
                     }
-                    $ret[$key]['value'] = ' Lote: '.$v->nome.' | quadra: '.$v->quadra_valor.' | Bairro: '.$bairro;
-                    //if(id_array($v))
                 }
+            }else{
+                $ret[0]['value'] = 'Lote não encontrado. Cadastrar agora?';
+                $ret[0]['id'] = 'cad';
             }
         }else{
             $ret = [

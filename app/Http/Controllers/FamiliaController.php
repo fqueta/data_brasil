@@ -349,34 +349,22 @@ class FamiliaController extends Controller
         //return $dados->view();
         return Excel::download(new FamiliasExportView, 'Familias_'.date('d_m_Y').'.xlsx');
     }
-    public function campos(){
+    public function campos($dados=false){
         $user = Auth::user();
         $etapa = new EtapaController($user);
         $bairro = new BairroController($user);
         $beneficiario = new BeneficiariosController($user);
         $escolaridade = new EscolaridadeController($user);
-        $estadocivil = new EstadocivilController($user);
+        $quadra = new QuadrasController($user);
         $lote = new LotesController($user);
+        $data = $dados?$dados:false;
+        if(isset($data['bairro'])){
+            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$data['bairro']."' AND ".Qlib::compleDelete(),'nome','id');
+        }else{
+            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s'",'nome','id');
+        }
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
-            'bairro'=>[
-                'label'=>'Área',
-                'active'=>true,
-                'type'=>'select',
-                'data_selector'=>[
-                    'campos'=>$bairro->campos(),
-                    'route_index'=>route('bairros.index'),
-                    'id_form'=>'frm-bairros',
-                    'action'=>route('bairros.store'),
-                    'campo_id'=>'id',
-                    'campo_bus'=>'nome',
-                    'label'=>'Etapa',
-                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
-                //'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\');carregaMatricula($(this))',
-                'event'=>'onchange=carregaMatricula($(this).val())',
-                'tam'=>'6',
-                //'class'=>'select2'
-            ],
             'etapa'=>[
                 'label'=>'Etapa',
                 'active'=>true,
@@ -405,10 +393,6 @@ class FamiliaController extends Controller
                 'exibe_busca'=>true,
                 'option_select'=>false,
             ],
-            'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6','placeholder'=>''],
-            //'area_alvo'=>['label'=>'Área Alvo','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'2','placeholder'=>''],
-            //'endereco'=>['label'=>'Rua','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'10'],
-            //'numero'=>['label'=>'Número','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'tags[]'=>[
                 'label'=>'Situação',
                 'active'=>true,
@@ -420,6 +404,49 @@ class FamiliaController extends Controller
                 'tam'=>'12',
                 'cp_busca'=>'tags]['
             ],
+            'bairro'=>[
+                'label'=>'Área',
+                'active'=>true,
+                'type'=>'select',
+                'data_selector'=>[
+                    'campos'=>$bairro->campos(),
+                    'route_index'=>route('bairros.index'),
+                    'id_form'=>'frm-bairros',
+                    'action'=>route('bairros.store'),
+                    'campo_id'=>'id',
+                    'campo_bus'=>'nome',
+                    'label'=>'Etapa',
+                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
+                //'event'=>'onchange=carregaMatricula($(this).val())',
+                'tam'=>'6',
+                //'class'=>'select2'
+            ],
+            'quadra'=>[
+                'label'=>'Quadra',
+                'active'=>true,
+                'type'=>'selector',
+                'data_selector'=>[
+                    'campos'=>$quadra->campos(),
+                    'route_index'=>route('quadras.index'),
+                    'id_form'=>'frm-quadras',
+                    'action'=>route('quadras.store'),
+                    'campo_id'=>'id',
+                    'campo_bus'=>'nome',
+                    'label'=>'Quadra',
+                    'value_transport'=>'bairro',//valor a transportar
+                ],
+                'arr_opc'=>$arr_opc_quadras,
+                'exibe_busca'=>'d-block',
+                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\');',
+                'tam'=>'3',
+                //'class'=>'select2'
+            ],
+            'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
+            //'area_alvo'=>['label'=>'Área Alvo','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'2','placeholder'=>''],
+            //'endereco'=>['label'=>'Rua','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'10'],
+            //'numero'=>['label'=>'Número','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+
             'loteamento'=>[
                 'label'=>'Informações do lote',
                 'active'=>false,
@@ -455,7 +482,7 @@ class FamiliaController extends Controller
                     'placeholder' =>'Digite somente o número do Lote...',
                     'janela'=>[
                         'url'=>route('lotes.create').'',
-                        'param'=>['bairro','etapa'],
+                        'param'=>['bairro','etapa','quadra'],
                         'form-param'=>'',
                     ],
                     'salvar_primeiro' =>false,//exigir cadastro do vinculo antes de cadastrar este
@@ -519,7 +546,6 @@ class FamiliaController extends Controller
             ],
             'config[registro]'=>['label'=>'Registro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][registro'],
             'config[livro]'=>['label'=>'Livro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][livro'],
-            //'quadra'=>['label'=>'Quadra*','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             //'lote'=>['label'=>'Lote*','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             //'nome_completo'=>['label'=>'Proprietário','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
             //'cpf'=>['label'=>'CPF proprietário','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
@@ -765,7 +791,6 @@ class FamiliaController extends Controller
             $arr_estadocivil = Qlib::sql_array("SELECT id,nome FROM estadocivils ORDER BY nome ", 'nome', 'id');
             $listFiles = false;
             //$dados[0]['renda_familiar'] = number_format($dados[0]['renda_familiar'],2,',','.');
-            $campos = $this->campos();
             if(isset($dados[0]['token'])){
                 $listFiles = _upload::where('token_produto','=',$dados[0]['token'])->get();
             }
@@ -780,7 +805,7 @@ class FamiliaController extends Controller
                 $dados[0]['matricula'] = isset($bairro['matricula'])?$bairro['matricula']:false;
             }
             if(!$dados[0]['matricula'])
-                $config['display_matricula'] = 'd-none';
+            $config['display_matricula'] = 'd-none';
             if(isset($dados[0]['config']) && is_array($dados[0]['config'])){
                 foreach ($dados[0]['config'] as $key => $value) {
                     if(is_array($value)){
@@ -792,6 +817,7 @@ class FamiliaController extends Controller
             }
             //$dados[0]['tags'] = Qlib::lib_json_array($dados[0]['tags']);
             $_GET['dados'] = $dados[0]; //para ter acesso em todas a views
+            $campos = $this->campos($dados[0]);
             $ret = [
                 'value'=>$dados[0],
                 'config'=>$config,
