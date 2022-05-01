@@ -24,6 +24,15 @@
                     'class'=>'text-left',
                     'class_div'=>'text-left',
                 ])}}
+                @php
+                    $arr_opc_quadra = [];
+                    if(isset($_GET['filter']['bairro']) && !empty($_GET['filter']['bairro'])){
+                        $arr_opc_quadra = App\Qlib\Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$_GET['filter']['bairro']."'",'nome','id');
+
+                    }
+
+                @endphp
+
                 {{App\Qlib\Qlib::qForm([
                     'type'=>'select',
                     'campo'=>'filter[quadra]',
@@ -33,8 +42,8 @@
                     'ac'=>'alt',
                     'value'=>@$_GET['filter']['quadra'],
                     'tam'=>'2',
-                    //'arr_opc'=>App\Qlib\Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s'",'nome','id'),
-                    'arr_opc'=>[],
+                    'arr_opc'=>$arr_opc_quadra,
+                    //'arr_opc'=>[],
                     'event'=>'onchange=$(\'#frm-consulta\').submit();',
                     'option_select'=>true,
                     'class'=>'text-left',
@@ -71,18 +80,37 @@
                 @can('create',$routa)
 
                 <div class="col-md-2 text-right mt-4">
-                    <a href="{{ route($routa.'.create') }}" class="btn btn-success">
+                    <a href="{{ route($routa.'.create') }}" class="btn btn-success btn-block">
                         <i class="fa fa-plus" aria-hidden="true"></i> Cadastrar
                     </a>
                 </div>
                 @endcan
-                <div class="col-md-12 mb-3">
-                    <div class="btn-group">
-                        <button class="btn btn-primary" type="submit"> <i class="fas fa-search"></i> Localizar</button>
-                        <a href=" {{route('familias.index')}} " class="btn btn-default" title="Limpar Filtros" type="button"> <i class="fas fa-times"></i> Limpar</a>
-                        <!--include('familias.dropdow_actions')-->
+                    <div class="form-group col-md-9 text-left" div-id="auto-proprietario">
+                        <label for="auto-proprietario">Proprietário</label>
+                        <input type="text" name="auto-proprietario" class="form-control  text-left" id="auto-proprietario" aria-describedby="auto-proprietario" placeholder="" value="{{@$_GET['auto-proprietario']}}" >
                     </div>
-                </div>
+                    {{App\Qlib\Qlib::qForm([
+                        'type'=>'hidden',
+                        'campo'=>'filter[id_beneficiario]',
+                        'placeholder'=>'',
+                        'label'=>'Proprietário',
+                        'ac'=>'alt',
+                        'value'=>@$_GET['filter']['id_beneficiario'],
+                        'tam'=>'9',
+                        //'arr_opc'=>$arr_opc_quadra,
+                        //'arr_opc'=>[],
+                        //'event'=>'onchange=$(\'#frm-consulta\').submit();',
+                        'option_select'=>true,
+                        'class'=>'text-left',
+                        'class_div'=>'text-left',
+                    ])}}
+                    <div class="col-md-3 mb-3 pt-4 mt-2 text-right">
+                        <div class="btn-group" style="width: 100%">
+                            <button style="width: 50%" class="btn btn-primary" type="submit"> <i class="fas fa-search"></i> Localizar</button>
+                            <a href=" {{route('familias.index')}} " class="btn btn-default" title="Limpar Filtros" type="button"> <i class="fas fa-times"></i> Limpar</a>
+                            <!--include('familias.dropdow_actions')-->
+                        </div>
+                    </div>
                 <!--
                 <div class="collapse" id="busca-id">
                         include('qlib.busca')

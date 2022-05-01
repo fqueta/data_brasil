@@ -71,10 +71,9 @@ class FamiliaController extends Controller
         $familia_totais = new stdClass;
         //$campos = isset($_SESSION['campos_familias_exibe']) ? $_SESSION['campos_familias_exibe'] : $this->campos();
         $rel = new RelatoriosController($this->user);
-        $campos = isset($_SESSION['campos_familias_exibe']) ? $_SESSION['campos_familias_exibe'] : $rel->campos();
+        $campos = $rel->campos();
         $tituloTabela = 'Lista de todos cadastros';
         $arr_titulo = false;
-
         if(isset($get['filter'])){
                 $titulo_tab = false;
                 $i = 0;
@@ -102,6 +101,8 @@ class FamiliaController extends Controller
                             }
                             if($key=='quadra'){
                                 $arr_titulo[$campos[$key]['label']] = Qlib::valorTabDb('quadras','id',$value,'nome');
+                            }elseif($key=='id_beneficiario'){
+                                $arr_titulo[$campos[$key]['label']] = Qlib::valorTabDb('beneficiarios','id',$value,'nome');
                             }else{
                                 $arr_titulo[$campos[$key]['label']] = $value;
                             }

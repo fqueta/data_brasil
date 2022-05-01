@@ -38,7 +38,7 @@
                 @can('create',$routa)
 
                 <div class="col-md-2 text-right mt-4">
-                    <a href="{{ route($routa.'.create') }}" class="btn btn-success">
+                    <a href="{{ route($routa.'.create') }}" class="btn btn-success btn-block">
                         <i class="fa fa-plus" aria-hidden="true"></i> Cadastrar
                     </a>
                 </div>

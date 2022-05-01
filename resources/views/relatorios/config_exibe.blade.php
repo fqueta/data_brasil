@@ -54,11 +54,12 @@
                 ])}}
                 @can('create',$routa)
 
-                <div class="col-md-2 text-right mt-4">
+                <!--
+                <div class="col-md-2 text-right mt-4 btn-block">
                     <a href="{{ route($routa.'.create') }}" class="btn btn-success">
                         <i class="fa fa-plus" aria-hidden="true"></i> Cadastrar
                     </a>
-                </div>
+                </div>-->
                 @endcan
                 <div class="collapse" id="busca-id">
                     <!--include('qlib.busca')-->

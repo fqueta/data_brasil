@@ -68,15 +68,10 @@
   @stop
 
   @section('js')
-    <script src="{{url('/')}}/js/jquery.inputmask.bundle.min.js"></script>
-    <script src=" {{url('/')}}/js/lib.js"></script>
+    @include('qlib.jslib')
 
     <script>
         $(function(){
-            $('.dataTable').DataTable({
-                "paging":   false,
-                stateSave: true
-            });
             $('[exportar-filter]').on('click',function(e){
                 e.preventDefault();
                 var urlAtual = window.location.href;

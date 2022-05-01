@@ -407,6 +407,7 @@ class RelatoriosController extends Controller
             ],
             'lote'=>['label'=>'LOTE','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
             'nome'=>['label'=>'NOME COMPLETO','active'=>true,'type'=>'text','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'nome'],
+            'id_beneficiario'=>['label'=>'','active'=>false,'type'=>'hidden','exibe_busca'=>'d-none','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'nome'],
             'cpf'=>['label'=>'CPF','active'=>true,'type'=>'text','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'cpf'],
             'telefone'=>['label'=>'TELEFONE','active'=>true,'type'=>'json','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][telefone'],
             'escolaridades'=>['label'=>'ESCOLARDADE','active'=>true,'type'=>'json','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][escolaridade'],

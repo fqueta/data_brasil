@@ -13,6 +13,13 @@
 <script src=" {{url('/')}}/js/lib.js"></script>
 <script>
     $(function(){
+        $('.dataTable').DataTable({
+                "paging":   false,
+                stateSave: true,
+                language: {
+                    url: '/DataTables/datatable-pt-br.json'
+                }
+        });
         carregaMascaraMoeda(".moeda");
         $('[selector-event]').on('change',function(){
             initSelector($(this));

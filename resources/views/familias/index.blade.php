@@ -105,7 +105,6 @@
   @stop
 
   @section('css')
-      <!--<link rel="stylesheet" href="{{url('/')}}/css/lib.css">-->
       @include('qlib.csslib')
   @stop
 
@@ -113,10 +112,6 @@
     @include('qlib.jslib')
     <script>
         $(function(){
-            $('.dataTable').DataTable({
-                "paging":   false,
-                stateSave: true
-            });
             $('[exportar-filter]').on('click',function(e){
                 e.preventDefault();
                 var urlAtual = window.location.href;
@@ -146,6 +141,19 @@
             $('[href="#edit_etapa"]').on('click',function(){
                 var selecionados = coleta_checked($('.table .checkbox:checked'));
                 janelaEtapaMass(selecionados);
+            });
+            $('#auto-proprietario').autocomplete({
+                source: '{{route('beneficiarios.index')}}?ajax=s',
+                select: function (event, ui) {
+                    if(ui.item.id){
+                        $('[name="filter[id_beneficiario]"]').val(ui.item.id);
+                        $('#frm-consulta').submit();
+                    }
+                    //lib_listarCadastro(ui.item,$(this));
+                },
+            });
+            $('#auto-proprietario').on('click',function(){
+                $(this).val('');
             });
         });
     </script>
