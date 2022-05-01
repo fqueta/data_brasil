@@ -362,7 +362,7 @@ $config = [
                 [
                     'type' => 'js',
                     'asset' => true,
-                    'location' => '/DataTables/dataTables.min.js',
+                    'location' => '/DataTables/datatables.min.js',
                 ],
                 [
                     'type' => 'js',
