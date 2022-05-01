@@ -28,7 +28,7 @@
                         <tr>
                             <th scope="col" class="text-center" style="width: 35%">Nome</th>
                             <th scope="col" class="text-center">Parentesco</th>
-                            <th scope="col" class="text-center">Idade</th>
+                            <th scope="col" class="text-center">Nascimento</th>
                             <th scope="col" class="text-center">Renda</th>
                             <th scope="col" class="text-center">Ação</th>
                         </tr>
@@ -38,7 +38,7 @@
                         <tr data-id="{{$k}}">
                             <td><input type="text" name="membros[{{$k}}][nome]" value="{{$v['nome']}}" class="form-control" /></td>
                             <td><input type="text" name="membros[{{$k}}][parentesco]" value="{{$v['parentesco']}}" class="form-control" /></td>
-                            <td><input type="number" name="membros[{{$k}}][idade]" value="{{$v['idade']}}" class="form-control" /></td>
+                            <td><input type="date" name="membros[{{$k}}][nascimento]" value="{{@$v['nascimento']}}" class="form-control" /></td>
                             <td><input type="tel" name="membros[{{$k}}][renda]" value="{{$v['renda']}}" class="form-control moeda" /></td>
                             <td> <button class="btn btn-default" type="button" onclick="removeRow('{{$k}}')"><i class="fas fa-trash"></i></button></td>
                         </tr>

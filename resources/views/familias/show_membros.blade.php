@@ -27,10 +27,10 @@
                     <table id="list-membros" class="table table-sm table-hover">
                         <thead>
                             <tr>
-                                <th scope="col" class="text-center" style="width: 35%">Nome</th>
-                                <th scope="col" class="text-center">Parentesco</th>
-                                <th scope="col" class="text-center">Idade</th>
-                                <th scope="col" class="text-center">Renda</th>
+                                <th scope="col" class="text-center" style="width: 35%">{{__('Nome')}}</th>
+                                <th scope="col" class="text-center">{{__('Parentesco')}}</th>
+                                <th scope="col" class="text-center">{{__('Nascimento')}}</th>
+                                <th scope="col" class="text-center">{{__('Renda')}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -38,7 +38,7 @@
                             <tr data-id="{{$k}}">
                                 <td class="text-left">{{$v['nome']}}</td>
                                 <td class="text-center">{{$v['parentesco']}}</td>
-                                <td class="text-center">{{$v['idade']}}</td>
+                                <td class="text-center">{{App\Qlib\Qlib::dataExibe(@$v['nascimento']).' '.@$v['idade']}}</td>
                                 <td class="text-right">{{$v['renda']}}</td>
                             </tr>
                             @endforeach
