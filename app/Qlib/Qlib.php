@@ -333,12 +333,17 @@ class Qlib
             return false;
         }
 	}
+    static function formatMensagemInfo($mess='',$cssMes='',$event=false){
+		$mensagem = "<div class=\"alert alert-$cssMes alert-dismissable\" role=\"alert\"><button class=\"close\" type=\"button\" data-dismiss=\"alert\" $event aria-hidden=\"true\">×</button><i class=\"fa fa-info-circle\"></i>&nbsp;".__($mess)."</div>";
+		return $mensagem;
+	}
     static function gerUploadAquivos($config=false){
         if($config){
             $config['parte'] = isset($config['parte']) ? $config['parte'] : 'painel';
             $config['token_produto'] = isset($config['token_produto']) ? $config['token_produto'] : false;
             $config['listFiles'] = isset($config['listFiles']) ? $config['listFiles'] : false; // array com a lista
             $config['time'] = isset($config['time']) ? $config['time'] : 4000;
+            $config['arquivos'] = isset($config['arquivos']) ? $config['arquivos'] : false;
             if($config['listFiles']){
                 $tipo = false;
                 foreach ($config['listFiles'] as $key => $value) {
@@ -360,7 +365,7 @@ class Qlib
                     }
                 }
             }
-            if($config['parte']){
+            if(isset($config['parte'])){
                 $view = 'qlib.uploads.painel';
                 return view($view, ['config'=>$config]);
             }else{

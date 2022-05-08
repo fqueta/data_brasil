@@ -46,7 +46,9 @@
                     'token_produto'=>$value['token'],
                     'tab'=>$config['route'],
                     'listFiles'=>@$listFiles,
-                    'routa'=>@$routa,
+                    'routa'=>@$config['route'],
+                    'arquivos'=>@$config['arquivos'],
+                    'typeN'=>@$config['typeN'],
                 ])}}
             </div>
         </div>

@@ -14,6 +14,7 @@ use App\Http\Controllers\EscolaridadeController;
 use App\Http\Controllers\EstadocivilController;
 use App\Http\Controllers\LotesController;
 use App\Http\Controllers\RelatoriosController;
+use App\Http\Controllers\MapasController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
@@ -124,6 +125,9 @@ Route::prefix('sistema')->group(function(){
     Route::get('/pefil',[EtapaController::class,'index'])->name('sistema.perfil');
     Route::get('/config',[EtapaController::class,'config'])->name('sistema.config');
     Route::post('/{id}',[EtapaController::class,'update'])->where('id', '[0-9]+')->name('sistema.update-ajax');
+});
+Route::prefix('mapas')->group(function(){
+    Route::get('/quadras/{id}',[MapasController::class,'quadras'])->name('mapas.quadras');
 });
 Route::prefix('uploads')->group(function(){
     Route::get('/',[uploadController::class,'index'])->name('uploads.index');

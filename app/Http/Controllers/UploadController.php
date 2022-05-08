@@ -47,11 +47,18 @@ class UploadController extends Controller
         // Get just ext
         $extension = $file->getClientOriginalExtension();
         // Filename to store
-        //$fileNameToStore= $filename.'_'.time().'.'.$extension;
-        $fileNameToStore= $filename.'_'.time().'.'.$extension;
-        // Upload Image
-        //dd($extension);
-        if($extension=='jpg' || $extension=='jpeg' || $extension=='png' || $extension=='zip' || $extension=='pdf' || $extension=='PDF'){
+        $typeN = isset($request->typeN) ? $request->typeN : 1;
+        if($typeN==1){
+            $fileNameToStore= $filename.'_'.time().'.'.$extension;
+        }else{
+            $fileNameToStore= $filename.'.'.$extension;
+        }
+        $arquivos = isset($request->arquivos) ? $request->arquivos : 'jpg,jpeg,png,zip,pdf,PDF';
+        if($arquivos){
+            $arr_extension = explode(',',$arquivos);
+        }
+        //if($extension=='jpg' || $extension=='jpeg' || $extension=='png' || $extension=='zip' || $extension=='pdf' || $extension=='PDF'){
+        if(in_array($extension,$arr_extension)){
             $dados = $request->all();
             $token_produto = $dados['token_produto'];
             $ultimoValor = _upload::where('token_produto','=',$token_produto)->max('ordem');

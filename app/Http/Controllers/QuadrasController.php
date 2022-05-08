@@ -255,6 +255,8 @@ class QuadrasController extends Controller
                 'frm_id'=>'frm-quadras',
                 'route'=>$this->routa,
                 'id'=>$id,
+                'arquivos'=>'html,svg,pdf,jpeg,jpg',
+                'typeN'=>'2', //salvar o nome verdadeiro do arquivo
             ];
 
             $ret = [

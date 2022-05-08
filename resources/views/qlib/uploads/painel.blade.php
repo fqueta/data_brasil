@@ -1,7 +1,6 @@
 @if ($config['parte']=='painel')
-
-        <script src="{{url('/')}}/js/dropzone.min.js"></script>
         <link rel="stylesheet" href="{{url('/')}}/css/dropzone.min.css" type="text/css" />
+        <script src="{{url('/')}}/js/dropzone.min.js"></script>
         <!-- Button trigger modal -->
         <div class="row">
             <div class="col-md-12 mb-2">
@@ -12,15 +11,18 @@
                         'tipo'=>'list',
                         'listFiles'=>@$config['listFiles'],
                         'routa'=>@$config['routa'],
+                        'arquivos'=>@$config['arquivos'],
                         ])}}
 
                 </span>
             </div>
             <div class="col-md-12">
                 @can('create',$config['routa'])
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modelId"> <i class="fas fa-upload"></i>
-                        {{ __('Enviar arquivos') }}
-                    </button>
+                    @if (isset($config['arquivos']) && $config['arquivos'])
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modelId"> <i class="fas fa-upload"></i>
+                            {{ __('Enviar arquivos') }}
+                        </button>
+                    @endif
                 @endcan
 
             </div>
@@ -43,6 +45,8 @@
                                 @csrf
                                 <input type="hidden" name="token_produto" value="{{$config['token_produto']}}" />
                                 <input type="hidden" name="pasta" value="{{$config['pasta']}}" />
+                                <input type="hidden" name="arquivos" value="{{$config['arquivos']}}" />
+                                <input type="hidden" name="typeN" value="{{@$config['typeN']}}" />
                                 <div class="fallback">
                                     <input name="file" type="file" multiple />
                                 </div>
