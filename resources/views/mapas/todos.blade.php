@@ -92,14 +92,15 @@
                 </div>
             </div>
             <!--include('mapas.'.$config['local'].'.'.$config['dados']['id'])-->
+            <?xml version="1.0" encoding="utf-8"?>
             @php
                 $p = $_SERVER['DOCUMENT_ROOT'].$config['svg_file'];
                 include $p;
             @endphp
         <div class="painel-zoom" style="position: absolute;left:10px;bottom:50%;width: 40px;">
-            <button type="button" onclick="zoom('p')" id="zoom-p" class="btn btn-outline-primary mb-1"> <i class="fa fa-plus" aria-hidden="true"></i> </button>
-            <button type="button" onclick="zoom('r')" id="zoom-r" class="btn btn-outline-secondary" > <i class="fa fa-refresh" aria-hidden="true"></i> </button>
-            <button type="button" onclick="zoom('m')" id="zoom-m" class="btn btn-outline-primary" > <i class="fa fa-minus" aria-hidden="true"></i> </button>
+            <button type="button" onclick="zoom('p')" title="{{__('Aumentar mapa')}}" id="zoom-p" class="btn btn-outline-primary mb-1"><i class="fas fa-plus"></i></button>
+            <button type="button" onclick="zoom('r')" id="zoom-r"  title="{{__('Restaurar tamanho')}}" class="btn btn-outline-secondary mb-1" ><i class="fas fa-sync"></i></button>
+            <button type="button" onclick="zoom('m')" title="{{__('Diminuir mapa')}}" id="zoom-m" class="btn btn-outline-primary" ><i class="fas fa-minus"></i></button>
         </div>
     </div>
 </div>

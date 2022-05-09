@@ -1795,18 +1795,53 @@ function lib_abrirListaOcupantes(){
         abrirjanelaPadraoConsulta(url,'lista-ocupantes');
     }
 }
-function sendFile(file,editor,welEditable) {
-    data = new FormData();
-    data.append("file", file);
-    $.ajax({
-        data: data,
-        type: "POST",
-        url: "url/para/upload/",
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(url) {
-            editor.insertImage(welEditable, url);
-        }
-    });
+function zoom(c) {
+    var s = new Number(50);
+    let box = document.querySelector('#svg-img');
+    let width = box.style.width;
+    let height = box.offsetHeight;
+    var w = width.replace('%','');
+    w = new Number(w);
+    if(w==0){
+        w=100;
+    }
+    if(c=='p'){
+        box.style.width = (w+s)+'%';
+    }
+    if(c=='r'){
+        //retorna ao inicio
+        box.style.width = '100%';
+    }
+    if(c=='m'){
+        box.style.width = (w-s)+'%';
+    }
+}
+function lib_conteudoMapa(id,tipo,local){
+    if(typeof tipo=='undefined'){
+        tipo = 'lotes';
+    }
+    if(typeof local=='undefined'){
+        local = 'quadras';
+    }
+    if(id &&tipo=='lotes' && local=='quadras'){
+        let arr_id = id.split('-');
+        getAjax({
+            url:'/'+tipo+'/'+arr_id[1]+'/edit?ajax=s',
+            dados:{
+                id_bairro:arr_id[0],
+                id_quadra:arr_id[1],
+                id_lote:arr_id[2],
+            }
+        },function(res){
+            $('#preload').fadeOut("fast");
+            /*
+            if(m=res.value.matricula){
+                $('[name="matricula"]').val(m);
+                $('#txt-matricula').html(m);
+            }else{
+                $('[name="matricula"]').val('');
+                $('#txt-matricula').html('');
+            }*/
+        });
+    }
 }

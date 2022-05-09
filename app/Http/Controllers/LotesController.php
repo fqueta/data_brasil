@@ -374,6 +374,8 @@ class LotesController extends Controller
         $id = $lote;
         $dados = Lote::where('id',$id)->get();
         $routa = 'lotes';
+        $ajax = isset($_GET['ajax'])?$_GET['ajax']:false;
+
         $this->authorize('ler', $this->routa);
 
         if(!empty($dados)){
@@ -407,7 +409,11 @@ class LotesController extends Controller
                 'exec'=>true,
             ];
 
-            return view($this->view.'.createedit',$ret);
+            if($ajax=='s'){
+                return response()->json($ret);
+            }else{
+                return view($this->view.'.createedit',$ret);
+            }
         }else{
             $ret = [
                 'exec'=>false,
