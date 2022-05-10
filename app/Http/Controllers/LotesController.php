@@ -47,15 +47,23 @@ class LotesController extends Controller
         if(isset($get['term'])){
             //Autocomplete
             if(isset($get['bairro']) && !empty($get['bairro']) && isset($get['quadra']) && !empty($get['quadra'])){
-                $sql = "SELECT * FROM lotes WHERE (nome LIKE '%".$get['term']."%') AND bairro=".$get['bairro']." AND quadra=".$get['quadra']." AND ".Qlib::compleDelete();
+               $sql = "SELECT * FROM lotes WHERE (nome LIKE '%".$get['term']."%') AND bairro=".$get['bairro']." AND quadra=".$get['quadra']." AND ".Qlib::compleDelete();
             }elseif(isset($get['bairro']) && !empty($get['bairro'])){
                 $sql = "SELECT * FROM lotes WHERE (nome LIKE '%".$get['term']."%') AND bairro=".$get['bairro']." AND ".Qlib::compleDelete();
             }else{
                 $sql = "SELECT l.*,q.nome quadra_valor FROM lotes as l
                 JOIN quadras as q ON q.id=l.quadra
-                WHERE (l.nome LIKE '%".$get['term']."%' OR q.nome LIKE '%".$get['term']."%' ) AND l.excluido !='s' AND l.deletado AND ".Qlib::compleDelete('l');
+                WHERE (l.nome LIKE '%".$get['term']."%' OR q.nome LIKE '%".$get['term']."%' ) AND ".Qlib::compleDelete('l');
             }
             $lote = DB::select($sql);
+            if(isset($get['familias'])&&$get['familias']=='s' && is_array($lote)){
+                foreach ($lote as $k => $v) {
+                    $sqlF = "SELECT f.*,b.nome,b.cpf FROM familias As f
+                    JOIN beneficiarios As b ON b.id=f.id_beneficiario
+                    WHERE f.loteamento LIKE '%\"".$v->id."\"%' AND ".Qlib::compleDelete('f')." AND ".Qlib::compleDelete('b');
+                    $lote[$k]->familias = DB::select($sqlF);
+                }
+            }
             $ret['lote'] = $lote;
             return $ret;
         }else{
@@ -138,7 +146,7 @@ class LotesController extends Controller
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            'bairro'=>['label'=>'Bairro','active'=>false,'type'=>'hidden_text','exibe_busca'=>'d-block','event'=>'','tam'=>'12','arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'value'=>@$_GET['bairro']],
+            'bairro'=>['label'=>'Bairro','active'=>true,'type'=>'hidden_text','exibe_busca'=>'d-block','event'=>'','tam'=>'12','arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'value'=>@$_GET['bairro']],
             'quadra'=>[
                 'label'=>'Quadra',
                 'active'=>true,
@@ -158,7 +166,7 @@ class LotesController extends Controller
                 'value'=>@$_GET['quadra'],
                 'class'=>'select2'
             ],
-            'nome'=>['label'=>'N. do Lote (Somente Números)','active'=>true,'placeholder'=>'Ex.: 14','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'7'],
+            'nome'=>['label'=>'N. do Lote (Somente Números)','active'=>true,'placeholder'=>'Ex.: 14','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'7','value'=>@$_GET['nome']],
             //'config[complemento]'=>['label'=>'Complemento','active'=>true,'placeholder'=>'Ex.: A','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','cp_busca'=>'config][complemento'],
             'cep'=>['label'=>'CEP','active'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-block','event'=>'mask-cep onchange=buscaCep1_0(this.value)','tam'=>'3'],
             'endereco'=>['label'=>'Endereço','active'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'7'],

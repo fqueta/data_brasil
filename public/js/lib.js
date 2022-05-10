@@ -1826,22 +1826,94 @@ function lib_conteudoMapa(id,tipo,local){
     if(id &&tipo=='lotes' && local=='quadras'){
         let arr_id = id.split('-');
         getAjax({
-            url:'/'+tipo+'/'+arr_id[1]+'/edit?ajax=s',
-            dados:{
-                id_bairro:arr_id[0],
-                id_quadra:arr_id[1],
-                id_lote:arr_id[2],
+            url:'/'+tipo+'?ajax=s',
+            data:{
+                bairro:arr_id[0],
+                quadra:arr_id[1],
+                term:arr_id[2],
+                familias:'s',
             }
         },function(res){
             $('#preload').fadeOut("fast");
-            /*
-            if(m=res.value.matricula){
-                $('[name="matricula"]').val(m);
-                $('#txt-matricula').html(m);
-            }else{
-                $('[name="matricula"]').val('');
-                $('#txt-matricula').html('');
-            }*/
+            lib_infoMaps({
+                res:res,
+                bairro:arr_id[0],
+                quadra:arr_id[1],
+                lote:arr_id[2],
+                local:local,
+                tipo:tipo,
+            });
         });
     }
+}
+function lib_infoMaps(config){
+    if(typeof config.res=='undefined' || typeof config.local=='undefined' || typeof config.tipo=='undefined'){
+        return;
+    }
+    //console.log(config);
+    if(typeof config.lote=='undefined'){
+        config.lote = 0;
+    }
+    if(typeof config.quadra=='undefined'){
+        config.quadra = 0;
+    }
+    try {
+        let mensPainel = '';
+        let tm1 = '<div class="card card-secondary shadow card-outline"><div class="card-header"><h3 class="card-title">{title}</h3>{btn_fechar}</div><div class="card-body {px}"><div class="list-group">{cont}</div></div>';
+        let tm2 = '<a class="list-group-item  list-group-item-action py-1 px-2" href="{href}">{label} <i class="fa fa-link ml-3"></i></a>';
+        let btn_fechar = '<div class="card-tools"><button onclick="lib_fechaCardOc();" type="button" class="btn btn-tool" data-card-widget="close" title="Collapse"><i class="fas fa-times"></i></button></div>';
+        let redirect = '?redirect=/mapas/'+config.local+'/'+config.quadra;
+        let redirect2 = '&redirect=/mapas/'+config.local+'/'+config.quadra;
+        if(dl=config.res[0].dados){
+            let link_lote = '/lotes/'+dl.id+'/edit'+redirect;
+            if(fam=dl.familias){
+                let cont = '';
+                if(fam[0]){
+
+                    for (let i = 0; i < fam.length; i++) {
+                        const el = fam[i];
+                        let href='/familias/'+el.id+'/show'+redirect;
+                        cont += tm2.replace('{href}',href);
+                        cont = cont.replace('{label}',el.nome);
+                    }
+                    if(fam.length>1){
+                        var title = 'Ocupantes';
+                    }else{
+                        var title = 'Ocupante';
+                    }
+                    mensPainel = tm1.replace('{cont}',cont);
+                    mensPainel = mensPainel.replace('{px}','p-0');
+                    mensPainel = mensPainel.replace('{title}',title+' <a href="'+link_lote+redirect+'" style="text-decoration:underline">lote '+dl.nome+'</a>');
+                }else{
+                    cont = 'Ocupante não cadastrado';
+                    cont += '<a href="/lotes/create?bairro='+config.bairro+'&quadra='+config.quadra+'&nome='+config.lote+redirect2+'" class="btn btn-primary btn-block mt-3">Cadastrar</a>';
+
+                    mensPainel = tm1.replace('{cont}',cont);
+                    mensPainel = mensPainel.replace('{title}','Aviso <a href="'+link_lote+redirect+'">lote '+dl.nome+'</a>');
+                }
+            }else{
+                cont = 'Família não localizada';
+                mensPainel = tm1.replace('{cont}',cont);
+                mensPainel = mensPainel.replace('{title}','Aviso <a href="'+link_lote+redirect+'">lote '+dl.nome+'</a>');
+            }
+        }else{
+            cont = config.res[0].value;
+            let btnCadA = '<a href="/familias/create?bairro='+config.bairro+'&quadra='+config.quadra+'&loteamento='+config.lote+redirect2+'" class="btn btn-primary btn-block mt-3">Cadastrar</a>';
+            mensPainel = tm1.replace('{cont}',cont);
+            mensPainel = mensPainel.replace('Cadastrar agora?',btnCadA);
+            mensPainel = mensPainel.replace('Lote','Cadastro do lote '+config.lote);
+            mensPainel = mensPainel.replace('{title}','Atenção');
+        }
+        if(mensPainel){
+            mensPainel = mensPainel.replace('{btn_fechar}',btn_fechar);
+            $('.mini-card').addClass('active').html(mensPainel);
+        }else{
+            $('.mini-card').removeClass('active').html('');
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+function lib_fechaCardOc(){
+    $('.mini-card').removeClass('active').html('');
 }

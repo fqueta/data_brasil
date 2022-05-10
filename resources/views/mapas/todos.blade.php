@@ -66,7 +66,8 @@
 
             <!-- A class "active" junto com "mini-card" muda o display para exibir -->
 
-            <div class="card mini-card border-0 shadow active">
+            <div class="mini-card border-0 active">
+                <!--
                 <div class="card-body p-0">
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-action py-1 px-2">Informação 1 <i
@@ -76,19 +77,17 @@
                         <a href="#" class="list-group-item list-group-item-action py-1 px-2">Informação 3 <i
                                 class="fa fa-link ml-3"></i></a>
                     </div>
-                </div>
+                </div>-->
             </div>
 
             <!-- Mini card de informações do lote termina aqui! -->
-
             <!-- Mini card de informações gerais:  -->
-
             <div class="card mini-card-geral border-light">
                 <div class="card-body text-light text-center p-2">
-                    <h6 class="border-bottom border-secondary pb-2">Camponesa</h6>
-                    <p><b>Quadra:</b> 70.2</p>
-                    <p><b>Total de lotes:</b> XX</p>
-                    <p><b>Total de famílias:</b> XX</p>
+                    <h6 class="border-bottom border-secondary pb-2">{{@$config['dados']['arr_bairros'][$config['dados']['bairro']]}}</h6>
+                    <p><b>Quadra:</b> {{$config['dados']['nome']}}</p>
+                    <p><b>Total de lotes:</b> <span class="total-lotes">{{@$config['dados']['lotes']}}</span></p>
+                    <p><b>Total de famílias:</b> <span class="total-familias">{{@$config['dados']['familias']}}</span></p>
                 </div>
             </div>
             <!--include('mapas.'.$config['local'].'.'.$config['dados']['id'])-->
@@ -104,4 +103,10 @@
         </div>
     </div>
 </div>
+<script>
+    //$(function(){
+        let lotes = document.querySelectorAll('#svg-img .lote').length;
+        document.querySelector('.total-lotes').innerHTML=lotes;
+    //});
+</script>
 @endif

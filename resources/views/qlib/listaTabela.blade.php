@@ -55,6 +55,11 @@
 
                     <td class="text-right d-flex d-print-none">
                         @can('update',$routa)
+                        @if ($routa=='quadras')
+                            <a title="Mapa" href=" {{ route('mapas.'.$routa,['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
+                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                            </a>
+                        @endif
                         @if ($routa=='familias')
                             <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
                                 <i class="fas fa-eye"></i>
@@ -113,7 +118,16 @@
                                     <td class="{{$cp[1]}}">{{ @$val[$cp[0]][$cp[1]] }}</td>
                                 @endif
                             @else
-                                <td class="{{$kd}}">{{$val->$kd}}</td>
+                                <td class="{{$kd}}">
+                                    @php
+                                        if(isset($vd['arr_opc']) && isset($vd['arr_opc'][$val->$kd])){
+                                            $td = $vd['arr_opc'][$val->$kd];
+                                        }else{
+                                            $td = $val->$kd;
+                                        }
+                                    @endphp
+                                    {{$td}}
+                                </td>
                             @endif
                         @endif
                     @endforeach

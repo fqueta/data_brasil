@@ -381,7 +381,7 @@ class FamiliaController extends Controller
                 ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM etapas WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
                 'tam'=>'6',
-                //'class'=>'select2'
+                'value'=>@$_GET['etapa'],
             ],
             'tipo_residencia'=>[
                 'label'=>'Tipo de residência*',
@@ -421,7 +421,7 @@ class FamiliaController extends Controller
                 'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
                 //'event'=>'onchange=carregaMatricula($(this).val())',
                 'tam'=>'6',
-                //'class'=>'select2'
+                'value'=>@$_GET['bairro'],
             ],
             'quadra'=>[
                 'label'=>'Quadra',
@@ -442,6 +442,7 @@ class FamiliaController extends Controller
                 'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\');',
                 'tam'=>'3',
                 //'class'=>'select2'
+                'value'=>@$_GET['quadra'],
             ],
             'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
             //'area_alvo'=>['label'=>'Área Alvo','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'2','placeholder'=>''],
@@ -489,6 +490,7 @@ class FamiliaController extends Controller
                     'salvar_primeiro' =>false,//exigir cadastro do vinculo antes de cadastrar este
                 ],
                 'script' =>'familias.loteamento',
+                'value' =>'["'.@$_GET['loteamento'].'"]',
             ],
             'id_beneficiario'=>[
                 'label'=>'Prorietário',

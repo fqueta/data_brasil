@@ -133,6 +133,9 @@
                                                                 }
                                                             }else{
                                                                 $value = @$config['data_selector']['list'][$klis][$kb];
+                                                                if(isset($vb['arr_opc'])){
+                                                                    $value = isset($vb['arr_opc'][$value])?$vb['arr_opc'][$value]:$value;
+                                                                }
                                                             }
                                                         @endphp
                                                     {{App\Qlib\Qlib::qShow([

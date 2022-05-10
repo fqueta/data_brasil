@@ -31,6 +31,9 @@ class MapasController extends Controller
             if($dados['token']){
                 $file = _upload::where('token_produto','=',$dados['token'])->get();
                 $arr_confile = Qlib::lib_json_array($file[0]['config']);
+                $dados['lotes'] = Qlib::totalReg('lotes',"WHERE quadra='".$dados['id']."' AND ".Qlib::compleDelete());
+                $dados['familias'] = Qlib::totalReg('familias',"WHERE quadra='".$dados['id']."' AND ".Qlib::compleDelete());
+                $dados['arr_bairros'] = Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s' AND ".Qlib::compleDelete(),'nome','id');
                 if($file[0]['pasta'] && $arr_confile['extenssao']=='svg'){
                     $config = [
                         'dados'=>$dados,
