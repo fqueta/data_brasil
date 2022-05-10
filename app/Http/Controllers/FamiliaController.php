@@ -622,6 +622,7 @@ class FamiliaController extends Controller
             'ac'=>'cad',
             'frm_id'=>'frm-familias',
             'route'=>$this->routa,
+            'arquivos'=>'docx,PDF,pdf,jpg,xlsx,png,jpeg,zip',
         ];
         $value = [
             'token'=>uniqid(),
@@ -802,6 +803,7 @@ class FamiliaController extends Controller
                 'frm_id'=>'frm-familias',
                 'route'=>$this->routa,
                 'id'=>$id,
+                'arquivos'=>'docx,PDF,pdf,jpg,xlsx,png,jpeg',
             ];
             if($dados[0]['loteamento']>0){
                 $bairro = Bairro::find($dados[0]['bairro']);

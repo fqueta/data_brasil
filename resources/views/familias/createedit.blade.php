@@ -47,6 +47,7 @@
                     'tab'=>'familias',
                     'listFiles'=>@$listFiles,
                     'routa'=>@$routa,
+                    'arquivos'=>@$config['arquivos'],
                 ])}}
             </div>
         </div>
