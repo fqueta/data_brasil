@@ -297,6 +297,9 @@ class QuadrasController extends Controller
                     }else{
                         $data[$key] = Qlib::dtBanco($value);
                     }
+                }elseif($key == 'token') {
+                    if(!$value)
+                    $data[$key] = uniqid();
                 }elseif($key == 'renda_familiar') {
                     $value = str_replace('R$','',$value);
                     $data[$key] = Qlib::precoBanco($value);

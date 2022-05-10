@@ -1,6 +1,15 @@
 @if (isset($config['svg_file']) && isset($config['dados']))
 <style type="text/css">
-
+	    .mapa .lote {
+            opacity: 0;
+            transition: all ease 0.4s;
+            cursor: pointer;
+            fill: #39c8ef;
+        }
+        .mapa .lote:hover {
+            opacity: 0.4;
+            transition: all ease 0.4s;
+        }
         .input-group-mapa {
             max-width: 250px;
             z-index: 2;
