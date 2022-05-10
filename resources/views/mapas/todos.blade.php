@@ -50,23 +50,28 @@
     <div class="card-header d-flex justify-content-between">
         <div class="input-group input-group-sm input-group-mapa">
             <div class="input-group-prepend">
-                <label class="input-group-text" for="select_bairro">Bairro</label>
+                <label class="input-group-text" for="select_bairro">{{__('Bairro')}}</label>
             </div>
-            <select class="custom-select" id="select_bairro">
-                <option selected>Selecione o bairro...</option>
-                <option value="1">Camponesa</option>
-                <option value="2">Córrego Pereira</option>
-                <option value="3">Matozinhos</option>
+            <select class="custom-select" onchange="carregaQuadras($(this).val());" id="select_bairro" id-atual="{{$config['dados']['bairro']}}">
+                <option value="" class="option_select" selected>{{__('Selecione o bairro')}}...</option>
+                @if (isset($config['dados']['arr_bairros']) && is_array($config['dados']['arr_bairros']))
+                    @foreach ($config['dados']['arr_bairros'] as $kb=>$vb)
+                        <option class="opcs" @if($config['dados']['bairro']==$kb) selected @endif value="{{$kb}}">{{$vb}}</option>
+                    @endforeach
+                @endif
             </select>
         </div>
-        <div class="input-group input-group-sm input-group-mapa">
+        <div class="input-group input-group-sm input-group-mapa" div-id="quadra">
             <div class="input-group-prepend">
-                <label class="input-group-text" for="select_quadra">Quadra</label>
+                <label class="input-group-text" for="select_quadra">{{__('Quadra')}}</label>
             </div>
-            <select class="custom-select" id="select_quadra">
-                <option selected>Selecione a quadra...</option>
-                <option value="1">70.2</option>
-                <option value="2">22.4</option>
+            <select class="custom-select" id="select_quadra" id-atual="{{$config['dados']['id']}}">
+                <option class="option_select" value="" selected>{{__('Selecione a quadra')}}...</option>
+                @if (isset($config['dados']['arr_quadras']) && is_array($config['dados']['arr_quadras']))
+                    @foreach ($config['dados']['arr_quadras'] as $kb=>$vb)
+                        <option class="opcs" @if($config['dados']['id']==$kb) selected @endif value="{{$kb}}">{{$vb}}</option>
+                    @endforeach
+                @endif
             </select>
         </div>
     </div>
@@ -76,22 +81,11 @@
             <!-- A class "active" junto com "mini-card" muda o display para exibir -->
 
             <div class="mini-card border-0 active">
-                <!--
-                <div class="card-body p-0">
-                    <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-action py-1 px-2">Informação 1 <i
-                                class="fa fa-link ml-3"></i></a>
-                        <a href="#" class="list-group-item list-group-item-action py-1 px-2">Informação 2 <i
-                                class="fa fa-link ml-3"></i></a>
-                        <a href="#" class="list-group-item list-group-item-action py-1 px-2">Informação 3 <i
-                                class="fa fa-link ml-3"></i></a>
-                    </div>
-                </div>-->
             </div>
 
             <!-- Mini card de informações do lote termina aqui! -->
             <!-- Mini card de informações gerais:  -->
-            <div class="card mini-card-geral border-light">
+            <div class="card mini-card-geral map border-light">
                 <div class="card-body text-light text-center p-2">
                     <h6 class="border-bottom border-secondary pb-2">{{@$config['dados']['arr_bairros'][$config['dados']['bairro']]}}</h6>
                     <p><b>Quadra:</b> {{$config['dados']['nome']}}</p>
@@ -112,9 +106,32 @@
     </div>
 </div>
 <script>
-    //$(function(){
-        let lotes = document.querySelectorAll('#svg-img .lote').length;
-        document.querySelector('.total-lotes').innerHTML=lotes;
-    //});
+    let lotes = document.querySelectorAll('#svg-img .lote').length;
+    document.querySelector('.total-lotes').innerHTML=lotes;
+    let select_bairro = document.querySelector('#select_bairro');
+    let select_quadra = document.querySelector('#select_quadra');
+    window.onload = function () {
+        select_bairro.addEventListener('change',function () {
+            let id_atual = this.getAttribute('id-atual');
+            if(id_atual==this.value){
+                document.querySelector('#svg-img').style.display = 'block';
+                document.querySelector('.mini-card-geral').style.display = 'block';
+                document.querySelector('.painel-zoom').style.display = 'block';
+            }else{
+                document.querySelector('#svg-img').style.display = 'none';
+                document.querySelector('.mini-card-geral').style.display = 'none';
+                document.querySelector('.painel-zoom').style.display = 'none';
+            }
+
+        });
+        select_quadra.addEventListener('change',function () {
+            if(this.value!=''){
+                var url = window.location.href;
+                let quadraAt = this.getAttribute('id-atual');
+                url = url.replaceAll(quadraAt,this.value);
+                window.location = url;
+            }
+        });
+    }
 </script>
 @endif

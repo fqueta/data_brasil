@@ -14,99 +14,102 @@
                     <tbody>
 
                         @foreach ($config['value'] as $k=>$v)
-                        <tr>
-                            <td>
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h4 class="card-title">{{__('Ficha de cadastro de ocupante')}}</h4>
-                                        <div class="card-tools">
-                                            <label for="conjuge">{{__('Lote')}}:</label>
-                                                <span>
-                                                    {{@$_GET['dados']['nome']}}
-                                                    <b>
-                                                        <a title="{{__('Editar complemento')}}" href="{{route('familias.edit',['id'=>$v['id']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration: underline">
-                                                            {{@$v['complemento_lote']}}
-                                                        </a>
-                                                    </b>
-                                                </span>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <label for="proprietario">
-                                                    {{__('Proprietário')}}:
-                                                </label>
-                                                <span>
-                                                    @if ($v['id_beneficiario'])
-                                                        <a title="{{__('Editar cadastro de proprietário')}}" href="{{route('beneficiarios.edit',['id'=>$v['id_beneficiario']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration:underline">
-                                                            {{@$v['beneficiario']}}
-                                                        </a>
-                                                    @else
-                                                        {{__('Não informado')}}
-                                                    @endif
-                                                </span>
-                                                <label for="conjuge">{{__('Conjuge')}}:</label>
-                                                <span>
-                                                    @if ($v['id_conjuge'])
-                                                        <a title="{{__('Editar cadastro do Conjuge')}}" href="{{route('beneficiarios.edit',['id'=>$v['id_conjuge']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration:underline">
-                                                            {{@$v['conjuge']}}
-                                                        </a>
-                                                    @else
-                                                        {{__('Não informado')}}
-                                                    @endif
-                                                </span>
+                            @if (isset($v['id_beneficiario']) && $v['id_beneficiario'])
+                            <tr>
+                                <td>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">{{__('Ficha de cadastro de ocupante')}}</h4>
+                                            <div class="card-tools">
+                                                <label for="conjuge">{{__('Lote')}}:</label>
+                                                    <span>
+                                                        {{@$_GET['dados']['nome']}}
+                                                        <b>
+                                                            <a title="{{__('Editar complemento')}}" href="{{route('familias.edit',['id'=>$v['id']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration: underline">
+                                                                {{@$v['complemento_lote']}}
+                                                            </a>
+                                                        </b>
+                                                    </span>
                                             </div>
-                                            <div class="col-md-12">
-                                                <hr>
-                                                <h5>
-                                                    Declarações adicionais sobre a posse:
-                                                </h5>
-                                                <p>
-                                                    1. Os ocupantes acima adquiriram a unidade imobiliária por:
-                                                </p>
-                                                @if (isset($config['arr_opc']) && is_array($config['arr_opc']))
-                                                    @foreach ($config['arr_opc'] as $k2=>$v2)
-                                                    <div class="form-check">
-                                                        <label class="form-check-label">
-                                                        <input type="radio" class="form-check-input" name="config[declaracao_posse][{{$v['id']}}]" id="" value="{{$k2}}"
-                                                        @if (isset($_GET['dados']['config']['declaracao_posse'][$v['id']]) && $_GET['dados']['config']['declaracao_posse'][$v['id']]==$k2)
-                                                        checked
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="proprietario">
+                                                        {{__('Proprietário')}}:
+                                                    </label>
+                                                    <span>
+                                                        @if ($v['id_beneficiario'])
+                                                            <a title="{{__('Editar cadastro de proprietário')}}" href="{{route('beneficiarios.edit',['id'=>$v['id_beneficiario']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration:underline">
+                                                                {{@$v['beneficiario']}}
+                                                            </a>
+                                                        @else
+                                                            {{__('Não informado')}}
                                                         @endif
-                                                        >
-                                                        {{__($v2['label'])}}
-                                                      </label>
-                                                    </div>
-                                                    @endforeach
-                                                @endif
+                                                    </span>
+                                                    <label for="conjuge">{{__('Conjuge')}}:</label>
+                                                    <span>
+                                                        @if ($v['id_conjuge'])
+                                                            <a title="{{__('Editar cadastro do Conjuge')}}" href="{{route('beneficiarios.edit',['id'=>$v['id_conjuge']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" style="text-decoration:underline">
+                                                                {{@$v['conjuge']}}
+                                                            </a>
+                                                        @else
+                                                            {{__('Não informado')}}
+                                                        @endif
+                                                    </span>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <hr>
+                                                    <h5>
+                                                        Declarações adicionais sobre a posse:
+                                                    </h5>
+                                                    <p>
+                                                        1. Os ocupantes acima adquiriram a unidade imobiliária por:
+                                                    </p>
+                                                    @if (isset($config['arr_opc']) && is_array($config['arr_opc']))
+                                                        @foreach ($config['arr_opc'] as $k2=>$v2)
+                                                        <div class="form-check">
+                                                            <label class="form-check-label">
+                                                            <input type="radio" class="form-check-input" name="config[declaracao_posse][{{$v['id']}}]" id="" value="{{$k2}}"
+                                                            @if (isset($_GET['dados']['config']['declaracao_posse'][$v['id']]) && $_GET['dados']['config']['declaracao_posse'][$v['id']]==$k2)
+                                                            checked
+                                                            @endif
+                                                            >
+                                                            {{__($v2['label'])}}
+                                                        </label>
+                                                        </div>
+                                                        @endforeach
+                                                    @endif
 
+                                                </div>
+
+                                                {{App\Qlib\Qlib::qForm([
+                                                    'type'=>'date',
+                                                    'campo'=>'config[data_posse]['.$v['id'].']',
+                                                    'label'=>'Data da posse',
+                                                    'placeholder'=>'',
+                                                    'ac'=>$config['ac'],
+                                                    'value'=>@$_GET['dados']['config']['data_posse'][$v['id']],
+                                                    'tam'=>'12',
+                                                    'event'=>'',
+                                                    'class'=>'',
+                                                    'class_div'=>'',
+                                                ])}}
                                             </div>
+                                        </div>
+                                        <div class="card-footer text-muted text-right">
+                                            <a title="{{__('Imprimir a ficha de ocupante')}}" href="javascript:abrirjanelaPadraoConsulta('{{route('lotes.ficha_ocupantes',['lote'=>@$_GET['dados']['id'],'familia'=>$v['id_beneficiario']])}}')" title="{{__('Emitir')}}" class="btn btn-outline-secondary">
+                                                <i class="fa fa-print" aria-hidden="true"></i> {{__('Ficha de ocupante')}}
+                                            </a>
 
-                                            {{App\Qlib\Qlib::qForm([
-                                                'type'=>'date',
-                                                'campo'=>'config[data_posse]['.$v['id'].']',
-                                                'label'=>'Data da posse',
-                                                'placeholder'=>'',
-                                                'ac'=>$config['ac'],
-                                                'value'=>@$_GET['dados']['config']['data_posse'][$v['id']],
-                                                'tam'=>'12',
-                                                'event'=>'',
-                                                'class'=>'',
-                                                'class_div'=>'',
-                                            ])}}
+                                            <a href="{{route('familias.edit',['id'=>$v['id']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" title="{{__('Editar')}}" class="btn btn-outline-primary">
+                                                <i class="fa fa-pen" aria-hidden="true"></i> {{__('Editar')}}
+                                            </a>
                                         </div>
                                     </div>
-                                    <div class="card-footer text-muted text-right">
-                                        <a title="{{__('Imprimir a ficha de ocupante')}}" href="javascript:abrirjanelaPadraoConsulta('{{route('lotes.ficha_ocupantes',['lote'=>@$_GET['dados']['id'],'familia'=>$v['id_beneficiario']])}}')" title="{{__('Emitir')}}" class="btn btn-outline-secondary">
-                                            <i class="fa fa-print" aria-hidden="true"></i> {{__('Ficha de ocupante')}}
-                                        </a>
-                                        <a href="{{route('familias.edit',['id'=>$v['id']])}}?redirect={{route('lotes.edit',['id'=>$v['id_lote']])}}" title="{{__('Editar')}}" class="btn btn-outline-primary">
-                                            <i class="fa fa-pen" aria-hidden="true"></i> {{__('Editar')}}
-                                        </a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>

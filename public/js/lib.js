@@ -1711,10 +1711,7 @@ function carregaQuadras(val,selQuadra){
                 opc += option_select.replaceAll('{label}',v.nome);
                 opc = opc.replaceAll('{value}',v.id);
             });
-            //$(opc).insertAfter('[div-id="'+selQuadra+'"] option[disabled]');
             $(opc).insertAfter('[div-id="'+selQuadra+'"] option.option_select');
-
-            //$(selector).insertAfter('[div-id="bairro"]');
         }
     });
     $.ajax({
@@ -1797,23 +1794,41 @@ function lib_abrirListaOcupantes(){
 }
 function zoom(c) {
     var s = new Number(50);
+    let a = 0;
     let box = document.querySelector('#svg-img');
     let width = box.style.width;
+    let top = box.style.top;
+    let left = box.style.left;
     let height = box.offsetHeight;
     var w = width.replace('%','');
+    var l = left.replace('%','');
+    var t = top.replace('%','');
     w = new Number(w);
     if(w==0){
         w=100;
     }
     if(c=='p'){
-        box.style.width = (w+s)+'%';
+        a=w+s;
+        to=t-s;
+        le=l-s;
+        box.style.width = (a)+'%';
+        box.style.top = (to)+'%';
+        box.style.left = (le)+'%';
     }
     if(c=='r'){
         //retorna ao inicio
         box.style.width = '100%';
+        box.style.left = '0%';
+        box.style.top = '0%';
     }
     if(c=='m'){
-        box.style.width = (w-s)+'%';
+        a=w-s;
+        to=new Number(t)+new Number(s);
+        le=new Number(l)+new Number(s);
+
+        box.style.width = (a)+'%';
+        box.style.top = (to)+'%';
+        box.style.left = (le)+'%';
     }
 }
 function lib_conteudoMapa(id,tipo,local){
@@ -1830,7 +1845,7 @@ function lib_conteudoMapa(id,tipo,local){
             data:{
                 bairro:arr_id[0],
                 quadra:arr_id[1],
-                term:arr_id[2],
+                term:new Number(arr_id[2]),
                 familias:'s',
             }
         },function(res){
@@ -1850,7 +1865,6 @@ function lib_infoMaps(config){
     if(typeof config.res=='undefined' || typeof config.local=='undefined' || typeof config.tipo=='undefined'){
         return;
     }
-    //console.log(config);
     if(typeof config.lote=='undefined'){
         config.lote = 0;
     }
