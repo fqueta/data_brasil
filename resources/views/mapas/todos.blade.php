@@ -91,7 +91,6 @@
                 </div>
             </div>
             <!--include('mapas.'.$config['local'].'.'.$config['dados']['id'])-->
-            <?xml version="1.0" encoding="utf-8"?>
             @php
                 $p = $_SERVER['DOCUMENT_ROOT'].$config['svg_file'];
                 include $p;
