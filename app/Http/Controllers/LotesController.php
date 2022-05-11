@@ -684,10 +684,13 @@ class LotesController extends Controller
                     $arr_sh['mes_extenso'] = ['lab'=>'Mês','v'=>$meses[date('m')]];
                     $arr_sh['ano'] = ['lab'=>'Ano','v'=>date('Y')];
                     if(isset($familia[0]['beneficiario'])){
-                        $arr_sh['nome_proprietario'] = ['lab'=>'Ano','v'=>$familia[0]['beneficiario']];
+                        $arr_sh['nome_proprietario'] = ['lab'=>'Nome proprietário','v'=>$familia[0]['beneficiario']];
+                        $arr_sh['nome_conjuge'] = ['lab'=>'Ano','v'=>''];
+                        $arr_sh['espaco_assinatura_conjuge'] = ['lab'=>'espaço','v'=>''];
                     }
                     if(isset($familia[0]['conjuge'])){
                         $arr_sh['nome_conjuge'] = ['lab'=>'Ano','v'=>$familia[0]['conjuge']];
+                        $arr_sh['espaco_assinatura_conjuge'] = ['lab'=>'espaço','v'=>'______________________________'];
                     }
                 }
                 foreach ($arr_sh as $ks => $vs) {
@@ -1021,6 +1024,5 @@ class LotesController extends Controller
         $title = $lote.'-'.strtoupper($ben);
         $titulo = '';
         return view('lotes.ficha_ocupantes',['dados'=>$dados['html'],'titulo'=>$titulo,'title'=>$title]);
-        //return view $ret;
     }
 }
