@@ -1,20 +1,41 @@
 
 <script>
     $( function() {
-        $( "#svg-img" ).draggable(
-            /*
-            {
-            drag: function( event, ui ) {
-                // Keep the left edge of the element
-                // at least 100 pixels from the container
-                //ui.position.left = Math.min( 100, ui.position.left );
-                console.log(ui);
-            }}
-            */
-        );
+        if($(window).width()>368 ){
+            $( "#svg-img" ).draggable();
+        }
         $(".lote").dblclick(function(){
             var id = $(this).attr('id');
             lib_conteudoMapa(id,'lotes','quadras');
         });
     });
+    </script>
+    <script>
+        let lotes = document.querySelectorAll('#svg-img .lote').length;
+        document.querySelector('.total-lotes').innerHTML=lotes;
+        let select_bairro = document.querySelector('#select_bairro');
+        let select_quadra = document.querySelector('#select_quadra');
+        window.onload = function () {
+            select_bairro.addEventListener('change',function () {
+                let id_atual = this.getAttribute('id-atual');
+                if(id_atual==this.value){
+                    document.querySelector('#svg-img').style.display = 'block';
+                    document.querySelector('.mini-card-geral').style.display = 'block';
+                    document.querySelector('.painel-zoom').style.display = 'block';
+                }else{
+                    document.querySelector('#svg-img').style.display = 'none';
+                    document.querySelector('.mini-card-geral').style.display = 'none';
+                    document.querySelector('.painel-zoom').style.display = 'none';
+                }
+
+            });
+            select_quadra.addEventListener('change',function () {
+                if(this.value!=''){
+                    var url = window.location.href;
+                    let quadraAt = this.getAttribute('id-atual');
+                    url = url.replaceAll(quadraAt,this.value);
+                    window.location = url;
+                }
+            });
+        }
     </script>

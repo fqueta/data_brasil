@@ -87,15 +87,12 @@
     <div class="card-body" id="view-mapa">
             <div class="mini-card border-0 active">
             </div>
-
-            <!-- Mini card de informações do lote termina aqui! -->
-            <!-- Mini card de informações gerais:  -->
             <div class="card mini-card-geral map border-light">
                 <div class="card-body text-light text-center p-2">
                     <h6 class="border-bottom border-secondary pb-2">{{@$config['dados']['arr_bairros'][$config['dados']['bairro']]}}</h6>
-                    <p><b>Quadra:</b> {{$config['dados']['nome']}}</p>
-                    <p><b>Total de lotes:</b> <span class="total-lotes">{{@$config['dados']['lotes']}}</span></p>
-                    <p><b>Total de famílias:</b> <span class="total-familias">{{@$config['dados']['familias']}}</span></p>
+                    <p><b>{{__('Quadra')}}:</b> {{$config['dados']['nome']}}</p>
+                    <p><b>{{__('Total de lotes')}}:</b> <span class="total-lotes">{{@$config['dados']['lotes']}}</span></p>
+                    <p><b>{{__('Total de famílias')}}:</b> <span class="total-familias">{{@$config['dados']['familias']}}</span></p>
                 </div>
             </div>
             <!--include('mapas.'.$config['local'].'.'.$config['dados']['id'])-->
@@ -110,33 +107,4 @@
         </div>
     </div>
 </div>
-<script>
-    let lotes = document.querySelectorAll('#svg-img .lote').length;
-    document.querySelector('.total-lotes').innerHTML=lotes;
-    let select_bairro = document.querySelector('#select_bairro');
-    let select_quadra = document.querySelector('#select_quadra');
-    window.onload = function () {
-        select_bairro.addEventListener('change',function () {
-            let id_atual = this.getAttribute('id-atual');
-            if(id_atual==this.value){
-                document.querySelector('#svg-img').style.display = 'block';
-                document.querySelector('.mini-card-geral').style.display = 'block';
-                document.querySelector('.painel-zoom').style.display = 'block';
-            }else{
-                document.querySelector('#svg-img').style.display = 'none';
-                document.querySelector('.mini-card-geral').style.display = 'none';
-                document.querySelector('.painel-zoom').style.display = 'none';
-            }
-
-        });
-        select_quadra.addEventListener('change',function () {
-            if(this.value!=''){
-                var url = window.location.href;
-                let quadraAt = this.getAttribute('id-atual');
-                url = url.replaceAll(quadraAt,this.value);
-                window.location = url;
-            }
-        });
-    }
-</script>
 @endif
