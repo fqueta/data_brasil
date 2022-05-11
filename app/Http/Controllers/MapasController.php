@@ -5,14 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\_upload;
 use App\Models\Quadra;
 use App\Qlib\Qlib;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MapasController extends Controller
 {
+    protected $user;
     public $routa;
     public $view;
-    public function __construct()
+    public function __construct(User $user)
     {
+        $this->middleware('auth');
         $this->routa = 'quadras';
         $this->view = $this->routa;
     }

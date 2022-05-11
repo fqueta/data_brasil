@@ -31,9 +31,14 @@
             });
             select_quadra.addEventListener('change',function () {
                 if(this.value!=''){
-                    var url = window.location.href;
+                    let url = window.location.href;
                     let quadraAt = this.getAttribute('id-atual');
-                    url = url.replaceAll(quadraAt,this.value);
+                    let urlPart = window.location.pathname;
+                    if(urlPart=='/home'){
+                        url = '/mapas/quadras/'+this.value+'?redirect=/quadras?idCad='+this.value;
+                    }else{
+                        url = url.replaceAll(quadraAt,this.value);
+                    }
                     window.location = url;
                 }
             });

@@ -1,7 +1,7 @@
 
 @php
     if(isset($config['ac']) && $config['ac']=='alt'){
-        $_GET['redirect'] = isset($_GET['redirect']) ? $_GET['redirect'] : route($config['route'].'.index').'?idCad='.$value['id'];
+        $_GET['redirect'] = isset($_GET['redirect']) ? $_GET['redirect'] : route($config['route'].'.index').'?idCad='.@$value['id'];
         if(isset($_GET['redirectPos'])&&$_GET['redirectPos']=='n'){
             $_GET['redirect'] = false;
         }

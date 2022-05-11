@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Painel')
+@section('title', 'Data Brasil - Painel')
 
 @section('content_header')
 <div class="row mb-2">
@@ -44,33 +44,28 @@
     <div class="row mb-5">
         @if (isset($config['c_familias']['progresso']))
         <div class="col-md-5">
-            <p class="text-center">
-                <strong>Progresso dos cadastros</strong>
-            </p>
-                @foreach ($config['c_familias']['progresso'] as $k=>$v)
-                    <div class="progress-group">
-                        {{$v['label']}}
-                        <span class="float-right"><b>{{$v['total']}}</b>/{{$v['geral']}}</span>
-                        <div class="progress progress-sm">
-                            <div class="progress-bar {{$v['color']}}" style="width: {{$v['porcento']}}%;"></div>
+            <div class="card">
+                <div class="card-header">
+                    <strong>Progresso dos cadastros</strong>
+                </div>
+                <div class="card-body">
+                    @foreach ($config['c_familias']['progresso'] as $k=>$v)
+                        <div class="progress-group">
+                            {{$v['label']}}
+                            <span class="float-right"><b>{{$v['total']}}</b>/{{$v['geral']}}</span>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar {{$v['color']}}" style="width: {{$v['porcento']}}%;"></div>
+                            </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
+            </div>
         </div>
         @endif
-        <div class="col-md-8">
-            <!--
-            <p class="text-center">
-                <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong>
-            </p>
-            <div class="chart">
-                <div class="chartjs-size-monitor">
-                    <div class="chartjs-size-monitor-expand"><div class=""></div></div>
-                    <div class="chartjs-size-monitor-shrink"><div class=""></div></div>
-                </div>
-
-                <canvas id="salesChart" height="180" style="height: 180px; display: block; width: 680px;" width="680" class="chartjs-render-monitor"></canvas>
-            </div>-->
+        <div class="col-md-7">
+            @if (isset($config['mapa']['config']))
+                {!! App\Http\Controllers\MapasController::exibeMapas($config['mapa']['config']) !!}
+            @endif
         </div>
     </div>
     @else
@@ -86,9 +81,10 @@
 @stop
 
 @section('css')
-    <link rel="stylesheet" href="{{url('/')}}/css/lib.css">
+    @include('qlib.csslib')
 @stop
 
 @section('js')
-    <script> console.log('Hi!'); </script>
+    @include('qlib.jslib')
+    @include('mapas.jslib')
 @stop

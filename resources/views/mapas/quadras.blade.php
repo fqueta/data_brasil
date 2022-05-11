@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Mapas')
+@section('title', 'Data Brasil - Mapas Quadras')
 
 @section('content_header')
     <!--<h3>{{$titulo}}</h3>-->
@@ -21,13 +21,11 @@
             </div>
             <div class="card-body">
                 {!! App\Http\Controllers\MapasController::exibeMapas($config) !!}
-
             </div>
         </div>
     </div>
     @include('qlib.btnedit')
 </div>
-
 @stop
 
 @section('css')
@@ -37,14 +35,5 @@
 @section('js')
     @include('qlib.jslib')
     @include('mapas.jslib')
-    <!--
-    <script type="text/javascript">
-          $(function(){
-            $('a.print-card').on('click',function(e){
-                openPageLink(e,$(this).attr('href'),"{{date('Y')}}");
-            });
-            $('#inp-cpf,#inp-cpf_conjuge').inputmask('999.999.999-99');
-          });
-    </script>-->
 @stop
 

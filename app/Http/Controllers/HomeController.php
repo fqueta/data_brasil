@@ -40,9 +40,17 @@ class HomeController extends Controller
     public function index()
     {
         $controlerFamilias = new FamiliaController(Auth::user());
+        $controlerMapas = new MapasController(Auth::user());
         $dadosFamilias = $controlerFamilias->queryFamilias();
+        $id_quadra_home = Qlib::qoption('id_quadra_home')?Qlib::qoption('id_quadra_home'):@$_GET['id_qh'];
+        if($id_quadra_home){
+            $dadosMp = $controlerMapas->queryQuadras($id_quadra_home);
+        }else{
+            $dadosMp = false;
+        }
         $config = [
             'c_familias'=>$dadosFamilias,
+            'mapa'=>$dadosMp,
         ];
         return view('home',[
             'config'=>$config,
