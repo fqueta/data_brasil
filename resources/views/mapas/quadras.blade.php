@@ -3,19 +3,18 @@
 @section('title', 'Mapas')
 
 @section('content_header')
-    <h3>{{$titulo}}</h3>
+    <!--<h3>{{$titulo}}</h3>-->
 @stop
 @section('content')
 <div class="row">
     <div class="col-md-12 mens">
-        {{ App\Qlib\Qlib::formatMensagem( $_GET) }}
     </div>
     <div class="col-md-12">
         <div class="card card-primary card-outline">
             <div class="card-header">
-                <h3 class="card-title">Informações</h3>
+                <h3 class="card-title">{{$titulo}}</h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <button type="button" class="btn btn-tool d-print-none" data-card-widget="collapse" title="Collapse">
                       <i class="fas fa-minus"></i>
                     </button>
                 </div>
@@ -26,6 +25,7 @@
             </div>
         </div>
     </div>
+    @include('qlib.btnedit')
 </div>
 
 @stop

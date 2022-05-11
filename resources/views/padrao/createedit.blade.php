@@ -8,7 +8,6 @@
 @section('content')
 <div class="row">
     <div class="col-md-12 mens">
-        {{ App\Qlib\Qlib::formatMensagem( $_GET) }}
     </div>
     <div class="col-md-8">
         <div class="card card-primary">

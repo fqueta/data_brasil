@@ -9,8 +9,16 @@ use Illuminate\Http\Request;
 
 class MapasController extends Controller
 {
+    public $routa;
+    public $view;
+    public function __construct()
+    {
+        $this->routa = 'quadras';
+        $this->view = $this->routa;
+    }
     public function quadras($id = null)
     {
+        $this->authorize('ler', $this->routa);
         $ret = $this->queryQuadras($id);
         return view('mapas.quadras',$ret);
     }
@@ -44,6 +52,11 @@ class MapasController extends Controller
                     }else{
                         $config['mens'] = Qlib::formatMensagemInfo('Erro Arquivo de mapa inválido!','danger');
                     }
+                    if($dados['arr_bairros']){
+                        $nb = $dados['arr_bairros'][$dados['bairro']];
+                        $title = str_replace('Quadra','Área '.$nb.' - Quadra',$title);
+                        $titulo = str_replace('Quadra','Área '.$nb.' - Quadra',$titulo);
+                    }
                 }else{
                     $config['mens'] = Qlib::formatMensagemInfo('Erro Arquivo não encontrado!','danger');
                 }
@@ -51,6 +64,9 @@ class MapasController extends Controller
                 $config['mens'] = Qlib::formatMensagemInfo('Erro Token inválido!','danger');
             }
             if($config){
+                $config['ac']='alt';
+                $config['route']=$this->routa;
+                $config['id']=$dados['id'];
                 $ret = [
                     'config'=>$config,
                     'exec'=>true,
@@ -63,6 +79,7 @@ class MapasController extends Controller
     }
     public function exibeMapas($config = null)
     {
+        //$this->authorize('ler', $this->routa);
         if(isset($config['dados']) && isset($config['svg_file'])){
             return view('mapas.todos',['config'=>$config]);
         }elseif(isset($config['mens'])){

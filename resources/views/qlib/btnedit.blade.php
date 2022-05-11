@@ -15,7 +15,7 @@
             @endcan
             @can('update',$config['route'])
                 <button type="button" btn="print" onclick="window.print();" class="btn btn-outline-primary"><i class="fas fa-print"></i></button>
-                <a href="{{route($config['route'].'.edit',['id'=>$config['id']])}}" btn="editar"  class="btn btn-outline-primary"> <i class="fa fa-pen" aria-hidden="true"></i> Editar</a>
+                <a href="{{route($config['route'].'.edit',['id'=>$config['id']])}}?redirect={{App\Qlib\Qlib::urlAtual()}}" btn="editar"  class="btn btn-outline-primary"> <i class="fa fa-pen" aria-hidden="true"></i> Editar</a>
             @endcan
         @else
 
