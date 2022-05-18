@@ -48,6 +48,7 @@ class Familia extends Model
         'autor',
         'obs',
         'tags',
+        'config',
         'excluido',
         'reg_excluido',
         'deletado',

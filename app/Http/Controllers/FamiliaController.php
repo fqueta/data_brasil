@@ -47,6 +47,7 @@ class FamiliaController extends Controller
         $get = isset($_GET) ? $_GET:[];
         $ano = date('Y');
         $mes = date('m');
+        //dd($get);
         $idUltimaEtapa = Etapa::where('ativo','=','s')->where('excluido','=','n')->where('deletado','=','n')->max('id');
         $tags = Tag::where('ativo','=','s')->where('pai','=','1')->where('excluido','=','n')->where('deletado','=','n')->get();
         $id_pendencia = 3;
@@ -94,17 +95,24 @@ class FamiliaController extends Controller
                                 }
                             }
                         }else{
-
-                            $familia->where($key,'LIKE','%'. $value. '%');
-                            if(isset($campos[$key]['type']) && $campos[$key]['type']=='select'){
-                                $value = $campos[$key]['arr_opc'][$value];
-                            }
                             if($key=='quadra'){
+                                $familia->where($key,'=', $value);
+                                if(isset($campos[$key]['type']) && $campos[$key]['type']=='select'){
+                                    $value = $campos[$key]['arr_opc'][$value];
+                                }
                                 $arr_titulo[$campos[$key]['label']] = Qlib::valorTabDb('quadras','id',$value,'nome');
                             }elseif($key=='id_beneficiario'){
+                                $familia->where($key,'=', $value);
+                                if(isset($campos[$key]['type']) && $campos[$key]['type']=='select'){
+                                    $value = $campos[$key]['arr_opc'][$value];
+                                }
                                 $arr_titulo[$campos[$key]['label']] = Qlib::valorTabDb('beneficiarios','id',$value,'nome');
                             }else{
                                 $arr_titulo[$campos[$key]['label']] = $value;
+                                $familia->where($key,'LIKE','%'. $value. '%');
+                                if(isset($campos[$key]['type']) && $campos[$key]['type']=='select'){
+                                    $value = $campos[$key]['arr_opc'][$value];
+                                }
                             }
                             $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                         }
