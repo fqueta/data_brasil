@@ -132,12 +132,18 @@
                                                                     $value = $config['data_selector']['list'][$klis][$kb];
                                                                 }
                                                             }else{
-                                                                $value = @$config['data_selector']['list'][$klis][$kb];
+                                                                $vlue = @$config['data_selector']['list'][$klis][$kb];
                                                                 if(isset($vb['arr_opc'])){
-                                                                    $value = isset($vb['arr_opc'][$value])?$vb['arr_opc'][$value]:$value;
+                                                                    $value = isset($vb['arr_opc'][$vlue])?$vb['arr_opc'][$vlue]:$vlue;
+                                                                }else{
+                                                                    $value = $vlue;
                                                                 }
                                                             }
+                                                            if ($vb['label']=='Quadra'){
+                                                                $value = $vlue;
+                                                            }
                                                         @endphp
+
                                                     {{App\Qlib\Qlib::qShow([
                                                         'type'=>@$vb['type'],
                                                         'campo'=>$kb,
