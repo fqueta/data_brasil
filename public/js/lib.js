@@ -1690,6 +1690,12 @@ function carregaQuadras(val,selQuadra){
     if(typeof selQuadra=='undefined'){
         selQuadra='quadra';
     }
+    const url = new URL(window.location.href);
+    let pagina = url.pathname;
+    let pag=pagina.split('/');
+    if(pag.length==2){
+        selQuadra = 'filter['+selQuadra+']';
+    }
     if(val==''){
         $('[div-id="'+selQuadra+'"] option.opcs').each(function(){
             $(this).remove();
@@ -1707,7 +1713,7 @@ function carregaQuadras(val,selQuadra){
         });
         if(d=res.dados.data){
             $.each(d,function(k,v){
-                //console.log(v);
+                console.log(v);
                 opc += option_select.replaceAll('{label}',v.nome);
                 opc = opc.replaceAll('{value}',v.id);
             });

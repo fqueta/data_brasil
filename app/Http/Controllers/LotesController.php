@@ -82,7 +82,7 @@ class LotesController extends Controller
                 $i = 0;
                 foreach ($get['filter'] as $key => $value) {
                     if(!empty($value)){
-                        if($key=='id'){
+                        if($key=='id' || $key=='quadra'){
                             $lote->where($key,'LIKE', $value);
                             $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                             $arr_titulo[$campos[$key]['label']] = $value;
@@ -142,11 +142,30 @@ class LotesController extends Controller
         $user = Auth::user();
         $quadra = new QuadrasController($user);
         $arr_opc_ocupantes = Qlib::qoption('opc_declara_posse','array');
+        $bairro = new BairroController($user);
 
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            'bairro'=>['label'=>'Bairro','active'=>true,'type'=>'hidden_text','exibe_busca'=>'d-block','event'=>'','tam'=>'12','arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'value'=>@$_GET['bairro']],
+            //'bairro'=>['label'=>'Bairro','active'=>true,'type'=>'hidden_text','exibe_busca'=>'d-block','event'=>'','tam'=>'12','arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'value'=>@$_GET['bairro']],
+            'bairro'=>[
+                'label'=>'Área',
+                'active'=>true,
+                'type'=>'select',
+                'data_selector'=>[
+                    'campos'=>$bairro->campos(),
+                    'route_index'=>route('bairros.index'),
+                    'id_form'=>'frm-bairros',
+                    'action'=>route('bairros.store'),
+                    'campo_id'=>'id',
+                    'campo_bus'=>'nome',
+                    'label'=>'Etapa',
+                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
+                //'event'=>'onchange=carregaMatricula($(this).val())',
+                'tam'=>'12',
+                'value'=>@$_GET['bairro'],
+            ],
             'quadra'=>[
                 'label'=>'Quadra',
                 'active'=>true,
@@ -631,6 +650,7 @@ class LotesController extends Controller
                                     'filho de'=>['lab'=>'','v'=>$filhoa_de],
                                     'nascida'=>['lab'=>'','v'=>$nascidoa],
                                     'nascido'=>['lab'=>'','v'=>$nascidoa],
+                                    'obs'=>['lab'=>'','v'=>$fm['obs']],
                                 ];
                                 if($dadosCon){
                                     $doc .= str_replace('{lote}',$lote,$tm2);

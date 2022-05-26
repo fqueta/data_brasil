@@ -18,6 +18,7 @@ class PermissionSeeder extends Seeder
             "master"=>
             [
                 "ler"=>["cad-social"=>"s","cad-topografico"=>"s","familias"=>"s","quadras"=>"s","lotes"=>"s","beneficiarios"=>"s","bairros"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios"=>"s","relatorios_social"=>"s","relatorios_evolucao"=>"s","documentos"=>"s","qoptions"=>"s","config"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s"],
+                "ler_arquivos"=>["cad-social"=>"s","cad-topografico"=>"s","familias"=>"s","quadras"=>"s","lotes"=>"s","beneficiarios"=>"s","bairros"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios"=>"s","relatorios_social"=>"s","relatorios_evolucao"=>"s","documentos"=>"s","qoptions"=>"s","config"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s"],
                 "create"=>["familias"=>"s","bairros"=>"s","quadras"=>"s","lotes"=>"s","beneficiarios"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios_social"=>"s","relatorios_evolucao"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s","documentos"=>"s","qoptions"=>"s"],
                 "update"=>["familias"=>"s","bairros"=>"s","quadras"=>"s","lotes"=>"s","beneficiarios"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios_social"=>"s","relatorios_evolucao"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s","documentos"=>"s","qoptions"=>"s"],
                 "delete"=>["familias"=>"s","bairros"=>"s","quadras"=>"s","lotes"=>"s","beneficiarios"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios_social"=>"s","relatorios_evolucao"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s","documentos"=>"s","qoptions"=>"s"]
@@ -25,6 +26,7 @@ class PermissionSeeder extends Seeder
             "admin"=>
             [
                 "ler"=>["cad-social"=>"s","cad-topografico"=>"s","familias"=>"s","quadras"=>"s","lotes"=>"s","beneficiarios"=>"s","bairros"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios"=>"n","relatorios_social"=>"n","relatorios_evolucao"=>"n","documentos"=>"s","config"=>"s","sistema"=>"n","users"=>"s","permissions"=>"s"],
+                "ler_arquivos"=>["cad-social"=>"s","cad-topografico"=>"s","familias"=>"s","quadras"=>"s","lotes"=>"s","beneficiarios"=>"s","bairros"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios"=>"s","relatorios_social"=>"s","relatorios_evolucao"=>"s","documentos"=>"s","qoptions"=>"s","config"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s"],
                 "create"=>["familias"=>"s","quadras"=>"s","lotes"=>"s","bairros"=>"s","beneficiarios"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios_social"=>"s","relatorios_evolucao"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s","documentos"=>"s"],
                 "update"=>["familias"=>"s","quadras"=>"s","lotes"=>"s","bairros"=>"s","beneficiarios"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios_social"=>"s","relatorios_evolucao"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s","documentos"=>"s"],
                 "delete"=>["familias"=>"s","quadras"=>"s","lotes"=>"s","bairros"=>"s","beneficiarios"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios_social"=>"s","relatorios_evolucao"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s","documentos"=>"s"]
@@ -38,8 +40,8 @@ class PermissionSeeder extends Seeder
                 'id_menu'=>json_encode($arrPermiss['master']),
             ],
             [
-                'name'=>'Adminstrador',
-                'description'=>'Adiminstradores do sistema',
+                'name'=>'Administrador',
+                'description'=>'Administradores do sistema',
                 'active'=>'s',
                 'id_menu'=>json_encode($arrPermiss['admin']),
             ],

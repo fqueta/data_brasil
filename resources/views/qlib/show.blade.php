@@ -24,29 +24,28 @@
                         $value[$k] = isset($value[$nk])?$value[$nk]:false;
                     @endphp
                 @endif
-
-            {{App\Qlib\Qlib::qShow([
-                    'type'=>@$v['type'],
-                    'campo'=>$k,
-                    'label'=>$v['label'],
-                    'placeholder'=>@$v['placeholder'],
-                    'ac'=>$config['ac'],
-                    'value'=>isset($v['value'])?$v['value']: @$value[$k],
-                    'tam'=>@$v['tam'],
-                    'event'=>@$v['event'],
-                    'checked'=>@$value[$k],
-                    'selected'=>@$v['selected'],
-                    'arr_opc'=>@$v['arr_opc'],
-                    'option_select'=>@$v['option_select'],
-                    'class'=>@$v['class'],
-                    'class_div'=>@$v['class_div'],
-                    'rows'=>@$v['rows'],
-                    'cols'=>@$v['cols'],
-                    'data_selector'=>@$v['data_selector'],
-                    'script'=>@$v['script_show'],
-                    'valor_padrao'=>@$v['valor_padrao'],
-                    'dados'=>@$v['dados'],
-            ])}}
+                {{App\Qlib\Qlib::qShow([
+                        'type'=>@$v['type'],
+                        'campo'=>$k,
+                        'label'=>$v['label'],
+                        'placeholder'=>@$v['placeholder'],
+                        'ac'=>$config['ac'],
+                        'value'=>isset($v['value'])?$v['value']: @$value[$k],
+                        'tam'=>@$v['tam'],
+                        'event'=>@$v['event'],
+                        'checked'=>@$value[$k],
+                        'selected'=>@$v['selected'],
+                        'arr_opc'=>@$v['arr_opc'],
+                        'option_select'=>@$v['option_select'],
+                        'class'=>@$v['class'],
+                        'class_div'=>@$v['class_div'],
+                        'rows'=>@$v['rows'],
+                        'cols'=>@$v['cols'],
+                        'data_selector'=>@$v['data_selector'],
+                        'script'=>@$v['script_show'],
+                        'valor_padrao'=>@$v['valor_padrao'],
+                        'dados'=>@$v['dados'],
+                ])}}
             @endforeach
         @endif
         @csrf

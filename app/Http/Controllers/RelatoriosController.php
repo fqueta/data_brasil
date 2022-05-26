@@ -394,6 +394,23 @@ class RelatoriosController extends Controller
             ],
             'quadra'=>['label'=>'QUADRA','active'=>true,'type'=>'array','exibe_busca'=>'d-block','tam'=>'4','tab'=>'quadras','valor'=>'quadra','select'=>'nome'],
             'matricula'=>['label'=>'MATRÍCULA','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
+            'etapa'=>[
+                'label'=>'Etapa',
+                'active'=>true,
+                'type'=>'select',
+                'data_selector'=>[
+                    'campos'=>$etapa->campos(),
+                    'route_index'=>route('etapas.index'),
+                    'id_form'=>'frm-etapas',
+                    'action'=>route('etapas.store'),
+                    'campo_id'=>'id',
+                    'campo_bus'=>'nome',
+                    'label'=>'Etapa',
+                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM etapas WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'6',
+                'value'=>@$_GET['etapa'],
+            ],
             'tags[]'=>[
                 'label'=>'SITUAÇÃO',
                 'active'=>true,

@@ -9,7 +9,8 @@
 <script src="{{url('/')}}/js/jquery.maskMoney.min.js"></script>
 <script src="{{url('/')}}/js/jquery-ui.min.js"></script>
 <script src="{{url('/')}}/js/jquery.inputmask.bundle.min.js"></script>
-<script src="{{url('/')}}/summernote/summernote.min.js"></script>
+<script src="{{url('/')}}/vendor/summernote/summernote.min.js"></script>
+<script src="{{url('/')}}/vendor/venobox/venobox.min.js"></script>
 <script src=" {{url('/')}}/js/lib.js"></script>
 <script>
     $(function(){
@@ -42,13 +43,15 @@
             },
         });
         $('.summernote').summernote({
-            height: 400,
+            height: 250,
             placeholder: 'Digite o conteudo',
-            /*
-            onImageUpload: function(files, editor, welEditable) {
-                alert('enviar imagem')
-                //sendFile(files[0],editor,welEditable);
-            }*/
+        });
+        new VenoBox({
+            selector: ".venobox",
+            numeration: true,
+            infinigall: true,
+            share: false,
+            spinner: 'rotating-plane'
         });
     });
 </script>

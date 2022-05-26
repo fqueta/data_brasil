@@ -56,7 +56,7 @@ class FamiliaController extends Controller
         $id_nLocalizado = 6;
         $completos = 0;
         $pendentes = 0;
-        $etapas = Etapa::where('ativo','=','s')->where('excluido','=','n')->OrderBy('id','asc')->get();
+        $etapas = Etapa::where('ativo','=','s')->where('excluido','=','n')->OrderBy('ordem','asc')->get();
         //$todasFamilias = Familia::where('excluido','=','n')->where('deletado','=','n');
         $config = [
             'limit'=>isset($get['limit']) ? $get['limit']: 50,
@@ -108,6 +108,7 @@ class FamiliaController extends Controller
                                 }
                                 $arr_titulo[$campos[$key]['label']] = Qlib::valorTabDb('beneficiarios','id',$value,'nome');
                             }else{
+                                //dd( $campos);exit;
                                 $arr_titulo[$campos[$key]['label']] = $value;
                                 $familia->where($key,'LIKE','%'. $value. '%');
                                 if(isset($campos[$key]['type']) && $campos[$key]['type']=='select'){
@@ -386,7 +387,7 @@ class FamiliaController extends Controller
                     'campo_id'=>'id',
                     'campo_bus'=>'nome',
                     'label'=>'Etapa',
-                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM etapas WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM etapas WHERE ativo='s' ORDER BY ordem ASC",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
                 'tam'=>'6',
                 'value'=>@$_GET['etapa'],
@@ -426,8 +427,8 @@ class FamiliaController extends Controller
                     'campo_bus'=>'nome',
                     'label'=>'Etapa',
                 ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
-                //'event'=>'onchange=carregaMatricula($(this).val())',
+                //'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
+                'event'=>'onchange=carregaQuadras($(this).val())',
                 'tam'=>'6',
                 'value'=>@$_GET['bairro'],
             ],
@@ -608,7 +609,7 @@ class FamiliaController extends Controller
             'membros'=>['label'=>'lista de Membros','active'=>false,'type'=>'html','exibe_busca'=>'d-none','event'=>'','tam'=>'12','script'=>'familias.lista_membros','script_show'=>'familias.show_membros'],
             'idoso'=>['label'=>'Idoso','active'=>true,'type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-none','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             'crianca_adolescente'=>['label'=>'Criança e Adolescente','active'=>true,'exibe_busca'=>'d-none','event'=>'','type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
-            'obs'=>['label'=>'Observação','active'=>true,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','rows'=>'4','cols'=>'80','tam'=>'12'],
+            'obs'=>['label'=>'Observação','active'=>true,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','rows'=>'4','cols'=>'80','tam'=>'12','class'=>'summernote'],
         ];
     }
     public function camposJson(User $user)

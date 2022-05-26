@@ -89,7 +89,6 @@
                         @endif
                         @php
                             $d = $config['data_selector'];
-
                         @endphp
                         @if (isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
                         <div class="col-md-12 ">
@@ -177,7 +176,7 @@
                                         <div class="row" id="tr-{{@$config['data_selector']['list']['id']}}">
                                             @foreach ($config['data_selector']['campos'] as $kb=>$vb)
 
-                                                @if ($vb['type']=='text')
+                                                @if ($vb['type']=='text' || $vb['type']=='tel' || $vb['type']=='number')
                                                     @php
                                                         if(isset($vb['cp_busca']) && !empty($vb['cp_busca']))
                                                         {

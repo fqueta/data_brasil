@@ -50,6 +50,21 @@ class AuthServiceProvider extends ServiceProvider
             return $ret;
         });
 
+        Gate::define('ler_arquivos', function($user,$pagina=false){
+            $ret = false;
+            if($user->ativo=='s'){
+                if($pagina){
+                    $qlib = Qlib::ver_permAdmin('ler_arquivos',$pagina);
+                    if($qlib){
+                        $ret = Response::allow();
+                    }else{
+                        $ret = Response::deny('Usuário sem autorização');
+                    }
+                }
+            }
+            return $ret;
+        });
+
         Gate::define('create', function($user,$pagina=false){
             $ret = false;
             if($pagina){

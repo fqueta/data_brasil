@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use stdClass;
 use App\Http\Controllers\Controller;
+use App\Models\_upload;
 use Illuminate\Http\Request;
 use App\Models\Permission;
 use App\Qlib\Qlib;
@@ -199,7 +200,7 @@ class UserPermissions extends Controller
     {
         $arrMenus = [];
         $dadosMenus = Menu::where('actived',true)->where('pai','')->get();
-        $roles = ['create'=>'Cadastrar','update'=>'Editar','delete'=>'Excluir'];
+        $roles = ['create'=>'Cadastrar','update'=>'Editar','delete'=>'Excluir','ler_arquivos'=>'Ver Arquivos',];
         if(count($dadosMenus)){
             foreach($dadosMenus as $k=>$v){
                 $arrMenus[$k] = $v;

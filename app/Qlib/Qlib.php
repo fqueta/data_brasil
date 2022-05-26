@@ -710,4 +710,17 @@ class Qlib
             return "excluido='n' AND deletado='n'";
         }
     }
+    static public function show_files(Array $config = null)
+    {
+        $ret = Qlib::formatMensagemInfo('Nenhum Arquivo','info');
+
+        if($config['token']){
+            $files = DB::table('_uploads')->where('token_produto',$config['token'])->get();
+            if($files){
+                if(isset($files[0]))
+                    return view('qlib.show_file',['files'=>$files,'config'=>$config]);
+            }
+        }
+        return $ret;
+    }
 }
