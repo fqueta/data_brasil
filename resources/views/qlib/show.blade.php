@@ -24,7 +24,7 @@
                         $value[$k] = isset($value[$nk])?$value[$nk]:false;
                     @endphp
                 @endif
-                {{App\Qlib\Qlib::qShow([
+                {!! App\Qlib\Qlib::qShow([
                         'type'=>@$v['type'],
                         'campo'=>$k,
                         'label'=>$v['label'],
@@ -45,7 +45,7 @@
                         'script'=>@$v['script_show'],
                         'valor_padrao'=>@$v['valor_padrao'],
                         'dados'=>@$v['dados'],
-                ])}}
+                ]) !!}
             @endforeach
         @endif
         @csrf
