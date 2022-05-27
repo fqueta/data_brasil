@@ -650,7 +650,7 @@ class LotesController extends Controller
                                     'filho de'=>['lab'=>'','v'=>$filhoa_de],
                                     'nascida'=>['lab'=>'','v'=>$nascidoa],
                                     'nascido'=>['lab'=>'','v'=>$nascidoa],
-                                    'obs'=>['lab'=>'','v'=>$fm['obs']],
+                                    //'obs'=>['lab'=>'','v'=>$dLote['obs']],
                                 ];
                                 if($dadosCon){
                                     $doc .= str_replace('{lote}',$lote,$tm2);
@@ -700,6 +700,7 @@ class LotesController extends Controller
                     }else{
                         $arr_sh['data_posse'] = ['lab'=>'Data posse','v'=>'00/00/0000'];
                     }
+                    $arr_sh['obs'] = ['lab'=>'Observações','v'=>@$dLote['config']['obs'][$id_familia]];
                     $arr_sh['dia'] = ['lab'=>'Dia','v'=>date('d')];
                     $arr_sh['mes_extenso'] = ['lab'=>'Mês','v'=>$meses[date('m')]];
                     $arr_sh['ano'] = ['lab'=>'Ano','v'=>date('Y')];

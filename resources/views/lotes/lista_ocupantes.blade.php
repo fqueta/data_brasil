@@ -1,4 +1,9 @@
 @if (@$config['ac']=='alt')
+    <style>
+        .note-table,.note-insert,.note-view{
+            display: none;
+        }
+    </style>
     <div class="card card-secondary">
         <div class="card-header">
             <h3 class="card-title">{{__($config['label'])}}</h3>
@@ -93,6 +98,18 @@
                                                     'tam'=>'12',
                                                     'event'=>'',
                                                     'class'=>'',
+                                                    'class_div'=>'',
+                                                ])}}
+                                                {{App\Qlib\Qlib::qForm([
+                                                    'type'=>'textarea',
+                                                    'campo'=>'config[obs]['.$v['id'].']',
+                                                    'label'=>'Observações',
+                                                    'placeholder'=>'',
+                                                    'ac'=>$config['ac'],
+                                                    'value'=>@$_GET['dados']['config']['obs'][$v['id']],
+                                                    'tam'=>'12',
+                                                    'event'=>'',
+                                                    'class'=>'summernote',
                                                     'class_div'=>'',
                                                 ])}}
                                             </div>
