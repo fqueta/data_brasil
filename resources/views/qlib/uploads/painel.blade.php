@@ -1,6 +1,13 @@
 @if ($config['parte']=='painel')
         <link rel="stylesheet" href="{{url('/')}}/css/dropzone.min.css" type="text/css" />
         <script src="{{url('/')}}/js/dropzone.min.js"></script>
+        <style>
+            .grade-img img{
+                object-fit: cover;
+                height: 50px;
+                border-radius: 50%;
+            }
+        </style>
         <!-- Button trigger modal -->
         <div class="row">
             <div class="col-md-12 mb-2">
@@ -16,7 +23,7 @@
 
                 </span>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-12 text-center">
                 @can('create',$config['routa'])
                     @if (isset($config['arquivos']) && $config['arquivos'])
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modelId"> <i class="fas fa-upload"></i>
@@ -73,12 +80,37 @@
 @endif
 @if ($config['parte']=='lista' && isset($config['listFiles']) && is_object($config['listFiles']))
     <ul class="list-group">
+        @php
+            $dominio_arquivo=App\Qlib\Qlib::qoption('dominio_arquivos').'/';
+        @endphp
         @foreach ($config['listFiles'] as $k=>$vl)
 
         <li class="list-group-item d-flex justify-content-between align-items-center" id="item-{{$vl['id']}}">
-            <a href="{{url('/storage')}}/{{$vl['pasta']}}" target="_blank" rel="noopener noreferrer">
-              <span class="pull-left"><i class="fas fa-file-{{$vl['tipo_icon']}} fa-2x"></i></span> {{$vl['nome']}}
-            </a>
+                @if ($vl['tipo_icon']=='image')
+                <div class="row w-100">
+                    <div class="col-3 grade-img">
+                        <a href="{{$dominio_arquivo.$vl['pasta']}}" data-maxwidth="80%" title="{{$vl['nome']}}" data-gall="gall0" class="venobox">
+                            <img class="shadow w-100" src="{{$dominio_arquivo.$vl['pasta']}}" alt="{{$vl['nome']}}">
+                        </a>
+                    </div>
+                    <div class="col-9">
+                        {{$vl['nome']}}
+                    </div>
+                </div>
+                @else
+                <div class="row w-100">
+                    <div class="col-3 grade-img text-center">
+                        <a href="{{url('/storage')}}/{{$vl['pasta']}}" target="_blank" rel="">
+                            <i class="fas fa-file-{{$vl['tipo_icon']}}  fa-2x"></i>
+                        </a>
+                    </div>
+                    <div class="col-9">
+                        <a href="{{url('/storage')}}/{{$vl['pasta']}}" target="_blank" rel="">
+                        {{$vl['nome']}}
+                        </a>
+                    </div>
+                </div>
+                @endif
             @can('delete',$config['routa'])
                 <button type="button" onclick="excluirArquivo('{{$vl['id']}}','{{route('uploads.destroy',['id'=>$vl['id']])}}')" class="btn btn-default" title="Excluir"><i class="fas fa-trash "></i></button type="button">
             @endcan

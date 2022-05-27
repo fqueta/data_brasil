@@ -668,6 +668,7 @@ function visualizaArquivos(token_produto,ajaxurl){
           if(data.exec && data.arquivos){
             var list = listFiles(data.arquivos,token_produto);
             $('#lista-files').html(list);
+            //$(".venobox").venobox();
             if(data.mens){
               lib_formatMensagem('.mens',data.mens,'success');
             }
@@ -686,20 +687,37 @@ function listFiles(arquivos,token_produto){
     }
     if(arquivos.length>0){
         var tema1 = '<ul class="list-group">{li}</ul>';
-        var tema2 = '<li class="list-group-item d-flex justify-content-between align-items-center" id="item-{id}">'+
-        '<a href="{href}" target="_blank">{icon} {nome}</a>'+
-        '<button type="button" {event} class="btn btn-default" title="Excluir"><i class="fas fa-trash "></i></button></li>';
+        var tm2 = '<li class="list-group-item d-flex justify-content-between align-items-center" id="item-{id}">'+
+                        '<div class="row w-100">'+
+        '                    <div class="col-3 grade-img text-center">'+
+        '                        <a href="{href}" target="_blank" rel=""><i class="fas fa-file-download fa-2x"></i>'+
+        '                        </a>'+
+        '                    </div>'+
+        '                    <div class="col-9">'+
+        '                        <a href="{href}" target="_blank" rel="">{nome}'+
+        '                        </a>'+
+        '                    </div>'+
+        '                </div>'+
+        '                <button type="button" {event} class="btn btn-default" title="Excluir"><i class="fas fa-trash"></i></button>'+
+        '            </li>';
+        var tm3 = '<li class="list-group-item d-flex justify-content-between align-items-center" id="item-{id}">'+
+                        '<div class="row w-100">'+
+        '                    <div class="col-3 grade-img text-center">'+
+        '                        <a href="{href}" target="_blank" class="venobox vbox-item" title="{nome}" data-maxwidth="80%" data-max="80%" ><img class="shadow w-100" src="{href}" alt="{nome}">'+
+        '                        </a>'+
+        '                    </div>'+
+        '                    <div class="col-9">'+
+        '                        {nome}'+
+        '                        '+
+        '                    </div>'+
+        '                </div>'+
+        '                <button type="button" {event} class="btn btn-default" title="Excluir"><i class="fas fa-trash"></i></button>'+
+        '            </li>';
         var li = '';
         var temaIcon = '<i class="fas fa-file-{tipo} fa-2x"></i>';
-        for (let index = 0; index < arquivos.length; index++) {
-            const arq = arquivos[index];
-            var event = 'onclick="excluirArquivo(\''+arq.id+'\',\'/uploads/'+arq.id+'\')"';
-            var href = '/storage/'+arq.pasta;
+        for (let i = 0; i < arquivos.length; i++) {
             var icon = '';
-            li += tema2.replace('{event}',event);
-            li = li.replace('{nome}',arq.nome);
-            li = li.replace('{id}',arq.id);
-            li = li.replace('{href}',href);
+            let arq = arquivos[i];
             if(conf = arq.config){
                 var config = JSON.parse(conf);
                 if(config.extenssao == 'jpg' || config.extenssao=='png' || config.extenssao == 'jpeg'){
@@ -713,7 +731,19 @@ function listFiles(arquivos,token_produto){
                 }
                 icon = temaIcon.replace('{tipo}',tipo);
             }
-            li = li.replace('{icon}',icon);
+            if(tipo=='image'){
+                var tema2=tm3;
+            }else{
+                var tema2=tm2;
+            }
+            var event = 'onclick="excluirArquivo(\''+arq.id+'\',\'/uploads/'+arq.id+'\')"';
+            var href = '/storage/'+arq.pasta;
+            //var href = 'https://cmd.databrasil.app.br/storage/'+arq.pasta;
+            li += tema2.replaceAll('{event}',event);
+            li = li.replaceAll('{nome}',arq.nome);
+            li = li.replaceAll('{id}',arq.id);
+            li = li.replaceAll('{href}',href);
+            li = li.replaceAll('{icon}',icon);
         }
         ret = tema1.replace('{li}',li);
         return ret;
