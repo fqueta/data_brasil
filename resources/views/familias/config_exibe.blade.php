@@ -19,7 +19,7 @@
                     'value'=>@$_GET['filter']['bairro'],
                     'tam'=>'2',
                     'arr_opc'=>App\Qlib\Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),
-                    'event'=>'onchange=carregaQuadras($(this).val(),\'filter[quadra]\')',
+                    'event'=>'onchange=carregaQuadras($(this).val(),\'quadra\')',
                     'option_select'=>true,
                     'class'=>'text-left',
                     'class_div'=>'text-left',
