@@ -57,6 +57,12 @@
 
 @section('css')
     @include('qlib.csslib')
+    <style>
+        .note-table,.note-insert,.note-view{
+            display: none;
+        }
+    </style>
+
 @stop
 
 @section('js')
