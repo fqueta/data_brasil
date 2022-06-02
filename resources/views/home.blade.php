@@ -9,7 +9,9 @@
     </div><!-- /.col -->
     <div class="col-sm-6 text-right">
         <div class="btn-group" role="group" aria-label="actions">
-            <a href="{{route('familias.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Novo cadastro</a>
+            @can('create','familias')
+                <a href="{{route('familias.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Novo cadastro</a>
+            @endcan
             <a href="{{route('familias.index')}}" class="btn btn-secondary"><i class="fa fa-list"></i> Ver cadastros</a>
             <!--<a href="{{route('relatorios.social')}}" class="btn btn-dark"><i class="fa fa-chart-bar"></i> Ver relatórios</a>-->
         </div>
@@ -19,7 +21,7 @@
 
 @section('content')
 <!--<p>Welcome to this beautiful admin panel.</p>-->
-@can('ler','relatorios')
+@can('ler','familias')
 <div class="row card-top">
     @if (isset($config['c_familias']['cards_home']))
     @foreach ($config['c_familias']['cards_home'] as $k=>$v)

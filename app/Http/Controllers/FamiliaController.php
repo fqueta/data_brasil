@@ -501,7 +501,7 @@ class FamiliaController extends Controller
                 'script' =>'familias.loteamento',
             ],
             'id_beneficiario'=>[
-                'label'=>'Prorietário',
+                'label'=>'Proprietário',
                 'active'=>false,
                 'type'=>'html_vinculo',
                 'exibe_busca'=>'d-none',
