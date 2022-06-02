@@ -790,7 +790,7 @@ class FamiliaController extends Controller
         $dados = Familia::where('id',$id)->get();
         //$roles = DB::select("SELECT * FROM roles ORDER BY id ASC");
         //$permissions = DB::select("SELECT * FROM permissions ORDER BY id ASC");
-        $this->authorize('ler', $this->routa);
+        $this->authorize('create', $this->routa);
 
         if(!empty($dados)){
             $title = 'Editar Cadastro de família';
