@@ -38,7 +38,7 @@
                         <tr data-id="{{$k}}">
                             <td><input type="text" name="membros[{{$k}}][nome]" value="{{$v['nome']}}" class="form-control" /></td>
                             <td><input type="text" name="membros[{{$k}}][parentesco]" value="{{$v['parentesco']}}" class="form-control" /></td>
-                            <td><input type="date" name="membros[{{$k}}][nascimento]" value="{{@$v['nascimento']}}" class="form-control" /></td>
+                            <td><input type="date" name="membros[{{$k}}][nascimento]" value="{{@$v['nascimento']}}{{@$v['idade']}}" class="form-control" /></td>
                             <td><input type="tel" name="membros[{{$k}}][renda]" value="{{$v['renda']}}" class="form-control moeda" /></td>
                             <td> <button class="btn btn-default" type="button" onclick="removeRow('{{$k}}')"><i class="fas fa-trash"></i></button></td>
                         </tr>

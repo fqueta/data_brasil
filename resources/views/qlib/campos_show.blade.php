@@ -176,7 +176,7 @@
                                         <div class="row" id="tr-{{@$config['data_selector']['list']['id']}}">
                                             @foreach ($config['data_selector']['campos'] as $kb=>$vb)
 
-                                                @if ($vb['type']=='text' || $vb['type']=='tel' || $vb['type']=='number')
+                                                @if ($vb['type']=='text' || $vb['type']=='date' || $vb['type']=='tel' || $vb['type']=='number')
                                                     @php
                                                         if(isset($vb['cp_busca']) && !empty($vb['cp_busca']))
                                                         {
@@ -188,6 +188,9 @@
                                                             }
                                                         }else{
                                                             $value = @$config['data_selector']['list'][$kb];
+                                                        }
+                                                        if($vb['type']=='date'){
+                                                            $value = App\Qlib\Qlib::dataExibe($value);
                                                         }
                                                     @endphp
                                                     {!! App\Qlib\Qlib::qShow([
@@ -278,6 +281,11 @@
     <div class="col-{{$config['tam']}}" div-id="{{$config['campo']}}">
         <label for="{{$config['campo']}}">{{$config['label']}}:</label>
         {!! @$config['value'] !!}
+    </div>
+    @elseif($config['type']=='date')
+    <div class="col-{{$config['tam']}}" div-id="{{$config['campo']}}">
+        <label for="{{$config['campo']}}">{{$config['label']}}:</label>
+        {{ @$config['value'] }}
     </div>
     @else
     <div class="col-{{$config['tam']}}" div-id="{{$config['campo']}}">

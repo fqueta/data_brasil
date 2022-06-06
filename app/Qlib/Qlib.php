@@ -68,12 +68,14 @@ class Qlib
 			}
 			return $rs;
 	}
-  static function dataExibe($data) {
-			$val = trim(strlen($data));
+  static function dataExibe($data=false) {
+        $rs=false;
+        if($data){
+           $val = trim(strlen($data));
 			$data = trim($data);$rs = false;
 			if($val == 10){
 					$arr_data = explode("-",$data);
-					$data_banco = $arr_data[2]."/".$arr_data[1]."/".$arr_data[0];
+					$data_banco = @$arr_data[2]."/".@$arr_data[1]."/".@$arr_data[0];
 					$rs = $data_banco;
 			}
 			if($val == 19){
@@ -82,6 +84,7 @@ class Qlib
 					$data_banco = $arr_data[2]."/".$arr_data[1]."/".$arr_data[0];
 					$rs = $data_banco."-".$arr_inic[1] ;
 			}
+        }
 
 			return $rs;
 	}
