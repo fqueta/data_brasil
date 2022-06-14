@@ -180,10 +180,19 @@ class MenuSeeder extends Seeder
             [
                 'categoria'=>'',
                 'description'=>'Permissões',
-                'icon'=>'fas fa-list',
+                'icon'=>'far fa-list-alt ',
                 'actived'=>true,
                 'url'=>'permissions',
                 'route'=>'permissions.index',
+                'pai'=>'config'
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Listas do sistema (Tags)',
+                'icon'=>'fas fa-list',
+                'actived'=>true,
+                'url'=>'tags',
+                'route'=>'tags.index',
                 'pai'=>'config'
             ],
             [

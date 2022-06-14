@@ -169,6 +169,9 @@ Route::resource('documentos','\App\Http\Controllers\DocumentosController',['para
 Route::resource('qoptions','\App\Http\Controllers\admin\QoptionsController',['parameters' => [
     'qoptions' => 'id'
 ]]);
+Route::resource('tags','\App\Http\Controllers\admin\TagsController',['parameters' => [
+    'tags' => 'id'
+]]);
 Route::resource('permissions','\App\Http\Controllers\admin\UserPermissions',['parameters' => [
     'permissions' => 'id'
 ]]);

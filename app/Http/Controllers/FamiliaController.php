@@ -49,7 +49,7 @@ class FamiliaController extends Controller
         $mes = date('m');
         //dd($get);
         $idUltimaEtapa = Etapa::where('ativo','=','s')->where('excluido','=','n')->where('deletado','=','n')->max('id');
-        $tags = Tag::where('ativo','=','s')->where('pai','=','1')->where('excluido','=','n')->where('deletado','=','n')->get();
+        $tags = Tag::where('ativo','=','s')->where('pai','=','1')->where('excluido','=','n')->where('deletado','=','n')->OrderBy('ordem','asc')->get();
         $id_pendencia = 3;
         $id_imComRegistro = 4;
         $id_recusas = 5;
@@ -182,21 +182,22 @@ class FamiliaController extends Controller
         $ret['campos'] = $campos;
         $ret['config'] = $config;
         $ret['tituloTabela'] = $tituloTabela;
-        $ret['progresso'] = $progresso;
+        //$ret['progresso'] = $progresso;
         $ret['link_completos'] = route('familias.index').'?filter[etapa]='.$idUltimaEtapa;
         $ret['link_idosos'] = route('familias.index').'?filter[idoso]=s';
         $cardTags = [];
         $ret['cards_home'] = [
             [
-                'label'=>'Lotes cadastrados',
+                'label'=>'Todos cadastrados',
                 'valor'=>$familia_totais->todos,
+                'obs'=>'Todos os cadastro no sistema',
                 'href'=>route('familias.index'),
                 'icon'=>'fa fa-map-marked-alt',
                 'lg'=>'2',
                 'xs'=>'6',
                 'color'=>'info',
             ],
-            [
+            /*[
                 'label'=>'Cadastros completos',
                 'valor'=>$familia_totais->completos,
                 'href'=>$ret['link_completos'],
@@ -204,7 +205,7 @@ class FamiliaController extends Controller
                 'lg'=>'2',
                 'xs'=>'6',
                 'color'=>'success',
-            ],
+            ],*/
         ];
         if(!empty($tags)){
             foreach ($tags as $kt => $vt) {
@@ -212,6 +213,7 @@ class FamiliaController extends Controller
                 $cardTags[$vt['id']] =
                 [
                     'label'=>$vt['nome'],
+                    'obs'=>$vt['obs'],
                     'valor'=>$countFamTag,
                     'href'=>route('familias.index').'?filter[tags][]='.$vt['id'],
                     'icon'=>$vt['config']['icon'],
@@ -375,7 +377,7 @@ class FamiliaController extends Controller
         }
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
-            'etapa'=>[
+            /*'etapa'=>[
                 'label'=>'Etapa',
                 'active'=>true,
                 'type'=>'select',
@@ -391,14 +393,14 @@ class FamiliaController extends Controller
                 'event'=>'',
                 'tam'=>'6',
                 'value'=>@$_GET['etapa'],
-            ],
+            ],*/
             'tipo_residencia'=>[
                 'label'=>'Tipo de residência*',
                 'active'=>true,
                 'type'=>'select',
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='2'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
-                'tam'=>'6',
+                'tam'=>'12',
                 'class'=>'',
                 'exibe_busca'=>true,
                 'option_select'=>false,
@@ -407,7 +409,7 @@ class FamiliaController extends Controller
                 'label'=>'Situação',
                 'active'=>true,
                 'type'=>'select_multiple',
-                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='1'",'nome','id'),'exibe_busca'=>'d-block',
+                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='1' ORDER BY ordem ASC",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
                 'class'=>'',
                 'option_select'=>false,

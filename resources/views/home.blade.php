@@ -27,7 +27,7 @@
     @foreach ($config['c_familias']['cards_home'] as $k=>$v)
     <div class="col-lg-{{$v['lg']}} col-{{$v['xs']}}">
                 <!-- small box -->
-                <div class="small-box bg-{{$v['color']}}">
+                <div class="small-box bg-{{$v['color']}}" title="{{$v['obs']}}">
                   <div class="inner">
                     <h3>{{$v['valor']}}</h3>
 
@@ -36,7 +36,7 @@
                   <div class="icon">
                     <i class="{{$v['icon']}}"></i>
                   </div>
-                  <a href="{{$v['href']}}" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+                  <a href="{{$v['href']}}" title="{{__('Ver detalhes de ')}}{{__($v['label'])}}" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
               </div>
             @endforeach
@@ -64,7 +64,7 @@
             </div>
         </div>
         @endif
-        <div class="col-md-7">
+        <div class="col-md-12">
             @if (isset($config['mapa']['config']))
                 {!! App\Http\Controllers\MapasController::exibeMapas($config['mapa']['config']) !!}
             @endif
