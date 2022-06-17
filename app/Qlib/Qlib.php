@@ -726,4 +726,20 @@ class Qlib
         }
         return $ret;
     }
+    /***
+     * Busca um tipo de routa padrão do sistema
+     * Ex.: routa que será aberta ao logar
+     *
+     */
+    static function redirectLogin($ambiente='back')
+    {
+        $ret = '/';
+        if(!Auth::check()){
+            return $ret;
+        }
+        $id_permission = auth()->user()->id_permission;
+        $dPermission = Permission::FindOrFail($id_permission);
+        $ret = isset($dPermission['redirect_login']) ? $dPermission['redirect_login']:'/';
+        return $ret;
+    }
 }

@@ -16,6 +16,24 @@ class MenuSeeder extends Seeder
     {
         DB::table('menus')->insert([
             [
+                'categoria'=>'',
+                'description'=>'Painel',
+                'icon'=>'fa fa-tachometer-alt',
+                'actived'=>true,
+                'url'=>'painel',
+                'route'=>'home',
+                'pai'=>''
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Transparencia',
+                'icon'=>'fas fa-search-location',
+                'actived'=>true,
+                'url'=>'transparencia',
+                'route'=>'transparencia',
+                'pai'=>''
+            ],
+            [
                 'categoria'=>'CADASTROS',
                 'description'=>'Cadastro Social',
                 'icon'=>'fas fa-user',

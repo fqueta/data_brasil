@@ -476,13 +476,14 @@ $config = [
     'livewire' => false,
 ];
 $config['menu'] = [
+    /*
       [
           'key' => 'painel',
           'text' => 'Painel',
           'url'  => 'home',
           'icon' => 'fa fa-tachometer-alt',
       ],
-      /*[
+      [
         'key'  => 'dynamic_menus',
         'text' => 'dynamic_menus',
         'icon' => 'fas fa-ellipsis-v',

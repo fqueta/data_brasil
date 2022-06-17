@@ -202,6 +202,7 @@ Route::prefix('admin')->group(function(){
     ]]);
 });*/
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/transparencia', [App\Http\Controllers\HomeController::class, 'transparencia'])->name('transparencia');
 
 Route::get('envio-mails',function(){
     $user = new stdClass();

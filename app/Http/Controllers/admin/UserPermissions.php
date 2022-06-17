@@ -107,6 +107,7 @@ class UserPermissions extends Controller
             'name'=>['label'=>'Nome da permissão','active'=>true,'placeholder'=>'Ex.: Cadastrados','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'active'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','checked'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+            'redirect_login'=>['label'=>'link da pagina','active'=>false,'type'=>'text','exibe_busca'=>'d-none','event'=>'','tam'=>'12'],
             'description'=>['label'=>'Observação','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             'id_menu'=>['label'=>'lista de Permissões','active'=>false,'type'=>'html','exibe_busca'=>'d-none','event'=>'','tam'=>'12','script'=>'permissions.check_permissao','dados'=>@$dados['id_menu']],
 

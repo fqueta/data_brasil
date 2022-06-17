@@ -24,6 +24,7 @@ class HomeController extends Controller
     {
         $this->middleware('auth');
         $this->user = $user;
+        $this->routa = 'painel';
     }
 
     public function teste(){
@@ -39,6 +40,27 @@ class HomeController extends Controller
 
     public function index()
     {
+        $this->authorize('ler', $this->routa);
+        $controlerFamilias = new FamiliaController(Auth::user());
+        $controlerMapas = new MapasController(Auth::user());
+        $dadosFamilias = $controlerFamilias->queryFamilias();
+        $id_quadra_home = Qlib::qoption('id_quadra_home')?Qlib::qoption('id_quadra_home'):@$_GET['id_qh'];
+        if($id_quadra_home){
+            $dadosMp = $controlerMapas->queryQuadras($id_quadra_home);
+        }else{
+            $dadosMp = false;
+        }
+        $config = [
+            'c_familias'=>$dadosFamilias,
+            'mapa'=>$dadosMp,
+        ];
+        return view('home',[
+            'config'=>$config,
+        ]);
+    }
+    public function transparencia()
+    {
+        $this->authorize('ler', 'transparencia');
         $controlerFamilias = new FamiliaController(Auth::user());
         $controlerMapas = new MapasController(Auth::user());
         $dadosFamilias = $controlerFamilias->queryFamilias();
