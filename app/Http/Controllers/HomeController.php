@@ -74,7 +74,7 @@ class HomeController extends Controller
             'c_familias'=>$dadosFamilias,
             'mapa'=>$dadosMp,
         ];
-        return view('home',[
+        return view('tranparencia',[
             'config'=>$config,
         ]);
     }
