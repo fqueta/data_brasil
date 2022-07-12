@@ -1967,3 +1967,16 @@ function lib_infoMaps(config){
 function lib_fechaCardOc(){
     $('.mini-card').removeClass('active').html('');
 }
+function exibeCategoria(obj){
+    var v=obj.value;
+    let cp = $('[div-id="config[categoria_pendencia]"]');
+    let cp_sel = $('[name="config[categoria_pendencia]"]');
+    if(v==3){
+        cp.show();
+        cp_sel.attr('required',true).removeAttr('hidden');
+    }else{
+        cp.hide();
+        cp_sel.removeAttr('required').attr('hidden',true);
+    }
+    console.log(v);
+}

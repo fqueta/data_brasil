@@ -16,3 +16,9 @@
 <div id="preload">
     <div class="lds-dual-ring"></div>
 </div>
+<div class="col-md-12">
+    @php
+        $cob = new App\http\controllers\admin\CobrancaController;
+        $cob->exec();
+    @endphp
+</div>

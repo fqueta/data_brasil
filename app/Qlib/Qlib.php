@@ -18,6 +18,19 @@ class Qlib
         echo $data;
       }
     }
+    /**
+     * Verifica se o usuario logado tem permissao de admin ou alguma expessífica
+     */
+    static function isAdmin($perm_admin = 2)
+    {
+        $user = Auth::user();
+
+        if($user->id_permission<=$perm_admin){
+            return true;
+        }else{
+            return false;
+        }
+    }
     static public function qoption($valor = false, $type = false){
         //type é o tipo de respsta
 		$ret = false;

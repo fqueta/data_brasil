@@ -19,7 +19,7 @@ class StoreFamilyRequest extends FormRequest
             'bairro'=>['required'],
             //'etapa'=>['required',new familyRules],
             'tipo_residencia'=>['required',new familyRules],
-            //'area_alvo'=>['required'],
+            'data_exec'=>['required'],
             'loteamento'=>['required'],
             //'matricula'=>['required'],
             'quadra'=>['required'],

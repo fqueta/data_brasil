@@ -56,7 +56,7 @@
             </p>
         </div>
         <div class="col-lg-6 col-6">
-            <div class="small-box bg-primary" title="">
+            <div class="small-box bg-info" title="">
             <div class="inner">
                 <h3></h3>
                 <p>Mapa Inicial da Área</p>
@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="col-lg-6 col-6">
-            <div class="small-box bg-primary" title="">
+            <div class="small-box bg-info" title="">
             <div class="inner">
                 <h3></h3>
                 <p>Mapa Final</p>
@@ -117,7 +117,7 @@
             </p>
         </div>
         <div class="col-lg-2 col-6">
-            <div class="small-box bg-primary" title="">
+            <div class="small-box bg-info" title="">
             <div class="inner">
                 <!--<h3>2</h3>-->
                 <p>Legislação Pertinente</p>
@@ -129,7 +129,7 @@
             </div>
         </div>
         <div class="col-lg-2 col-6">
-            <div class="small-box bg-primary" title="">
+            <div class="small-box bg-info" title="">
             <div class="inner">
                 <!--<h3>2</h3>-->
                 <p>Decretos Municipais</p>
@@ -141,7 +141,7 @@
             </div>
         </div>
         <div class="col-lg-3 col-6">
-            <div class="small-box bg-primary" title="">
+            <div class="small-box bg-info" title="">
             <div class="inner">
                 <!--<h3>2</h3>-->
                 <p>Atendimentos Jurídicos</p>
@@ -153,7 +153,7 @@
             </div>
         </div>
         <div class="col-lg-3 col-6">
-            <div class="small-box bg-primary" title="">
+            <div class="small-box bg-info" title="">
             <div class="inner">
                 <!--<h3>2</h3>-->
                 <p>Prcessos Entregues</p>
@@ -165,7 +165,7 @@
             </div>
         </div>
         <div class="col-lg-2 col-6">
-            <div class="small-box bg-primary" title="">
+            <div class="small-box bg-info" title="">
             <div class="inner">
                 <!--<h3>2</h3>-->
                 <p>Certidões</p>

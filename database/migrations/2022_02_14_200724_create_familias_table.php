@@ -19,6 +19,7 @@ class CreateFamiliasTable extends Migration
             $table->string('token','100')->nullable();
             $table->string('area_alvo','100')->nullable();
             $table->json('loteamento')->nullable();
+            $table->date('data_exec')->nullable();//atualizacao
             $table->integer('tipo_residencia')->nullable();
             $table->integer('etapa')->nullable();
             //$table->integer('id_loteamento')->nullable();

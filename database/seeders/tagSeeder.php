@@ -18,14 +18,14 @@ class tagSeeder extends Seeder
             ['nome'=>'Tags situação dos cadastros','obs'=>'Informar os cadastros que estão faltando alguma informação ou documentos.','ordem'=>1],
             ['nome'=>'Tags Tipo do imóvel','obs'=>'Informar os cadastros que estão faltando alguma informação ou documentos.','ordem'=>2],
             [
-                'nome'=>'Cadastros Pendentes',
+                'nome'=>'CADASTROS COM PENDÊNCIAS',
                 'pai'=>1,
                 'ordem'=>2,
-                'obs'=>'São aqueles cadastros socioeconômicos que apresentam pendências como falta de documentos, falta de informações etc. Sem essas pendências resolvidas, o cadastro não se completa e ele não fará parte do processo jurídico via relatório social. É uma das maiores causas de atraso.',
+                'obs'=>'São cadastros incompletos devido a três fatores: Recusas (quando o beneficiário não quer, ao menos naquele momento, cadastra-se e fazer parte do Programa); Ocupantes não localizados (quando o ocupante de determinado lote não é encontrado), e Outros (quando faltam documentos como uma Certidão de Casamento, por exemplo).',
                 'config'=>['color'=>'danger','icon'=>'fa fa-times']
             ],
             [
-                'nome'=>'Imóveis com registros',
+                'nome'=>'IMÓVEIS COM REGISTROS',
                 'pai'=>1,
                 'ordem'=>3,
                 'obs'=>'São imóveis que são cadastrados, mas que não comporão o processo jurídico por já apresentarem registro imobiliário. Devem ser considerados como cadastros completos.',
@@ -33,28 +33,41 @@ class tagSeeder extends Seeder
             ],
             [
                 'nome'=>'Recusas',
-                'pai'=>1,
-                'ordem'=>4,
-                'obs'=>'Quando o beneficiário se recusa a fornecer informações ou documentos e, com isso, impede a geração de um novo cadastro socioeconômico. Beneficiários que recusam o cadastramento não participam do projeto, mas devem ser registrados para fins de segurança jurídica futura bem como para informar ao contratante quem foi o beneficiário que recusou a possibilidade. Devem integrar os cadastros completos.',
+                'pai'=>11,
+                'value'=>'recusas',
+                'ordem'=>1,
+                'obs'=>'Quando o beneficiário não quer, ao menos naquele momento, cadastra-se e fazer parte do Programa.',
                 'config'=>['color'=>'warning','icon'=>'fas fa-search-minus']
             ],
             [
-                'nome'=>'Proprietários não localizados',
-                'pai'=>1,
-                'ordem'=>5,
-                'obs'=>'Pode ser um simples lote sem construção ou até uma casa fechada. Também não compõem o cadastro, mas deve ficar registrada a situação. Ou seja, integram os cadastros completos.',
+                'nome'=>'Ocupantes não localizados',
+                'pai'=>11,
+                'ordem'=>2,
+                'value'=>'ocupantes_nao_localizados',
+                'obs'=>'Quando o ocupante de determinado lote não é encontrado.',
                 'config'=>['color'=>'warning','icon'=>'fa fa-times']
             ],
             ['nome'=>'Residencial','pai'=>2,'ordem'=>1,'obs'=>''],
             ['nome'=>'Comercial','pai'=>2,'ordem'=>2,'obs'=>''],
             ['nome'=>'Lote vago','pai'=>2,'ordem'=>3,'obs'=>''],
             [
-                'nome'=>'Cadastros Completos',
+                'nome'=>'CADASTROS COMPLETOS',
                 'pai'=>1,
                 'ordem'=>1,
                 'obs'=>'São cadastros socioeconômicos preenchidos e com toda a documentação necessária para serem encaminhados à Assistência Social para a elaboração do Relatório Social, documento que irá compor o processo jurídico de regularização fundiária. Sem o cadastro completo não há condições de avançar no processo.',
                 'config'=>['color'=>'success','icon'=>'fa fa-check']
             ],
+            ['nome'=>'Tags categoria de pendências','obs'=>'tipos de pendencias','ordem'=>3],
+            [
+                'nome'=>'Outros',
+                'pai'=>11,
+                'value'=>'outros',
+                'ordem'=>3,
+                'obs'=>'Quando faltam documentos como uma Certidão de Casamento, por exemplo',
+                'config'=>['color'=>'warning','icon'=>'fa fa-times']
+            ],
+
+
         ];
 
         foreach ($arr as $key => $value) {

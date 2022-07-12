@@ -8,9 +8,13 @@
 
 @section('content')
 <section class="content">
+    @php
+        $cob = new App\http\controllers\admin\CobrancaController;
+        $cob->exec();
+    @endphp
     <div class="row">
 
-        {!! $docs !!}
+        {{-- {!! $docs !!} --}}
 
     </div>
 

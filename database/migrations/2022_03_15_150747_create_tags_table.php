@@ -18,6 +18,7 @@ class CreateTagsTable extends Migration
             $table->timestamps();
             $table->string('token','100')->nullable();
             $table->string('nome',300)->nullable();
+            $table->string('value',300)->nullable();
             $table->enum('ativo',['s','n']);
             $table->integer('pai')->nullable();
             $table->integer('ordem')->nullable();

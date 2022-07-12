@@ -52,15 +52,26 @@
         </div>
     </div>
 </div>
-
 @stop
 
 @section('css')
     @include('qlib.csslib')
+    @php
+        if(isset($value['tags[]'])&&is_array($value['tags[]'])){
+            if(in_array(3,$value['tags[]'])){
+                $exibeCategoria = '';
+            }else{
+                $exibeCategoria = '[div-id="config[categoria_pendencia]"]{display:none}';
+            }
+        }else{
+            $exibeCategoria = '[div-id="config[categoria_pendencia]"]{display:none}';
+        }
+    @endphp
     <style>
         .note-table,.note-insert,.note-view{
             display: none;
         }
+        {!!$exibeCategoria!!}
     </style>
 
 @stop

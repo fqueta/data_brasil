@@ -186,26 +186,17 @@ class FamiliaController extends Controller
         $ret['link_completos'] = route('familias.index').'?filter[etapa]='.$idUltimaEtapa;
         $ret['link_idosos'] = route('familias.index').'?filter[idoso]=s';
         $cardTags = [];
-        $ret['cards_home'] = [
-            [
-                'label'=>'Todos cadastrados',
+        $ret['cards_home'] = [];
+        $cards_homeTodos = [
+                'label'=>'TODOS OS CADASTROS',
                 'valor'=>$familia_totais->todos,
-                'obs'=>'Todos os cadastro no sistema',
+                'obs'=>'São cadastros completos sistematizados por ano de execução do projeto ou programa. Incluem cadastros completos, cadastros com pendências e imóveis com registro anterior junto ao Cartório de Registro de Imóveis.',
                 'href'=>route('familias.index'),
                 'icon'=>'fa fa-map-marked-alt',
-                'lg'=>'2',
+                'lg'=>'3',
                 'xs'=>'6',
                 'color'=>'info',
-            ],
-            /*[
-                'label'=>'Cadastros completos',
-                'valor'=>$familia_totais->completos,
-                'href'=>$ret['link_completos'],
-                'icon'=>'fa fa-check',
-                'lg'=>'2',
-                'xs'=>'6',
-                'color'=>'success',
-            ],*/
+
         ];
         if(!empty($tags)){
             foreach ($tags as $kt => $vt) {
@@ -217,18 +208,19 @@ class FamiliaController extends Controller
                     'valor'=>$countFamTag,
                     'href'=>route('familias.index').'?filter[tags][]='.$vt['id'],
                     'icon'=>$vt['config']['icon'],
-                    'lg'=>'2',
+                    'lg'=>'3',
                     'xs'=>'6',
                     'color'=>$vt['config']['color'],
                 ];
                 array_push($ret['cards_home'],$cardTags[$vt['id']]);
             }
         }
+        array_push($ret['cards_home'],$cards_homeTodos);
 
+        //dd($ret);
         $ret['config']['acao_massa'] = [
             ['link'=>'#edit_etapa','event'=>'edit_etapa','icon'=>'fa fa-pencil','label'=>'Editar etapa'],
         ];
-        //dd($ret);
         return $ret;
     }
     public function colTabela($familia = null,$campos=false)
@@ -394,13 +386,14 @@ class FamiliaController extends Controller
                 'tam'=>'6',
                 'value'=>@$_GET['etapa'],
             ],*/
+            'data_exec'=>['label'=>'Data de Execução','active'=>true,'type'=>'date','exibe_busca'=>'d-block','event'=>'required','tam'=>'6'],
             'tipo_residencia'=>[
                 'label'=>'Tipo de residência*',
                 'active'=>true,
                 'type'=>'select',
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='2'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
-                'tam'=>'12',
+                'tam'=>'6',
                 'class'=>'',
                 'exibe_busca'=>true,
                 'option_select'=>false,
@@ -410,11 +403,25 @@ class FamiliaController extends Controller
                 'active'=>true,
                 'type'=>'select_multiple',
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='1' ORDER BY ordem ASC",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
+                'event'=>'onchange=exibeCategoria(this)',
                 'class'=>'',
                 'option_select'=>false,
                 'tam'=>'12',
                 'cp_busca'=>'tags]['
+            ],
+            'config[categoria_pendencia]'=>[
+                'label'=>'Tipo de pendências',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT value,nome FROM tags WHERE ativo='s' AND pai='11'",'nome','value'),
+                'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'12',
+                'id'=>'categoria_pendencia',
+                'cp_busca'=>'categoria_pendencia][',
+                'class'=>'',
+                'exibe_busca'=>true,
+                'option_select'=>true,
             ],
             'bairro'=>[
                 'label'=>'Área',

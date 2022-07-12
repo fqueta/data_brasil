@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\admin\CobrancaController;
 use App\Models\Familia;
 use App\Models\User;
 use App\Qlib\Qlib;
@@ -25,7 +26,9 @@ class TesteController extends Controller
         $oc = isset($_GET['oc'])?$_GET['oc']:289;
         $config = [
             'docs'=>$doc->fichaOcupante($lote,$oc),
+            'cob'=>$doc->fichaOcupante($lote,$oc),
         ];
+        //dd(Qlib::isAdmin());
         return view('teste',$config);
     }
     public function ajax(){
