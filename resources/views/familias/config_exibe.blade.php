@@ -1,6 +1,14 @@
 <div class="col-md-12 d-print-none">
     <div class="card">
         <form action="" id="frm-consulta" method="GET">
+            {{-- Inicio painel filtro ano --}}
+            <div class="row mt-3">
+                <div class="col-md-12 mb-2 ml-2">
+                    @include('familias.filtro_ano',['arr_ano'=>@$anos,'form'=>false,'onclick'=>"$('#frm-consulta').submit();$('#preload').css('display','block')"])
+                </div>
+            </div>
+            {{-- Fim painel filtro ano --}}
+
             <div class="row mr-0 ml-0">
                 <!--
                 <div class="col-md-2 pt-4 pl-2">

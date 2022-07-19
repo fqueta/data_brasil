@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
-        <h1 class="m-0">Painel de transparência</h1>
+        <h1 class="m-0">Transparência</h1>
     </div><!-- /.col -->
     <div class="col-sm-6 text-right">
         <div class="btn-group" role="group" aria-label="actions">
@@ -22,6 +22,13 @@
 @section('content')
 <!--<p>Welcome to this beautiful admin panel.</p>-->
 @can('ler','familias')
+{{-- Inicio painel filtro ano --}}
+<div class="row">
+    <div class="col-md-12 mb-3">
+        @include('familias.filtro_ano',['arr_ano'=>@$config['c_familias']['anos']])
+    </div>
+</div>
+{{-- Fim painel filtro ano --}}
 <div class="row card-top">
     @if (isset($config['c_familias']['cards_home']))
     <div class="col-md-12 text-center mb-3">
@@ -59,7 +66,7 @@
             <div class="small-box bg-info" title="">
             <div class="inner">
                 <h3></h3>
-                <p>Mapa Inicial da Área</p>
+                <p>MAPA INICIAL DA ÁREA</p>
             </div>
             <div class="icon">
                 <i class="fa fa-map-marked-alt"></i>
@@ -71,7 +78,7 @@
             <div class="small-box bg-info" title="">
             <div class="inner">
                 <h3></h3>
-                <p>Mapa Final</p>
+                <p>MAPA FINAL</p>
             </div>
             <div class="icon">
                 <i class="fa fa-map-marked-alt"></i>
@@ -119,8 +126,8 @@
         <div class="col-lg-2 col-6">
             <div class="small-box bg-info" title="">
             <div class="inner">
-                <!--<h3>2</h3>-->
-                <p>Legislação Pertinente</p>
+                <h3>0</h3>
+                <p>LEGISLAÇÃO PERTINENTE</p>
             </div>
             <div class="icon">
                 <i class="fa fa-check"></i>
@@ -131,8 +138,8 @@
         <div class="col-lg-2 col-6">
             <div class="small-box bg-info" title="">
             <div class="inner">
-                <!--<h3>2</h3>-->
-                <p>Decretos Municipais</p>
+                <h3>0</h3>
+                <p>DECRETOS MUNICIPAIS</p>
             </div>
             <div class="icon">
                 <i class="fa fa-check"></i>
@@ -143,8 +150,8 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-info" title="">
             <div class="inner">
-                <!--<h3>2</h3>-->
-                <p>Atendimentos Jurídicos</p>
+                <h3>1</h3>
+                <p>ATENDIMENTOS JURÍDICOS</p>
             </div>
             <div class="icon">
                 <i class="fa fa-check"></i>
@@ -155,8 +162,8 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-info" title="">
             <div class="inner">
-                <!--<h3>2</h3>-->
-                <p>Prcessos Entregues</p>
+                <h3>0</h3>
+                <p>PROCESSOS ENTREGUES</p>
             </div>
             <div class="icon">
                 <i class="fa fa-check"></i>
@@ -167,8 +174,8 @@
         <div class="col-lg-2 col-6">
             <div class="small-box bg-info" title="">
             <div class="inner">
-                <!--<h3>2</h3>-->
-                <p>Certidões</p>
+                <h3>0</h3>
+                <p>CERTIDÕES</p>
             </div>
             <div class="icon">
                 <i class="fa fa-check"></i>

@@ -48,7 +48,8 @@ class FamiliaController extends Controller
         $ano = date('Y');
         $mes = date('m');
         //dd($get);
-        $idUltimaEtapa = Etapa::where('ativo','=','s')->where('excluido','=','n')->where('deletado','=','n')->max('id');
+        //$idUltimaEtapa = Etapa::where('ativo','=','s')->where('excluido','=','n')->where('deletado','=','n')->max('id');
+        $idUltimaEtapa=false;
         $tags = Tag::where('ativo','=','s')->where('pai','=','1')->where('excluido','=','n')->where('deletado','=','n')->OrderBy('ordem','asc')->get();
         $id_pendencia = 3;
         $id_imComRegistro = 4;
@@ -64,9 +65,15 @@ class FamiliaController extends Controller
         ];
 
         DB::enableQueryLog();
-        $familia =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
-        $countFam =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
 
+        if(isset($get['ano']) && !empty($get['ano'])){
+            $familia = Familia::where('excluido','=','n')->where('deletado','=','n')->whereYear('data_exec',$get['ano'])->orderBy('id',$config['order']);
+            $countFam = Familia::where('excluido','=','n')->where('deletado','=','n')->whereYear('data_exec',$get['ano'])->orderBy('id',$config['order']);
+        }else{
+            $familia =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
+            $countFam =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
+
+        }
         //$familia =  DB::table('familias')->where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
 
         $familia_totais = new stdClass;
@@ -187,11 +194,19 @@ class FamiliaController extends Controller
         $ret['link_idosos'] = route('familias.index').'?filter[idoso]=s';
         $cardTags = [];
         $ret['cards_home'] = [];
+        $compleLinkVisu = false;
+        $compleLinkVisu1 = false;
+        if(isset($get['ano'])&&$get['ano']){
+            $compleLinkVisu = '&ano='.$get['ano'];
+        }
+        if($compleLinkVisu){
+            $compleLinkVisu1 = '?'.$compleLinkVisu;
+        }
         $cards_homeTodos = [
                 'label'=>'TODOS OS CADASTROS',
                 'valor'=>$familia_totais->todos,
                 'obs'=>'São cadastros completos sistematizados por ano de execução do projeto ou programa. Incluem cadastros completos, cadastros com pendências e imóveis com registro anterior junto ao Cartório de Registro de Imóveis.',
-                'href'=>route('familias.index'),
+                'href'=>route('familias.index').$compleLinkVisu1,
                 'icon'=>'fa fa-map-marked-alt',
                 'lg'=>'3',
                 'xs'=>'6',
@@ -200,13 +215,19 @@ class FamiliaController extends Controller
         ];
         if(!empty($tags)){
             foreach ($tags as $kt => $vt) {
-                $countFamTag =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order'])->where('tags','LIKE','%"'.$vt['id'].'"%')->count();
+                if(isset($get['ano'])&&!empty($get['ano'])){
+                    $countFamTag =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order'])->where('tags','LIKE','%"'.$vt['id'].'"%')->whereYear('data_exec',$get['ano'])->count();
+                }else{
+
+                    $countFamTag =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order'])->where('tags','LIKE','%"'.$vt['id'].'"%')->count();
+                }
+
                 $cardTags[$vt['id']] =
                 [
                     'label'=>$vt['nome'],
                     'obs'=>$vt['obs'],
                     'valor'=>$countFamTag,
-                    'href'=>route('familias.index').'?filter[tags][]='.$vt['id'],
+                    'href'=>route('familias.index').'?filter[tags][]='.$vt['id'].$compleLinkVisu,
                     'icon'=>$vt['config']['icon'],
                     'lg'=>'3',
                     'xs'=>'6',
@@ -217,10 +238,12 @@ class FamiliaController extends Controller
         }
         array_push($ret['cards_home'],$cards_homeTodos);
 
-        //dd($ret);
+        $anos = Qlib::sql_distinct();
+        $ret['anos'] = $anos;
         $ret['config']['acao_massa'] = [
             ['link'=>'#edit_etapa','event'=>'edit_etapa','icon'=>'fa fa-pencil','label'=>'Editar etapa'],
         ];
+        //dd($ret);
         return $ret;
     }
     public function colTabela($familia = null,$campos=false)
@@ -327,6 +350,7 @@ class FamiliaController extends Controller
         $ret = [
             'dados'=>$queryFamilias['familia'],
             'familias'=>$queryFamilias['familia'],
+            'anos'=>$queryFamilias['anos'],
             'title'=>$title,
             'titulo'=>$titulo,
             'campos_tabela'=>$queryFamilias['campos'],

@@ -21,7 +21,8 @@
           padding: 0%;
       }
   </style>
-  <div class="row">
+{{-- Inicio painel filtro ano --}}
+<div class="row">
     @include($view.'.config_exibe')
     <div class="col-md-12 mens">
     </div>

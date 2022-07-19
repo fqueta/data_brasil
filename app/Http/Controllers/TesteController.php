@@ -21,14 +21,11 @@ class TesteController extends Controller
     {
 
         $user = Auth::user();
-        $doc = new LotesController($user);
-        $lote = isset($_GET['lote'])?$_GET['lote']:201;
-        $oc = isset($_GET['oc'])?$_GET['oc']:289;
-        $config = [
-            'docs'=>$doc->fichaOcupante($lote,$oc),
-            'cob'=>$doc->fichaOcupante($lote,$oc),
-        ];
-        //dd(Qlib::isAdmin());
+        $ds = Qlib::sql_distinct();
+        foreach ($ds as $key => $value) {
+            echo $value->vl;
+        }
+        dd($ds);
         return view('teste',$config);
     }
     public function ajax(){

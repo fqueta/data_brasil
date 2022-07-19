@@ -22,6 +22,13 @@
 @section('content')
 <!--<p>Welcome to this beautiful admin panel.</p>-->
 @can('ler','familias')
+{{-- Inicio painel filtro ano --}}
+<div class="row">
+    <div class="col-md-12 mb-3">
+        @include('familias.filtro_ano',['arr_ano'=>@$config['c_familias']['anos']])
+    </div>
+</div>
+{{-- Fim painel filtro ano --}}
 <div class="row card-top">
     @if (isset($config['c_familias']['cards_home']))
     @foreach ($config['c_familias']['cards_home'] as $k=>$v)

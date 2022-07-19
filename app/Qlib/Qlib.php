@@ -339,6 +339,10 @@ class Qlib
 
         return $userinfo;
     }
+    static function sql_distinct($tab='familias',$campo='YEAR(`data_exec`)',$order='ORDER BY data_exec ASC'){
+        $ret = DB::select("SELECT DISTINCT $campo As vl  FROM $tab $order");
+        return $ret;
+    }
     static function formatMensagem($config=false){
         if($config){
             $config['mens'] = isset($config['mens']) ? $config['mens'] : false;
