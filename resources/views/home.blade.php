@@ -37,7 +37,7 @@
     @foreach ($config['c_familias']['cards_home'] as $k=>$v)
     <div class="col-lg-{{$v['lg']}} col-{{$v['xs']}}">
                 <!-- small box -->
-                <div data-toggle="tooltip" data-html="true" class="small-box bg-{{$v['color']}}" title="{{$v['obs']}}">
+                <div data-toggle="tooltip" data-html="true" class="small-box bg-{{$v['color']}}" title="{!!$v['obs']!!}">
                   <div class="inner">
                     <h3>{{$v['valor']}}</h3>
 
@@ -98,11 +98,11 @@
             <div class="icon">
                 <i class="fa fa-check"></i>
             </div>
-            <a href="http://127.0.0.1:8000/familias" title="Ver detalhes de Todos cadastrados" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="#" title="Ver detalhes em contrução" class="small-box-footer">Em construção <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-4 col-6">
-            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-warning" title="{{App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'processo_entregue','select'=>'obs'])}}">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-warning" title="{!! App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'processo_entregue','select'=>'obs']) !!}">
             <div class="inner">
                 <h3>{{$config['c_familias']['totProcesso']['entregue']}}</h3>
                 <p>PROCESSOS ENTREGUES</p>
@@ -110,11 +110,11 @@
             <div class="icon">
                 <i class="fa fa-check"></i>
             </div>
-            <a href="/familias?filter[config][categoria_processo]=processo_entregue" title="Ver detalhes de Todos cadastrados" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="/familias?filter[config][categoria_processo]=processo_entregue" title="Ver detalhes dos processos entregues" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-4 col-6">
-            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-success" title="{{App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'certidao','select'=>'obs'])}}">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-success" title="{!! App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'certidao','select'=>'obs']) !!}">
             <div class="inner">
                 <h3>{{$config['c_familias']['totProcesso']['certidao']}}</h3>
                 <p>CERTIDÕES</p>
@@ -122,7 +122,7 @@
             <div class="icon">
                 <i class="fa fa-check"></i>
             </div>
-            <a href="/familias?filter[config][categoria_processo]=certidao" title="Ver detalhes de Todos cadastrados" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="/familias?filter[config][categoria_processo]=certidao" title="Ver detalhes das certidões" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
     </div>
