@@ -93,7 +93,11 @@
                     </a>
                 </div>
                 @endcan
-                    <div class="form-group col-md-9 text-left" div-id="auto-proprietario">
+                    <div class="form-group col-md-2 text-left">
+                        <label for="auto-proprietario">ID</label>
+                        <input type="number" name="filter[id]" class="form-control  text-left" placeholder="" value="{{@$_GET['filter']['id']}}" >
+                    </div>
+                    <div class="form-group col-md-7 text-left" div-id="auto-proprietario">
                         <label for="auto-proprietario">Proprietário</label>
                         <input type="text" name="auto-proprietario" class="form-control  text-left" id="auto-proprietario" aria-describedby="auto-proprietario" placeholder="" value="{{@$_GET['auto-proprietario']}}" >
                     </div>

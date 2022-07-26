@@ -21,6 +21,18 @@
                     {{$va->vl}}
                 </label>
             @endforeach
+            @php
+                $checkedTodos = false;
+                if(isset($_GET['ano'])&&$_GET['ano']==''){
+                    $checkedTodos = 'checked';
+                }elseif (!isset($_GET['ano'])) {
+                    $checkedTodos = 'checked';
+                }
+            @endphp
+            <label class="btn btn-outline-secondary {{$active}}">
+                <input {{$checkedTodos}} onclick="checkTodosAnos();" type="radio" name="ano" id="todos" value=""/>
+                {{__('Todos Anos')}}
+            </label>
         </div>
     @if($form)
     </form>

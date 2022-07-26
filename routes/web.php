@@ -182,25 +182,6 @@ Auth::routes();
 Route::get('/',function(){
   return redirect()->route('login');
 });
-/*
-Route::prefix('admin')->group(function(){
-    Route::get('/home', [App\Http\Controllers\admin\homeController::class, 'index'])->name('home.admin');
-    Route::resource('cursos','\App\Http\Controllers\admin\CursosController',['parameters' => [
-        'cursos' => 'id'
-    ]]);
-    Route::resource('categorias','\App\Http\Controllers\admin\CategoriasController',['parameters' => [
-        'categorias' => 'id'
-    ]]);
-    Route::resource('modulos','\App\Http\Controllers\admin\ModulosController',['parameters' => [
-        'modulos' => 'id'
-    ]]);
-    Route::resource('provas','\App\Http\Controllers\admin\ProvasController',['parameters' => [
-        'questoes' => 'id'
-    ]]);
-    Route::resource('questoes','\App\Http\Controllers\admin\QuestoesController',['parameters' => [
-        'questoes' => 'id'
-    ]]);
-});*/
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/transparencia', [App\Http\Controllers\HomeController::class, 'transparencia'])->name('transparencia');
 
@@ -211,4 +192,8 @@ Route::get('envio-mails',function(){
     //return new \App\Mail\dataBrasil($user);
     $enviar = Mail::send(new \App\Mail\dataBrasil($user));
     return $enviar;
+});
+Route::get('/suspenso',[UserController::class,'suspenso'])->name('cobranca.suspenso');
+Route::prefix('cobranca')->group(function(){
+    Route::get('/fechar',[UserController::class,'pararAlertaFaturaVencida'])->name('alerta.cobranca.fechar');
 });

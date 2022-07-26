@@ -69,9 +69,14 @@ class FamiliaController extends Controller
         if(isset($get['ano']) && !empty($get['ano'])){
             $familia = Familia::where('excluido','=','n')->where('deletado','=','n')->whereYear('data_exec',$get['ano'])->orderBy('id',$config['order']);
             $countFam = Familia::where('excluido','=','n')->where('deletado','=','n')->whereYear('data_exec',$get['ano'])->orderBy('id',$config['order']);
+            //Totalizadores.
+            $totProcesso['entregue'] = Familia::where('excluido','=','n')->where('deletado','=','n')->whereYear('data_exec',$get['ano'])->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"processo_entregue"%')->count();
+            $totProcesso['certidao'] = Familia::where('excluido','=','n')->where('deletado','=','n')->whereYear('data_exec',$get['ano'])->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"certidao"%')->count();
         }else{
             $familia =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
             $countFam =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
+            $totProcesso['entregue'] = Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"processo_entregue"%')->count();
+            $totProcesso['certidao'] = Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"certidao"%')->count();
 
         }
         //$familia =  DB::table('familias')->where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
@@ -210,7 +215,7 @@ class FamiliaController extends Controller
                 'icon'=>'fa fa-map-marked-alt',
                 'lg'=>'3',
                 'xs'=>'6',
-                'color'=>'info',
+                'color'=>'warning',
 
         ];
         if(!empty($tags)){
@@ -240,6 +245,7 @@ class FamiliaController extends Controller
 
         $anos = Qlib::sql_distinct();
         $ret['anos'] = $anos;
+        $ret['totProcesso'] = $totProcesso;
         $ret['config']['acao_massa'] = [
             ['link'=>'#edit_etapa','event'=>'edit_etapa','icon'=>'fa fa-pencil','label'=>'Editar etapa'],
         ];
@@ -437,12 +443,26 @@ class FamiliaController extends Controller
                 'label'=>'Tipo de pendências',
                 'active'=>true,
                 'type'=>'select',
-                'arr_opc'=>Qlib::sql_array("SELECT value,nome FROM tags WHERE ativo='s' AND pai='11'",'nome','value'),
+                'arr_opc'=>Qlib::sql_array("SELECT value,nome FROM tags WHERE ativo='s' AND pai='3'",'nome','value'),
                 'exibe_busca'=>'d-block',
                 'event'=>'',
                 'tam'=>'12',
                 'id'=>'categoria_pendencia',
                 'cp_busca'=>'categoria_pendencia][',
+                'class'=>'',
+                'exibe_busca'=>true,
+                'option_select'=>true,
+            ],
+            'config[categoria_processo]'=>[
+                'label'=>'Status do processo',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT value,nome FROM tags WHERE ativo='s' AND pai='10'",'nome','value'),
+                'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'12',
+                'id'=>'categoria_processo',
+                'cp_busca'=>'categoria_processo][',
                 'class'=>'',
                 'exibe_busca'=>true,
                 'option_select'=>true,
@@ -782,10 +802,10 @@ class FamiliaController extends Controller
                 'route'=>$this->routa,
                 'id'=>$id,
             ];
-            if($dados['loteamento']>0){
-                $bairro = Bairro::find($dados['bairro']);
-                $dados['matricula'] = isset($bairro['matricula'])?$bairro['matricula']:false;
-            }
+            // if($dados['loteamento']>0){
+            //     $bairro = Bairro::find($dados['bairro']);
+            //     $dados['matricula'] = isset($bairro['matricula'])?$bairro['matricula']:false;
+            // }
             if(!$dados['matricula'])
                 $config['display_matricula'] = 'd-none';
             if(isset($dados['config']) && is_array($dados['config'])){
@@ -824,7 +844,6 @@ class FamiliaController extends Controller
         //$roles = DB::select("SELECT * FROM roles ORDER BY id ASC");
         //$permissions = DB::select("SELECT * FROM permissions ORDER BY id ASC");
         $this->authorize('create', $this->routa);
-
         if(!empty($dados)){
             $title = 'Editar Cadastro de família';
             $titulo = $title;
@@ -846,10 +865,10 @@ class FamiliaController extends Controller
                 'id'=>$id,
                 'arquivos'=>'docx,PDF,pdf,jpg,xlsx,png,jpeg',
             ];
-            if($dados[0]['loteamento']>0){
-                $bairro = Bairro::find($dados[0]['bairro']);
-                $dados[0]['matricula'] = isset($bairro['matricula'])?$bairro['matricula']:false;
-            }
+            // if($dados[0]['loteamento']>0){
+            //     $bairro = Bairro::find($dados[0]['bairro']);
+            //     $dados[0]['matricula'] = isset($bairro['matricula'])?$bairro['matricula']:false;
+            // }
             if(!$dados[0]['matricula'])
             $config['display_matricula'] = 'd-none';
             if(isset($dados[0]['config']) && is_array($dados[0]['config'])){

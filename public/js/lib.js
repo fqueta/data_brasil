@@ -1971,12 +1971,40 @@ function exibeCategoria(obj){
     var v=obj.value;
     let cp = $('[div-id="config[categoria_pendencia]"]');
     let cp_sel = $('[name="config[categoria_pendencia]"]');
+
+    let cpr = $('[div-id="config[categoria_processo]"]');
+    let cpr_sel = $('[name="config[categoria_processo]"]');
+    //alert(v);
     if(v==3){
         cp.show();
         cp_sel.attr('required',true).removeAttr('hidden');
+    }else if(v==10){
+        cpr.show();
+        cpr_sel.attr('required',true).removeAttr('hidden');
     }else{
+        cpr.hide();
+        cpr_sel.removeAttr('required',true).attr('hidden');
         cp.hide();
         cp_sel.removeAttr('required').attr('hidden',true);
     }
     console.log(v);
+}
+function fecharAlertaFatura(url){
+    getAjax({
+        url:url,
+    },function(res){
+        $('#preload').fadeOut("fast");
+        if(m=res.value.matricula){
+            $('[name="matricula"]').val(m);
+            $('#txt-matricula').html(m);
+        }else{
+            $('[name="matricula"]').val('');
+            $('#txt-matricula').html('');
+        }
+    });
+}
+function checkTodosAnos() {
+    let urlAtual = lib_trataRemoveUrl('ano','');
+    window.location=urlAtual;
+    $('#preload').show();
 }

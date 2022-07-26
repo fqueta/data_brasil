@@ -64,7 +64,7 @@ class PermissionSeeder extends Seeder
             [
                 'name'=>'Clientes',
                 'description'=>'Somente clientes, Sem privilêgios de administração acesso a área restrita do site',
-                'redirect_login'=>'/transperencia',
+                'redirect_login'=>'/home',
                 'active'=>'s',
                 'id_menu'=>json_encode([]),
             ],

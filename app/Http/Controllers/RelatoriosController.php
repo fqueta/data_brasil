@@ -373,7 +373,7 @@ class RelatoriosController extends Controller
         $estadocivil = new EstadocivilController($user);
         $lote = new LotesController($user);
         return [
-            //'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
+            'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
             'bairro'=>[
                 'label'=>'ÁREA',
                 'active'=>true,

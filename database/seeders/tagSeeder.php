@@ -33,7 +33,7 @@ class tagSeeder extends Seeder
             ],
             [
                 'nome'=>'Recusas',
-                'pai'=>11,
+                'pai'=>3,
                 'value'=>'recusas',
                 'ordem'=>1,
                 'obs'=>'Quando o beneficiário não quer, ao menos naquele momento, cadastra-se e fazer parte do Programa.',
@@ -41,7 +41,7 @@ class tagSeeder extends Seeder
             ],
             [
                 'nome'=>'Ocupantes não localizados',
-                'pai'=>11,
+                'pai'=>3,
                 'ordem'=>2,
                 'value'=>'ocupantes_nao_localizados',
                 'obs'=>'Quando o ocupante de determinado lote não é encontrado.',
@@ -57,14 +57,29 @@ class tagSeeder extends Seeder
                 'obs'=>'São cadastros socioeconômicos preenchidos e com toda a documentação necessária para serem encaminhados à Assistência Social para a elaboração do Relatório Social, documento que irá compor o processo jurídico de regularização fundiária. Sem o cadastro completo não há condições de avançar no processo.',
                 'config'=>['color'=>'success','icon'=>'fa fa-check']
             ],
-            ['nome'=>'Tags categoria de pendências','obs'=>'tipos de pendencias','ordem'=>3],
             [
                 'nome'=>'Outros',
-                'pai'=>11,
+                'pai'=>3,
                 'value'=>'outros',
                 'ordem'=>3,
                 'obs'=>'Quando faltam documentos como uma Certidão de Casamento, por exemplo',
                 'config'=>['color'=>'warning','icon'=>'fa fa-times']
+            ],
+            [
+                'nome'=>'Processo entregue',
+                'pai'=>10,
+                'value'=>'processo_entregue',
+                'ordem'=>1,
+                'obs'=>'são aqueles processos que são entregues à Secretaria de Meio Ambiente para serem encaminhados ao Cartório de Registro de Imóveis. É a penúltima etapa do processo de regularização fundiária.',
+                'config'=>['color'=>'warning','icon'=>'fa fa-check']
+            ],
+            [
+                'nome'=>'Certidão',
+                'pai'=>10,
+                'value'=>'certidao',
+                'ordem'=>2,
+                'obs'=>'Trata-se do atendimento final. É quando o beneficiário recebe sua Certidão que todo o processo se consolida e atinge seu objetivo.',
+                'config'=>['color'=>'success','icon'=>'fa fa-check']
             ],
 
 

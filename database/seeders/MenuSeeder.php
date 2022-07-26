@@ -24,15 +24,15 @@ class MenuSeeder extends Seeder
                 'route'=>'home',
                 'pai'=>''
             ],
-            [
-                'categoria'=>'',
-                'description'=>'Transparencia',
-                'icon'=>'fas fa-search-location',
-                'actived'=>true,
-                'url'=>'transparencia',
-                'route'=>'transparencia',
-                'pai'=>''
-            ],
+            // [
+            //     'categoria'=>'',
+            //     'description'=>'Transparencia',
+            //     'icon'=>'fas fa-search-location',
+            //     'actived'=>true,
+            //     'url'=>'transparencia',
+            //     'route'=>'transparencia',
+            //     'pai'=>''
+            // ],
             [
                 'categoria'=>'CADASTROS',
                 'description'=>'Cadastro Social',

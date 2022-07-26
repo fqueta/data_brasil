@@ -22,6 +22,13 @@ class UserController extends Controller
     public $routa;
     public $label;
     public $view;
+
+    public $access_token;
+	public $url_plataforma;
+	public $url;
+	public $tk_conta;
+	public $seg1;
+
     public function __construct(User $user)
     {
         $this->middleware('auth');
@@ -29,7 +36,17 @@ class UserController extends Controller
         $this->routa = 'users';
         $this->label = 'Usuários';
         $this->view = 'padrao';
+        $this->credenciais();
+        $this->seg1 = request()->segment(1);
+        //$seg2 = request()->segment(2);
     }
+    public function credenciais(){
+		$this->access_token = 'NWM5OGMyZGRiOTAzMS41ZmQwZGQyNTUzZGI0LjQx';
+		$this->url 		 	= 'https://api.ctloja.com.br/v1';
+		$this->tk_conta	 	= '624384509209d';
+		//$this->tk_conta	 	= '60b77bc73e7c0';
+	}
+
     public function queryUsers($get=false,$config=false)
     {
         $ret = false;
@@ -345,5 +362,104 @@ class UserController extends Controller
             $ret = redirect()->route($routa.'.index',['mens'=>'Registro deletado com sucesso!','color'=>'success']);
         }
         return $ret;
+    }
+    public function testeF($var = null)
+    {
+        return 'ola user';
+    }
+
+    public function exec($token_conta = null)
+    {
+        $cont = false;
+        //if($token_conta){
+            $verifica_fatura = $this->verifica_faturas(array('token_conta'=>$token_conta));
+            if(isset($_GET['teste'])){
+                Qlib::lib_print($verifica_fatura);
+            }
+            if($verifica_fatura['acao']=='alertar'){
+                if(Qlib::isAdmin()){
+                    $cont = @$verifica_fatura['mens'];
+                    //echo $cont;
+                }
+            }elseif($verifica_fatura['acao']=='suspender' || $verifica_fatura['acao']=='desativar'){
+                //Não terá acesso ao admin somente ao boleto e as faturas e o site estará desativado tbem
+                if(Qlib::isAdmin(3)){
+                    $cont = @$verifica_fatura['mens'];
+                }else{
+                    $cont = Qlib::formatMensagemInfo('Sistema temporariamente suspenso entre em contato com o administrador','danger');
+                }
+                $pagSusped = 'suspenso';
+                if($this->seg1!=$pagSusped){
+                    Qlib::redirect('/'.$pagSusped,0);
+                    die();
+                }
+                //echo $cont;
+            }
+        //}
+        return $cont;
+    }
+    public function verifica_faturas($config=false,$cache=true){
+		$ret['exec'] = false;
+		$ret['cache'] = false;
+		//exemplo de uso
+		/*
+		$this = new apictloja;
+		$ret = $this->verifica_faturas(array('token_conta'=>''));
+		Qlib::lib_print($ret);
+		*/
+		$token = isset($config['token_conta'])?$config['token_conta']:$this->tk_conta;
+
+		if($token){
+            $ver_sess = session('verifica_faturas');
+            //Qlib::lib_print($ver_sess);
+
+			if(isset($ver_sess['exec'])&&$ver_sess['exec'] && $cache){
+				$arr_response = $ver_sess;
+				$ret['cache'] = true;
+			}else{
+
+				$curl = curl_init();
+
+				curl_setopt_array($curl, array(
+				  CURLOPT_URL => $this->url.'/verifica_faturas/'.$token,
+				  CURLOPT_RETURNTRANSFER => true,
+				  CURLOPT_ENCODING => '',
+				  CURLOPT_MAXREDIRS => 10,
+				  CURLOPT_TIMEOUT => 0,
+				  CURLOPT_FOLLOWLOCATION => true,
+				  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+				  CURLOPT_CUSTOMREQUEST => 'GET',
+				  CURLOPT_HTTPHEADER => array(
+					'Access-Token: '.$this->access_token
+				  ),
+				));
+				$response = curl_exec($curl);
+				curl_close($curl);
+				$arr_response = json_decode($response,true);
+				//$ret['arr_response'] = $arr_response;
+			}
+			if(isset($arr_response['exec'])){
+				$ret['exec'] = $arr_response['exec'];
+				$ret['acao'] = $arr_response['acao'];
+                session(['verifica_faturas'=>$arr_response]);
+				//$ver_sess=$arr_response;
+			}
+			if(isset($arr_response['mens'])){
+				$ret['mens'] = $arr_response['mens'];
+			}
+			$ret['token'] = $token;
+		}else{
+			$ret['mens'] = Qlib::formatMensagemInfo('Configuração ou token inválido','danger');
+		}
+        return $ret;
+	}
+    public function pararAlertaFaturaVencida(Request $request){
+        $request->session()->put('verifica_faturas.acao','liberar');
+        $ret['exec']=true;
+		return $ret;
+	}
+    public function suspenso()
+    {
+        return view('admin.suspenso');
     }
 }

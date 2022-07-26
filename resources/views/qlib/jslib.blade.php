@@ -31,6 +31,10 @@
         });
 
         $('.select2').select2();
+        $('[fachar-alerta-fatura="true"]').on('click',function(){
+            fecharAlertaFatura('{{route('alerta.cobranca.fechar')}}');
+        });
+
         $(document).on('select2:open', () => {
             document.querySelector('.select2-search__field').focus();
         });

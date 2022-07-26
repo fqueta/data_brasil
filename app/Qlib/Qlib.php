@@ -1,5 +1,7 @@
 <?php
 namespace App\Qlib;
+
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -757,6 +759,16 @@ class Qlib
         $id_permission = auth()->user()->id_permission;
         $dPermission = Permission::FindOrFail($id_permission);
         $ret = isset($dPermission['redirect_login']) ? $dPermission['redirect_login']:'/';
+        return $ret;
+    }
+    static function redirect($url,$time=10){
+        echo '<meta http-equiv="refresh" content="'.$time.'; url='.$url.'">';
+    }
+    static function verificaCobranca(){
+        //$f = new CobrancaController;
+        $user = Auth::user();
+        $f = new UserController($user);
+        $ret = $f->exec();
         return $ret;
     }
 }

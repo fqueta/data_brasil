@@ -20,7 +20,7 @@
 @stop
 
 @section('content')
-<!--<p>Welcome to this beautiful admin panel.</p>-->
+@include('admin.partes.header')
 @can('ler','familias')
 {{-- Inicio painel filtro ano --}}
 <div class="row">
@@ -31,6 +31,9 @@
 {{-- Fim painel filtro ano --}}
 <div class="row card-top">
     @if (isset($config['c_familias']['cards_home']))
+    <div class="col-md-12 text-center mb-3">
+        <h4 class="card-title">{{__('Cadastros socioeconômicos')}}</h4>
+    </div>
     @foreach ($config['c_familias']['cards_home'] as $k=>$v)
     <div class="col-lg-{{$v['lg']}} col-{{$v['xs']}}">
                 <!-- small box -->
@@ -50,7 +53,7 @@
         @endif
     </div>
 
-    <div class="row mb-5">
+    <div class="row">
         @if (isset($config['c_familias']['progresso']))
         <div class="col-md-5">
             <div class="card">
@@ -71,10 +74,56 @@
             </div>
         </div>
         @endif
+        <div class="col-md-12 text-center mb-3">
+            <h4 class="card-title">{{__('Cadastros topográficos')}}</h4>
+        </div>
         <div class="col-md-12">
             @if (isset($config['mapa']['config']))
                 {!! App\Http\Controllers\MapasController::exibeMapas($config['mapa']['config']) !!}
             @endif
+        </div>
+    </div>
+    <div class="row mb-5">
+        <div class="col-md-12 text-center  mb-3">
+            <div class="col-md-12 text-center  mb-3">
+                <h4 class="card-title">{{__('Processo Jurídico')}}</h4>
+            </div>
+        </div>
+        <div class="col-lg-4 col-6">
+            <div class="small-box bg-info" title="">
+            <div class="inner">
+                <h3>0</h3>
+                <p>DECRETOS MUNICIPAIS</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <a href="http://127.0.0.1:8000/familias" title="Ver detalhes de Todos cadastrados" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-6">
+            <div class="small-box bg-warning" title="">
+            <div class="inner">
+                <h3>{{$config['c_familias']['totProcesso']['entregue']}}</h3>
+                <p>PROCESSOS ENTREGUES</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <a href="/familias?filter[config][categoria_processo]=processo_entregue" title="Ver detalhes de Todos cadastrados" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-6">
+            <div class="small-box bg-success" title="">
+            <div class="inner">
+                <h3>{{$config['c_familias']['totProcesso']['certidao']}}</h3>
+                <p>CERTIDÕES</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <a href="/familias?filter[config][categoria_processo]=certidao" title="Ver detalhes de Todos cadastrados" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
         </div>
     </div>
     @else

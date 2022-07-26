@@ -63,8 +63,14 @@
             }else{
                 $exibeCategoria = '[div-id="config[categoria_pendencia]"]{display:none}';
             }
+            if(in_array(10,$value['tags[]'])){
+                $exibeProcesso = '';
+            }else{
+                $exibeProcesso = '[div-id="config[categoria_processo]"]{display:none}';
+            }
         }else{
             $exibeCategoria = '[div-id="config[categoria_pendencia]"]{display:none}';
+            $exibeProcesso = '[div-id="config[categoria_processo]"]{display:none}';
         }
     @endphp
     <style>
@@ -72,6 +78,7 @@
             display: none;
         }
         {!!$exibeCategoria!!}
+        {!!$exibeProcesso!!}
     </style>
 
 @stop
