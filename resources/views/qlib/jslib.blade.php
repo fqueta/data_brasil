@@ -57,5 +57,6 @@
             share: false,
             spinner: 'rotating-plane'
         });
+        $('[data-toggle="tooltip"]').tooltip();
     });
 </script>

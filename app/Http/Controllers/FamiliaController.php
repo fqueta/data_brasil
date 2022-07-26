@@ -353,6 +353,7 @@ class FamiliaController extends Controller
         $queryFamilias = $this->queryFamilias($_GET);
         $queryFamilias['config']['exibe'] = 'html';
         $routa = $this->routa;
+        $campos = $this->campos();
         $ret = [
             'dados'=>$queryFamilias['familia'],
             'familias'=>$queryFamilias['familia'],
@@ -360,6 +361,7 @@ class FamiliaController extends Controller
             'title'=>$title,
             'titulo'=>$titulo,
             'campos_tabela'=>$queryFamilias['campos'],
+            'campos'=>$campos,
             'familia_totais'=>$queryFamilias['familia_totais'],
             'titulo_tabela'=>$queryFamilias['tituloTabela'],
             'arr_titulo'=>$queryFamilias['arr_titulo'],

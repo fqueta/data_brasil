@@ -93,10 +93,51 @@
                     </a>
                 </div>
                 @endcan
+                    @if (isset($_GET['filter']['tags'][0])&&$_GET['filter']['tags'][0]==10)
+                    <input type="hidden" name="filter[tags][]" value="{{ $_GET['filter']['tags'][0] }}" />
+                    @if (isset($campos['config[categoria_processo]']))
+                        {{App\Qlib\Qlib::qForm([
+                            'type'=>'select',
+                            'campo'=>'filter[config][categoria_processo]',
+                            'placeholder'=>'',
+                            'label'=>'Status do Processo',
+                            'ac'=>'alt',
+                            'value'=>@$_GET['filter']['config']['categoria_processo'],
+                            'tam'=>'2',
+                            'arr_opc'=>$campos['config[categoria_processo]']['arr_opc'],
+                            'event'=>'onchange=$(\'#frm-consulta\').submit();',
+                            'option_select'=>true,
+                            'class'=>'',
+                            'class_div'=>'',
+                        ])}}
+                        @endif
+                    @elseif (isset($_GET['filter']['tags'][0])&&$_GET['filter']['tags'][0]==3)
+                    <input type="hidden" name="filter[tags][]" value="{{ $_GET['filter']['tags'][0] }}" />
+
+                        @if (isset($campos['config[categoria_pendencia]']))
+                        {{App\Qlib\Qlib::qForm([
+                            'type'=>'select',
+                            'campo'=>'filter[config][categoria_pendencia]',
+                            'placeholder'=>'',
+                            'label'=>'Tipo de Pendência',
+                            'ac'=>'alt',
+                            'value'=>@$_GET['filter']['config']['categoria_pendencia'],
+                            'tam'=>'2',
+                            'arr_opc'=>$campos['config[categoria_pendencia]']['arr_opc'],
+                            'event'=>'onchange=$(\'#frm-consulta\').submit();',
+                            'option_select'=>true,
+                            'class'=>'',
+                            'class_div'=>'',
+                        ])}}
+                        @endif
+                        {{-- <label for="auto-proprietario">Tipo de Pendência</label>
+                        <input type="number" name="filter[id]" class="form-control  text-left" placeholder="" value="{{@$_GET['filter']['id']}}" > --}}
+                    @else
                     <div class="form-group col-md-2 text-left">
                         <label for="auto-proprietario">ID</label>
                         <input type="number" name="filter[id]" class="form-control  text-left" placeholder="" value="{{@$_GET['filter']['id']}}" >
                     </div>
+                    @endif
                     <div class="form-group col-md-7 text-left" div-id="auto-proprietario">
                         <label for="auto-proprietario">Proprietário</label>
                         <input type="text" name="auto-proprietario" class="form-control  text-left" id="auto-proprietario" aria-describedby="auto-proprietario" placeholder="" value="{{@$_GET['auto-proprietario']}}" >

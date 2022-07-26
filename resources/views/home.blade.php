@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
-        <h1 class="m-0">Painel</h1>
+        <h1 class="m-0 tit-sep" >Painel</h1>
     </div><!-- /.col -->
     <div class="col-sm-6 text-right">
         <div class="btn-group" role="group" aria-label="actions">
@@ -32,12 +32,12 @@
 <div class="row card-top">
     @if (isset($config['c_familias']['cards_home']))
     <div class="col-md-12 text-center mb-3">
-        <h4 class="card-title">{{__('Cadastros socioeconômicos')}}</h4>
+        <h4 class="tit-sep">{{__('Cadastros socioeconômicos')}}</h4>
     </div>
     @foreach ($config['c_familias']['cards_home'] as $k=>$v)
     <div class="col-lg-{{$v['lg']}} col-{{$v['xs']}}">
                 <!-- small box -->
-                <div class="small-box bg-{{$v['color']}}" title="{{$v['obs']}}">
+                <div data-toggle="tooltip" data-html="true" class="small-box bg-{{$v['color']}}" title="{{$v['obs']}}">
                   <div class="inner">
                     <h3>{{$v['valor']}}</h3>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="row">
-        @if (isset($config['c_familias']['progresso']))
+        {{-- @if (isset($config['c_familias']['progresso']))
         <div class="col-md-5">
             <div class="card">
                 <div class="card-header">
@@ -73,9 +73,9 @@
                 </div>
             </div>
         </div>
-        @endif
+        @endif --}}
         <div class="col-md-12 text-center mb-3">
-            <h4 class="card-title">{{__('Cadastros topográficos')}}</h4>
+            <h4 class="tit-sep">{{__('Cadastros topográficos')}}</h4>
         </div>
         <div class="col-md-12">
             @if (isset($config['mapa']['config']))
@@ -86,11 +86,11 @@
     <div class="row mb-5">
         <div class="col-md-12 text-center  mb-3">
             <div class="col-md-12 text-center  mb-3">
-                <h4 class="card-title">{{__('Processo Jurídico')}}</h4>
+                <h4 class="tit-sep">{{__('Processo Jurídico')}}</h4>
             </div>
         </div>
         <div class="col-lg-4 col-6">
-            <div class="small-box bg-info" title="">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-info" title="">
             <div class="inner">
                 <h3>0</h3>
                 <p>DECRETOS MUNICIPAIS</p>
@@ -102,7 +102,7 @@
             </div>
         </div>
         <div class="col-lg-4 col-6">
-            <div class="small-box bg-warning" title="">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-warning" title="{{App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'processo_entregue','select'=>'obs'])}}">
             <div class="inner">
                 <h3>{{$config['c_familias']['totProcesso']['entregue']}}</h3>
                 <p>PROCESSOS ENTREGUES</p>
@@ -114,7 +114,7 @@
             </div>
         </div>
         <div class="col-lg-4 col-6">
-            <div class="small-box bg-success" title="">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-success" title="{{App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'certidao','select'=>'obs'])}}">
             <div class="inner">
                 <h3>{{$config['c_familias']['totProcesso']['certidao']}}</h3>
                 <p>CERTIDÕES</p>
@@ -140,6 +140,12 @@
 
 @section('css')
     @include('qlib.csslib')
+    <style>
+        .tit-sep{
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    </style>
 @stop
 
 @section('js')
