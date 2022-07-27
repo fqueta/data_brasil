@@ -34,6 +34,13 @@ class AuthServiceProvider extends ServiceProvider
                 return Response::deny('Você deve ser um administrador.');
             }
         });
+        Gate::define('is_admin_logado', function ($user) {
+            if(($user->id_permission<=4) && $user->ativo=='s'){
+                return Response::allow();
+            }else{
+                return Response::deny('Você deve estar logado como administrador.');
+            }
+        });
 
         Gate::define('ler', function($user,$pagina=false){
             $ret = false;

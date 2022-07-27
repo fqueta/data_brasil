@@ -27,7 +27,7 @@
     @include($view.'.config_exibe')
     <div class="col-md-12 mens">
     </div>
-    @can('is_admin')
+    @can('is_admin_logado')
     <div class="col-md-12 d-print-none">
       <div class="row pl-2 pr-2">
           <div class="col-md-3 info-box mb-3">
@@ -76,7 +76,7 @@
                 @endif
             </h4>
 
-            @can('is_admin')
+            @can('is_admin_logado')
             <div class="card-tools d-flex d-print-none">
                     @include('familias.dropdow_actions')
                     @include('qlib.dropdow_acaomassa')

@@ -110,7 +110,7 @@ class EstadocivilController extends Controller
     }
     public function index(User $user)
     {
-        $this->authorize('is_admin', $user);
+        $this->authorize('is_admin_logado', $user);
         $title = 'Cadastro de estadocivil';
         $titulo = $title;
         $queryEstadocivil = $this->queryEstadocivil($_GET);
@@ -132,7 +132,7 @@ class EstadocivilController extends Controller
     }
     public function create(User $user)
     {
-        $this->authorize('is_admin', $user);
+        $this->authorize('is_admin_logado', $user);
         $title = 'Cadastrar estado civil';
         $titulo = $title;
         $config = [
