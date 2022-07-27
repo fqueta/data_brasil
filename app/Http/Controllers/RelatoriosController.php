@@ -329,7 +329,7 @@ class RelatoriosController extends Controller
     }
     public function index(User $user)
     {
-        //$this->authorize('is_admin', $user);
+        //$this->authorize('is_admin_logado', $user);
         $this->authorize('ler', $this->routa);
         $title = 'Relatório de realidade social';
         $titulo = $title;
@@ -354,12 +354,12 @@ class RelatoriosController extends Controller
     }
     public function exportAll(User $user)
     {
-        $this->authorize('is_admin', $user);
+        $this->authorize('is_admin_logado', $user);
         return Excel::download(new FamiliasExport, 'Familias_'.date('d_m_Y').'.xlsx');
     }
     public function exportFilter(User $user)
     {
-        $this->authorize('is_admin', $user);
+        $this->authorize('is_admin_logado', $user);
         $dados = new SocialExportView;
         //return $dados->view();
         return Excel::download(new SocialExportView, 'Realidade_social_'.date('d_m_Y').'.xlsx');
