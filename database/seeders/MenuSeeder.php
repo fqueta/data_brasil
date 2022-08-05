@@ -35,7 +35,7 @@ class MenuSeeder extends Seeder
             // ],
             [
                 'categoria'=>'CADASTROS',
-                'description'=>'Cadastro Social',
+                'description'=>'Socioeconômicos',
                 'icon'=>'fas fa-user',
                 'actived'=>true,
                 'url'=>'cad-social',
@@ -44,12 +44,30 @@ class MenuSeeder extends Seeder
             ]
             ,[
                 'categoria'=>'',
-                'description'=>'Cadastro Topográfico',
+                'description'=>'Topográficos',
                 'icon'=>'fa fa-map-marker',
                 'actived'=>true,
                 'url'=>'cad-topografico',
                 'route'=>'',
                 'pai'=>''
+            ],
+            [
+                'categoria'=>'JURÍDICO',
+                'description'=>'Processo Jurídico',
+                'icon'=>'fas fa-gavel',
+                'actived'=>true,
+                'url'=>'processo-juridico',
+                'route'=>'',
+                'pai'=>''
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Decretos Municipais',
+                'icon'=>'fas fa-file',
+                'actived'=>true,
+                'url'=>'decretos',
+                'route'=>'decretos.index',
+                'pai'=>'processo-juridico'
             ],
             [
                 'categoria'=>'',

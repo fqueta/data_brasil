@@ -61,6 +61,27 @@ function redirect_blank(url) {
   a.href=url;
   a.click();
 }
+function lib_urlAmigavel(valor){
+	valor = valor.replace('?', "");
+	//valor = valor.replace('-', '');
+	//valor = valor.replace('-', '');
+	valor = valor.replace(/[á|ã|â|à]/gi, "a");
+	valor = valor.replace(/[é|ê|è]/gi, "e");
+	valor = valor.replace(/[í|ì|î]/gi, "i");
+	valor = valor.replace(/[õ|ò|ó|ô]/gi, "o");
+	valor = valor.replace(/[ú|ù|û]/gi, "u");
+	valor = valor.replace(/[ç]/gi, "c");
+	valor = valor.replace(/[ñ]/gi, "n");
+	valor = valor.replace(/[á|ã|â]/gi, "a");
+	valor = valor.replace('(', "");
+	valor = valor.replace('}', "");
+	valor = valor.replace('/', "");
+	valor = valor.replace(/[\s]/gi, '-'); //Transforma espaço em traço
+	valor = valor.replace('---', "-");
+	valor = valor.replace('--', "-");
+	valor = valor.toLowerCase();
+	return valor;
+}
 function encodeArray(arr){
     var ar = JSON.stringify(arr);
     var encode = btoa(ar);
@@ -1966,6 +1987,42 @@ function lib_infoMaps(config){
 }
 function lib_fechaCardOc(){
     $('.mini-card').removeClass('active').html('');
+}
+function lib_typeSlug(obj){
+    let v = obj.value;
+    let s = lib_urlAmigavel(v);
+    $('[type_slug="true"]').val(s);
+}
+function lib_carregaImageLfm(obj){
+    let urlImg = obj.value;
+    if(urlImg){
+        $('#holder').attr('src',urlImg);
+        $('#lfm').hide();
+        $('#lfm-remove').removeClass('d-none').addClass('d-block');
+    }
+    //console.log(obj);
+}
+function selectTipoUser(tipo){
+    var url = window.location.href;
+    if(tipo=='pf'){
+        $('.div-pf').addClass('d-block').removeClass('d-none');
+        $('.div-pj').addClass('d-none').removeClass('d-block');
+        var lab_nome = 'Nome completo *';
+        var lab_cpf = 'CPF *';
+        url = url.replace('/pj','/'+tipo);
+        $('[name="cpf"]').inputmask('999.999.999-99');
+    }
+    if(tipo=='pj'){
+        url = url.replace('/pf','/'+tipo);
+        $('.div-pf').addClass('d-none').removeClass('d-block');
+        $('.div-pj').addClass('d-block').removeClass('d-none');
+        var lab_nome = 'Nome do responsável *';
+        var lab_cpf = 'CPF do responsável*';
+        //$('[name="cpf"]').inputmask('999.999.999/9999-99');
+    }
+    window.history.pushState("object", "Title", url);
+    $('[for="nome"]').html(lab_nome);
+    $('[for="cpf"]').html(lab_cpf);
 }
 function exibeCategoria(obj){
     var v=obj.value;

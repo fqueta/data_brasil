@@ -28,8 +28,8 @@
 <table class="table table-hover table-striped dataTable {{$routa}}" style="{{@$style}}">
     <thead>
         <tr>
-            <th class="text-center d-print-none"><input onclick="gerSelect($(this));" type="checkbox" name="todos" id=""></th>
-            <th class="text-center d-print-none">...</th>
+            <th class="text-center d-print-none" style="width: 3%"><input onclick="gerSelect($(this));" type="checkbox" name="todos" id=""></th>
+            <th class="text-center d-print-none" style="width: 5%">...</th>
             @if (isset($campos_tabela) && is_array($campos_tabela))
                 @foreach ($campos_tabela as $kh=>$vh)
                     @if (isset($vh['label']) && $vh['active'])
@@ -48,6 +48,11 @@
     <tbody>
         @if(isset($dados))
             @foreach($dados as $key => $val)
+            @php
+                if(isset($val->ID)){
+                    $val->id = $val->ID;
+                }
+            @endphp
             <tr style="cursor: pointer" ondblclick="window.location='{{ route($routa.'.edit',['id'=>$val->id]) }}?redirect={{urlencode($redirect.'idCad='.$val->id)}}'"  id="tr_{{$val->id}}" class="@if (isset($_GET['idCad']) && $_GET['idCad']==$val->id) table-info @endif" title="DÊ DOIS CLIQUES PARA ABRIR">
                     <td>
                         <input type="checkbox" class="checkbox" onclick="color_select1_0(this.checked,this.value);" value="{{$val->id}}" name="check_{{$val->id}}" id="check_{{$val->id}}">
@@ -60,7 +65,7 @@
                                     <i class="fa fa-map-marker" aria-hidden="true"></i>
                                 </a>
                             @endif
-                            @if ($routa=='familias')
+                            @if ($routa=='familias' || $routa=='decretos')
                                 <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
                                     <i class="fas fa-eye"></i>
                                 </a>

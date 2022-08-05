@@ -150,7 +150,7 @@ Route::prefix('teste')->group(function(){
     Route::get('/ajax',[App\Http\Controllers\TesteController::class,'ajax'])->name('teste.ajax');
 });
 
-Route::post('/upload',[App\Http\Controllers\UploadFile::class,'upload'])->name('teste.upload');
+//Route::post('/upload',[App\Http\Controllers\UploadFile::class,'upload'])->name('teste.upload');
 
 Route::resource('beneficiarios','\App\Http\Controllers\BeneficiariosController',['parameters' => [
 'beneficiarios' => 'id'
@@ -174,6 +174,9 @@ Route::resource('tags','\App\Http\Controllers\admin\TagsController',['parameters
 ]]);
 Route::resource('permissions','\App\Http\Controllers\admin\UserPermissions',['parameters' => [
     'permissions' => 'id'
+]]);
+Route::resource('decretos','\App\Http\Controllers\admin\PostController',['parameters' => [
+    'decretos' => 'id'
 ]]);
 
 
