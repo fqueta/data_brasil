@@ -92,13 +92,13 @@
         <div class="col-lg-4 col-6">
             <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-info" title="">
             <div class="inner">
-                <h3>0</h3>
+                <h3>{{$config['totalDecretos']}}</h3>
                 <p>DECRETOS MUNICIPAIS</p>
             </div>
             <div class="icon">
                 <i class="fa fa-check"></i>
             </div>
-            <a href="#" title="Ver detalhes em contrução" class="small-box-footer">Em construção <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{route('decretos.index')}}" title="Ver detalhes dos decretos" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-4 col-6">

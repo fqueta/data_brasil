@@ -11,7 +11,9 @@ class Post extends Model
     use HasFactory,Notifiable;
     const CREATED_AT = 'post_date';
     const UPDATED_AT = 'post_modified';
-
+    protected $casts = [
+        'config' => 'array',
+    ];
     protected $fillable = [
         'post_author',
         'post_date',
@@ -35,6 +37,7 @@ class Post extends Model
         'post_type',
         'post_mime_type',
         'comment_count',
+        'config',
         'token',
     ];
 }

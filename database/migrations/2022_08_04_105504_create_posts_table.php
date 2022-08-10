@@ -37,6 +37,7 @@ class CreatePostsTable extends Migration
             $table->string('post_type',20)->nullable();
             $table->string('post_mime_type',100)->nullable();
             $table->bigInteger('comment_count')->nullable();
+            $table->json('config')->nullable();
             $table->timestamps();
             $table->string('token')->nullable();
         });

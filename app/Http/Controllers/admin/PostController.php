@@ -69,6 +69,12 @@ class PostController extends Controller
         if(isset($get['filter'])){
                 $titulo_tab = false;
                 $i = 0;
+                if(isset($get['filter']['post_status'])){
+                    $get['filter']['post_status'] = 'publish';
+                }else{
+                    $get['filter']['post_status'] = 'pending';
+                }
+                //dd($get['filter']);
                 foreach ($get['filter'] as $key => $value) {
                     if(!empty($value)){
                         if($key=='id'){
@@ -76,12 +82,24 @@ class PostController extends Controller
                             $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                             $arr_titulo[$campos[$key]['label']] = $value;
                         }else{
-                            $post->where($key,'LIKE','%'. $value. '%');
-                            if($campos[$key]['type']=='select'){
-                                $value = $campos[$key]['arr_opc'][$value];
+                            if(is_array($value)){
+                                foreach ($value as $kb => $vb) {
+                                    if(!empty($vb)){
+                                        if($key=='tags'){
+                                            $post->where($key,'LIKE', '%"'.$vb.'"%' );
+                                        }else{
+                                            $post->where($key,'LIKE', '%"'.$kb.'":"'.$vb.'"%' );
+                                        }
+                                    }
+                                }
+                            }else{
+                                $post->where($key,'LIKE','%'. $value. '%');
+                                if($campos[$key]['type']=='select'){
+                                    $value = $campos[$key]['arr_opc'][$value];
+                                }
+                                $arr_titulo[$campos[$key]['label']] = $value;
+                                $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                             }
-                            $arr_titulo[$campos[$key]['label']] = $value;
-                            $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                         }
                         $i++;
                     }
@@ -130,22 +148,24 @@ class PostController extends Controller
             $hidden_editor = 'hidden';
         }
         $ret = [
-            'ID'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'ID'=>['label'=>'Id','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'post_type'=>['label'=>'tipo de post','active'=>false,'type'=>'hidden','exibe_busca'=>'d-none','event'=>'','tam'=>'2','value'=>$this->post_type],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'config[numero]'=>['label'=>'Numero','active'=>true,'placeholder'=>'','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'2','cp_busca'=>'config][numero'],
             'post_date_gmt'=>['label'=>'Data do decreto','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
-            'post_title'=>['label'=>'Nome','active'=>true,'placeholder'=>'Ex.: Nome do decreto','type'=>'text','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'9'],
+            'post_title'=>['label'=>'Título','active'=>true,'placeholder'=>'Ex.: Título do decreto','type'=>'text','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'7'],
             'post_name'=>['label'=>'Slug','active'=>false,'placeholder'=>'Ex.: nome-do-post','type'=>'hidden','exibe_busca'=>'d-block','event'=>'type_slug=true','tam'=>'12'],
             //'post_excerpt'=>['label'=>'Resumo (Opcional)','active'=>true,'placeholder'=>'Uma síntese do um post','type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             //'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
-            'post_status'=>['label'=>'Publicar','active'=>true,'type'=>'chave_checkbox','value'=>'publish','valor_padrao'=>'publish','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['publish'=>'Publicado','pending'=>'Pendente']],
+            'post_status'=>['label'=>'Status','active'=>true,'type'=>'chave_checkbox','value'=>'publish','valor_padrao'=>'publish','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['publish'=>'Em vigor','pending'=>'Cancelado']],
             'post_content'=>['label'=>'Conteudo','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
         ];
         return $ret;
     }
     public function index(User $user)
     {
-        $this->authorize('is_admin', $user);
+        //$this->authorize('is_admin', $user);
+        $this->authorize('ler', $this->routa);
         if($this->sec=='posts'){
             $title = 'Cadastro de postagens';
         }elseif($this->sec=='pages'){
@@ -398,6 +418,7 @@ class PostController extends Controller
                     $dados[0]['post_date_gmt'] = $dExec[0];
                 }
             }
+            //dd($dados[0]['config']['numero']);
             $listFiles = false;
             $campos = $this->campos();
             if($this->i_wp=='s' && !empty($dados[0]['post_name'])){
@@ -478,7 +499,7 @@ class PostController extends Controller
                 //}
             }
         }
-        //$data['ativo'] = isset($data['ativo'])?$data['ativo']:'n';
+        $data['post_status'] = isset($data['post_status'])?$data['post_status']:'pending';
         $userLogadon = Auth::id();
         $data['post_author'] = $userLogadon;
         $data['token'] = !empty($data['token'])?$data['token']:uniqid();

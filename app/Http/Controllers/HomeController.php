@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\relatorio;
 use App\Models\Assistencia;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -50,9 +51,11 @@ class HomeController extends Controller
         }else{
             $dadosMp = false;
         }
+        $totalDecretos = Post::where('post_type','=','decreto')->count();
         $config = [
             'c_familias'=>$dadosFamilias,
             'mapa'=>$dadosMp,
+            'totalDecretos'=>$totalDecretos,
         ];
         return view('home',[
             'config'=>$config,

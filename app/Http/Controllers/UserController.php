@@ -289,6 +289,13 @@ class UserController extends Controller
         $data = [];
         $dados = $request->all();
         $ajax = isset($dados['ajax'])?$dados['ajax']:'n';
+        if(!$dados['password'] || empty($dados['password'])){
+            unset($dados['password']);
+        }
+        if(!$dados['token'] || empty($dados['token'])){
+            $dados['token'] = uniqid();
+        }
+        //dd($dados);
         foreach ($dados as $key => $value) {
             if($key!='_method'&&$key!='_token'&&$key!='ac'&&$key!='ajax'){
                 if($key=='data_batismo' || $key=='data_nasci'){
