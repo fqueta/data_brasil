@@ -34,7 +34,7 @@
                     {{ $titulo_tabela }}
                 @endif
             </h4>
-            @can('is_admin')
+            @can('is_admin_logado')
             <div class="card-tools d-flex d-print-none">
                 @include('qlib.dropdow_actions')
                 @include('qlib.dropdow_acaomassa')
