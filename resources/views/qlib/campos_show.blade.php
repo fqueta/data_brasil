@@ -7,6 +7,9 @@
             @if (isset($config['arr_opc']))
                 {{@$config['arr_opc'][$config['value']]}}
             @endif
+            @if($config['campo']=='bairro')
+        @endif
+
         </div>
     @elseif ($config['type']=='hidden')
     @elseif ($config['type']=='select_multiple')
@@ -68,9 +71,6 @@
             @endif
         </div>
     @elseif ($config['type']=='html_vinculo')
-        @php
-           $config['script'] = isset($config['script'])?$config['script']:false;
-        @endphp
         <div class="col-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}">
             <div class="card card-secondary card-outline">
                 <div class="card-header">
@@ -96,6 +96,8 @@
                                     @if (@$config['data_selector']['tipo']=='array')
                                         @foreach ($config['data_selector']['list'] as $klis=>$vlis)
                                             <div class="row" id="tr-{{$klis}}-{{@$config['data_selector']['list'][$klis]['id']}}">
+
+
                                                 @foreach ($config['data_selector']['campos'] as $kb=>$vb)
                                                     @if ($vb['type']=='arr_tab')
                                                         {!! App\Qlib\Qlib::qShow([
@@ -134,6 +136,7 @@
                                                                 $vlue = @$config['data_selector']['list'][$klis][$kb];
                                                                 if(isset($vb['arr_opc'])){
                                                                     $value = isset($vb['arr_opc'][$vlue])?$vb['arr_opc'][$vlue]:$vlue;
+                                                                    $value = $vlue;
                                                                 }else{
                                                                     $value = $vlue;
                                                                 }
@@ -141,7 +144,13 @@
                                                             if ($vb['label']=='Quadra'){
                                                                 $value = $vlue;
                                                             }
-                                                        @endphp
+                                                        //  if($kb=='bairro'){
+                                                        //     echo $vb['type'];
+                                                        //     echo $value;
+                                                        //     dd($config['data_selector']);
+                                                        //  }
+                                                     @endphp
+
 
                                                     {!! App\Qlib\Qlib::qShow([
                                                         'type'=>@$vb['type'],

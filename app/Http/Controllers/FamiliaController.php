@@ -473,6 +473,7 @@ class FamiliaController extends Controller
                 'label'=>'Área',
                 'active'=>true,
                 'type'=>'select',
+                'campo'=>'bairro',
                 'data_selector'=>[
                     'campos'=>$bairro->campos(),
                     'route_index'=>route('bairros.index'),

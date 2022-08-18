@@ -24,6 +24,7 @@
                         $value[$k] = isset($value[$nk])?$value[$nk]:false;
                     @endphp
                 @endif
+
                 {!! App\Qlib\Qlib::qShow([
                         'type'=>@$v['type'],
                         'campo'=>$k,

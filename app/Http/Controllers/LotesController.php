@@ -352,9 +352,65 @@ class LotesController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($id,User $user)
     {
-        //
+        $dados = Lote::findOrFail($id);
+        $this->authorize('ler', $this->routa);
+        if(!empty($dados)){
+            $title = 'Cadastro de Lotes';
+            $titulo = $title;
+            //dd($dados);
+            $dados['ac'] = 'alt';
+            if(isset($dados['config'])){
+                $dados['config'] = Qlib::lib_json_array($dados['config']);
+            }
+            $arr_escolaridade = Qlib::sql_array("SELECT id,nome FROM escolaridades ORDER BY nome ", 'nome', 'id');
+            $arr_estadocivil = Qlib::sql_array("SELECT id,nome FROM estadocivils ORDER BY nome ", 'nome', 'id');
+            $listFiles = false;
+            $campos = $this->campos();
+            if(isset($dados['token'])){
+                $listFiles = _upload::where('token_produto','=',$dados['token'])->get();
+            }
+            $config = [
+                'ac'=>'alt',
+                'frm_id'=>'frm-familias',
+                'route'=>$this->routa,
+                'id'=>$id,
+            ];
+            // if($dados['loteamento']>0){
+            //     $bairro = Bairro::find($dados['bairro']);
+            //     $dados['matricula'] = isset($bairro['matricula'])?$bairro['matricula']:false;
+            // }
+            if(!$dados['matricula'])
+                $config['display_matricula'] = 'd-none';
+            if(isset($dados['config']) && is_array($dados['config'])){
+                foreach ($dados['config'] as $key => $value) {
+                    if(is_array($value)){
+
+                    }else{
+                        $dados['config['.$key.']'] = $value;
+                    }
+                }
+            }
+            $ret = [
+                'value'=>$dados,
+                'config'=>$config,
+                'title'=>$title,
+                'titulo'=>$titulo,
+                'arr_escolaridade'=>$arr_escolaridade,
+                'arr_estadocivil'=>$arr_estadocivil,
+                'listFiles'=>$listFiles,
+                'campos'=>$campos,
+                'routa'=>$this->routa,
+                'exec'=>true,
+            ];
+            return view($this->routa.'.show',$ret);
+        }else{
+            $ret = [
+                'exec'=>false,
+            ];
+            return redirect()->route($this->routa.'.index',$ret);
+        }
     }
     public function ocupantes( $id_lote = null,$oc=false)
     {
