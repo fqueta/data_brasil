@@ -247,7 +247,8 @@ class FamiliaController extends Controller
         $ret['anos'] = $anos;
         $ret['totProcesso'] = $totProcesso;
         $ret['config']['acao_massa'] = [
-            ['link'=>'#edit_etapa','event'=>'edit_etapa','icon'=>'fa fa-pencil','label'=>'Editar etapa'],
+            //['link'=>'#edit_etapa','event'=>'edit_etapa','icon'=>'fa fa-pencil','label'=>'Editar etapa'],
+            ['link'=>'#edit_situacao','event'=>'edit_situacao','icon'=>'fa fa-pencil','label'=>'Editar Situação'],
         ];
         //dd($ret);
         return $ret;
@@ -385,6 +386,18 @@ class FamiliaController extends Controller
         //return $dados->view();
         return Excel::download(new FamiliasExportView, 'Familias_'.date('d_m_Y').'.xlsx');
     }
+    public function arrQualificacao($var = null)
+    {
+        $arr_qualicacao = [
+           1=>'REURB (S)',
+           2=>'REURB (E)',
+        ];
+        if($var){
+            return $arr_qualicacao[$var];
+        }else{
+            return $arr_qualicacao;
+        }
+    }
     public function campos($dados=false){
         $user = Auth::user();
         $etapa = new EtapaController($user);
@@ -418,14 +431,26 @@ class FamiliaController extends Controller
                 'tam'=>'6',
                 'value'=>@$_GET['etapa'],
             ],*/
-            'data_exec'=>['label'=>'Data de Execução','active'=>true,'type'=>'date','exibe_busca'=>'d-block','event'=>'required','tam'=>'6'],
+            'config[qualificacao]'=>[
+                'label'=>'Qualificação*',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>$this->arrQualificacao(),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'4',
+                'class'=>'',
+                'exibe_busca'=>true,
+                'option_select'=>false,
+                'cp_busca'=>'qualificacao][',
+            ],
+            'data_exec'=>['label'=>'Data de Execução','active'=>true,'type'=>'date','exibe_busca'=>'d-block','event'=>'required','tam'=>'4'],
             'tipo_residencia'=>[
                 'label'=>'Tipo de residência*',
                 'active'=>true,
                 'type'=>'select',
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='2'",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
-                'tam'=>'6',
+                'tam'=>'4',
                 'class'=>'',
                 'exibe_busca'=>true,
                 'option_select'=>false,
@@ -434,7 +459,7 @@ class FamiliaController extends Controller
                 'label'=>'Situação',
                 'active'=>true,
                 'type'=>'select_multiple',
-                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='1' ORDER BY ordem ASC",'nome','id'),'exibe_busca'=>'d-block',
+                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='1' ORDER BY nome ASC",'nome','id'),'exibe_busca'=>'d-block',
                 'event'=>'onchange=exibeCategoria(this)',
                 'class'=>'',
                 'option_select'=>false,
@@ -1007,6 +1032,35 @@ class FamiliaController extends Controller
                             $ds = [
                                 'etapa'=>$post['etapa'],
                             ];
+                            $ret['atualiza'][$v] = Familia::where('id',$v)->update($ds);
+                        }
+                    }
+                }
+                $ret['ids']= $arr_ids;
+                if($ret['atualiza']){
+                    $ret['exec'] = true;
+                    $ret['mens'] = 'Cadastro(s) Atualizado(s) com sucesso!';
+                    $ret['color'] = 'success';
+                }
+            }
+        }
+        if($post['opc']=='salvar_situacao_massa'){
+            if(isset($post['ids']) && isset($post['tags'])){
+                $dTag = Tag::find($post['tags']);
+                $ret['situacao'] = $dTag['nome'];
+                $arr_ids = explode('_',$post['ids']);
+                if(is_array($arr_ids)){
+                    foreach ($arr_ids as $k => $v) {
+                        if($v){
+                            $arr_tags = [$post['tags']];
+                            $df = Familia::find($v);
+                            $ds = [
+                                'tags'=>Qlib::lib_array_json($arr_tags),
+                            ];
+                            if(isset($df['config'])){
+                                $ds['config']['categoria_pendencia'] = $post['categoria_pendencia'];
+                                $ds['config']['categoria_processo'] = $post['categoria_processo'];
+                            }
                             $ret['atualiza'][$v] = Familia::where('id',$v)->update($ds);
                         }
                     }

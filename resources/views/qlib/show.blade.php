@@ -50,6 +50,5 @@
             @endforeach
         @endif
         @csrf
-
     </div>
     @include('qlib.btnedit')

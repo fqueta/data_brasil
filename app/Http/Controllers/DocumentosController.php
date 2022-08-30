@@ -204,7 +204,7 @@ class DocumentosController extends Controller
         //
     }
 
-    public function edit($documento,User $user)
+    public function edit($documento)
     {
         $id = $documento;
         $dados = Documento::where('id',$id)->get();

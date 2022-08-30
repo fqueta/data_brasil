@@ -144,6 +144,10 @@
                 var selecionados = coleta_checked($('.table .checkbox:checked'));
                 janelaEtapaMass(selecionados);
             });
+            $('[href="#edit_situacao"]').on('click',function(){
+                var selecionados = coleta_checked($('.table .checkbox:checked'));
+                janelaSituacaoMass(selecionados);
+            });
             $('#auto-proprietario').autocomplete({
                 source: '{{route('beneficiarios.index')}}?ajax=s',
                 select: function (event, ui) {

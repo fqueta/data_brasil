@@ -771,4 +771,22 @@ class Qlib
         $ret = $f->exec();
         return $ret;
     }
+    static public function is_base64($str){
+        try
+        {
+            $decoded = base64_decode($str, true);
+
+            if ( base64_encode($decoded) === $str ) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch(Exception $e)
+        {
+            // If exception is caught, then it is not a base64 encoded string
+            return false;
+        }
+    }
 }

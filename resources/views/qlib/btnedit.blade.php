@@ -6,9 +6,17 @@
             $_GET['redirect'] = false;
         }
     }
+    if(isset($_GET['redirect_base'])&&!empty($_GET['redirect_base'])){
+        $redirect_base = base64_decode($_GET['redirect_base']);
+        $redirect_base .= '&idCad='.@$_GET['idCad'];
+    }
 @endphp
 <div class="col-md-12 div-salvar bg-light d-print-none">
-        <button type="button" btn-volter="true" href="{{route($config['route'].'.index')}}" onclick="btVoltar($(this))" redirect="{{@$_GET['redirect']}}" class="btn btn-outline-secondary"><i class="fa fa-chevron-left"></i> Voltar</button>
+        @if (isset($redirect_base) && $redirect_base)
+            <a href="{{$redirect_base}}"  btn-volter="true" redirect="{{@$redirect_base}}" class="btn btn-outline-secondary"><i class="fa fa-chevron-left"></i> Voltar</a>
+        @else
+           <button type="button" btn-volter="true" href="{{route($config['route'].'.index')}}" onclick="btVoltar($(this))" redirect="{{@$_GET['redirect']}}" class="btn btn-outline-secondary"><i class="fa fa-chevron-left"></i> Voltar</button>
+        @endif
         @if (isset($config['ac']) && $config['ac']=='alt')
             @can('create',$config['route'])
                 <a href="{{route($config['route'].'.create')}}" class="btn btn-default"> <i class="fas fa-plus"></i> Novo cadastro</a>

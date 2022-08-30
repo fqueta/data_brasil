@@ -1110,6 +1110,7 @@ function qFormCampos(config){
                     var label = tl.replaceAll('{campo}',key);
                     label.replaceAll('{label}',);
                     var classe = v.class?v.class:'';
+                    var class_div = v.class_div?v.class_div:'';
                     var placeholder = v.placeholder?v.placeholder:'';
                     r = r.replaceAll('{campo}',key);
                     r = r.replaceAll('{label}',v.label);
@@ -1118,6 +1119,7 @@ function qFormCampos(config){
                     r = r.replaceAll('{event}',v.event);
                     r = r.replaceAll('{col}','md');
                     r = r.replaceAll('{class}',classe);
+                    r = r.replaceAll('{class_div}',class_div);
                     r = r.replaceAll('{op}',op);
                     r = r.replaceAll('{placeholder}',placeholder);
                 }else{
@@ -1192,6 +1194,14 @@ function dps_salvarEpatas(res,etapa,m){
     //if(typeof m!='undefined')
     $(m).modal('hide');
 }
+function dps_salvarSituacao(res,etapa,m){
+    $.each(res,function(v,k) {
+        var sl = '#tr_'+v+' .tags';
+        $(sl).html(etapa);
+    });
+    //if(typeof m!='undefined')
+    $(m).modal('hide');
+}
 function janelaEtapaMass(selecionandos){
     if(typeof selecionandos =='undefined'){
         return ;
@@ -1230,6 +1240,65 @@ function janelaEtapaMass(selecionandos){
                         }
                         if(res.exec && (a = res.atualiza)){
                             dps_salvarEpatas(a,res.etapa,'#'+m);
+                        }
+                    });
+                });
+            }
+       });
+    }
+}
+function janelaSituacaoMass(selecionandos){
+    if(typeof selecionandos =='undefined'){
+        return ;
+    }
+    if(selecionandos==''){
+        var msg = '<div class="row"><div id="exibe_situacaos" class="col-md-12 text-center"><p>Por favor selecione um registro!</p></div></div>';
+        alerta(msg,'modal-situacao','Alerta','',true,3000,true)
+        return;
+    }else{
+       var msg = '<form id="frm-situacaos" action="/familias/ajax"><div class="row"><div id="exibe_situacaos" class="col-md-12"></div></div></form>',btnsub = '<button type="button" id="submit-frm-situacaos" class="btn btn-primary">Salvar</button>',m='modal-situacao';
+
+       alerta(msg,m,'Editar situação');
+       $.ajax({
+            type:"GET",
+            url:"/familias/campos",
+            dataType:'json',
+            success: function(res){
+                var tags = res['tags[]'];
+                var categoria_pendencia = res['config[categoria_pendencia]'];
+                var categoria_processo = res['config[categoria_processo]'];
+                tags.type = 'select';
+                tags.tam = '12';
+                tags.option_select = true;
+                var conp = {tags:tags,categoria_pendencia:categoria_pendencia,categoria_processo:categoria_processo};
+                var et = qFormCampos(conp);
+                et += '<input type="hidden" name="opc" value="salvar_situacao_massa"/>';
+                et += '<input type="hidden" name="ids" value="'+selecionandos+'"/>';
+                $('#exibe_situacaos').html(et);
+                $(btnsub).insertAfter('#'+m+' .modal-footer button');
+                $('[mask-cpf]').inputmask('999.999.999-99');
+                $('[mask-data]').inputmask('99/99/9999');
+                $('[mask-cep]').inputmask('99.999-999');
+                carregaMascaraMoeda(".moeda");
+                let cp = $('[div-id="config[categoria_pendencia]"],[div-id="categoria_pendencia"]');
+                let cp_sel = $('[name="config[categoria_pendencia]"],[name="categoria_pendencia"]');
+
+                let cpr = $('[div-id="config[categoria_processo]"],[div-id="categoria_processo"]');
+                let cpr_sel = $('[name="config[categoria_processo]"],[name="categoria_processo"]');
+                //alert(v);
+                cpr.hide();
+                cpr_sel.removeAttr('required',true).attr('hidden');
+                cp.hide();
+                cp_sel.removeAttr('required').attr('hidden',true);
+
+                $('#submit-frm-situacaos').on('click',function(e){
+                    e.preventDefault();
+                    submitFormularioCSRF($('#frm-situacaos'),function(res){
+                        if(res.mens){
+                            lib_formatMensagem('.mens',res.mens,res.color);
+                        }
+                        if(res.exec && (a = res.atualiza)){
+                            dps_salvarSituacao(a,res.situacao,'#'+m);
                         }
                     });
                 });
@@ -2026,12 +2095,17 @@ function selectTipoUser(tipo){
 }
 function exibeCategoria(obj){
     var v=obj.value;
-    let cp = $('[div-id="config[categoria_pendencia]"]');
-    let cp_sel = $('[name="config[categoria_pendencia]"]');
+    let cp = $('[div-id="config[categoria_pendencia]"],[div-id="categoria_pendencia"]');
+    let cp_sel = $('[name="config[categoria_pendencia]"],[name="categoria_pendencia"]');
 
-    let cpr = $('[div-id="config[categoria_processo]"]');
-    let cpr_sel = $('[name="config[categoria_processo]"]');
+    let cpr = $('[div-id="config[categoria_processo]"],[div-id="categoria_processo"]');
+    let cpr_sel = $('[name="config[categoria_processo]"],[name="categoria_processo"]');
     //alert(v);
+    cpr.hide();
+    cpr_sel.removeAttr('required',true).attr('hidden');
+    cp.hide();
+    cp_sel.removeAttr('required').attr('hidden',true);
+
     if(v==3){
         cp.show();
         cp_sel.attr('required',true).removeAttr('hidden');

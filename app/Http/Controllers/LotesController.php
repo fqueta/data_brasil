@@ -874,11 +874,15 @@ class LotesController extends Controller
                         if($fm['id_conjuge']>0){
                             $dadosCon = Beneficiario::FindOrFail($fm['id_conjuge']);
                         }
+                        $tpqual =isset($fm['config']['qualificacao'])?$fm['config']['qualificacao']:1;
+                        if(!$tpqual)
+                            $tpqual = 1;
+                        $tipo_beneficiario = (new FamiliaController(Auth::user()))->arrQualificacao($tpqual);
                         if($b = $dadosBen){
                             //Qlib::lib_print($b);
                             //Qlib::lib_print($dLote);
                             $lote = $dLote['nome'];
-                            $tipo_beneficiario = 'REURB (S)';
+                            $tipo_beneficiario = $tipo_beneficiario;
                             $nome_beneficiario = $b['nome'];
                             $filhoa_de = 'filho de';
                             $nascidoa = 'nascido';
