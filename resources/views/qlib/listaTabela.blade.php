@@ -117,7 +117,7 @@
                     @foreach ($campos_tabela as $kd=>$vd)
                         @if (isset($vd['label']) && $vd['active'])
                             @if (isset($vd['type']) && ($vd['type']=='select' || $vd['type']=='selector'))
-                                <td class="{{str_replace('[]','',$kd)}}">{{@$vd['arr_opc'][$val->$kd]}}</td>
+                                <td class="{{str_replace('[]','',$kd)}}" title="{{@$vd['arr_opc'][$val->$kd]}}">{{@$vd['arr_opc'][$val->$kd]}}</td>
                             @elseif (isset($vd['type']) && ($vd['type']=='select_multiple'))
                                 @php
                                     $nk = str_replace('[]','',$kd);
@@ -129,25 +129,26 @@
                                         }
                                     }
                                 @endphp
-                                <td class="{{str_replace('[]','',$kd)}}">{{@$td}}</td>
+                                <td class="{{str_replace('[]','',$kd)}}" title="{{@$td}}">{{@$td}}</td>
                             @elseif (isset($vd['type']) && $vd['type']=='chave_checkbox' && isset($vd['arr_opc'][$val->$kd]))
-                                <td class="{{str_replace('[]','',$kd)}}">{{$vd['arr_opc'][$val->$kd]}}</td>
+                                <td class="{{str_replace('[]','',$kd)}}" title="{{$vd['arr_opc'][$val->$kd]}}">{{$vd['arr_opc'][$val->$kd]}}</td>
                             @elseif(isset($vd['cp_busca']) && !empty($vd['cp_busca']))
                                 @php
                                     $cp = explode('][',$vd['cp_busca']);
                                 @endphp
                                 @if (isset($cp[1]))
-                                    <td class="{{$cp[1]}}">{{ @$val[$cp[0]][$cp[1]] }}</td>
+                                    <td class="{{$cp[1]}}" title="{{ @$val[$cp[0]][$cp[1]] }}">{{ @$val[$cp[0]][$cp[1]] }}</td>
                                 @endif
                             @else
-                                <td class="{{str_replace('[]','',$kd)}}">
-                                    @php
-                                        if(isset($vd['arr_opc']) && isset($vd['arr_opc'][$val->$kd])){
-                                            $td = $vd['arr_opc'][$val->$kd];
-                                        }else{
-                                            $td = $val->$kd;
-                                        }
-                                    @endphp
+                                @php
+                                    if(isset($vd['arr_opc']) && isset($vd['arr_opc'][$val->$kd])){
+                                        $td = $vd['arr_opc'][$val->$kd];
+                                    }else{
+                                        $td = $val->$kd;
+                                    }
+                                @endphp
+
+                                <td class="{{str_replace('[]','',$kd)}}" title="{{$td}}">
                                     {{$td}}
                                 </td>
                             @endif
