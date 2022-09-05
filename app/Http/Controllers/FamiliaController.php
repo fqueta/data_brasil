@@ -398,7 +398,11 @@ class FamiliaController extends Controller
             return $arr_qualicacao;
         }
     }
-    public function campos($dados=false){
+    /**
+     * Responsável por montar as estruturas de exibição dos registros no index, show, edit
+     * @return array
+     */
+    public function campos($dados=false,$local='index'){
         $user = Auth::user();
         $etapa = new EtapaController($user);
         $bairro = new BairroController($user);
@@ -412,7 +416,7 @@ class FamiliaController extends Controller
         }else{
             $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s'",'nome','id');
         }
-        return [
+        $ret = [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
             /*'etapa'=>[
                 'label'=>'Etapa',
@@ -692,6 +696,17 @@ class FamiliaController extends Controller
             'crianca_adolescente'=>['label'=>'Criança e Adolescente','active'=>true,'exibe_busca'=>'d-none','event'=>'','type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             'obs'=>['label'=>'Observação','active'=>true,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','rows'=>'4','cols'=>'80','tam'=>'12','class'=>'summernote'],
         ];
+        if(isset($dados['tags']) && is_array($dados['tags']) && $local=='show'){
+            //Cadastros completos tag=10
+            if(in_array(10,$dados['tags'])){
+                unset($ret['config[categoria_pendencia]']);
+            }
+            //Cadastros pendentes tag=3
+            if(in_array(3,$dados['tags'])){
+                unset($ret['config[categoria_processo]']);
+            }
+        }
+        return $ret;
     }
     public function camposJson(User $user)
     {
@@ -820,7 +835,7 @@ class FamiliaController extends Controller
             $arr_estadocivil = Qlib::sql_array("SELECT id,nome FROM estadocivils ORDER BY nome ", 'nome', 'id');
             $listFiles = false;
             //$dados['renda_familiar'] = number_format($dados['renda_familiar'],2,',','.');
-            $campos = $this->campos();
+            $campos = $this->campos($dados,'show');
             if(isset($dados['token'])){
                 $listFiles = _upload::where('token_produto','=',$dados['token'])->get();
             }
