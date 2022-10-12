@@ -22,6 +22,7 @@ class UserController extends Controller
     public $routa;
     public $label;
     public $view;
+    public $tab;
 
     public $access_token;
 	public $url_plataforma;
@@ -36,6 +37,7 @@ class UserController extends Controller
         $this->routa = 'users';
         $this->label = 'Usuários';
         $this->view = 'padrao';
+        $this->tab = 'users';
         $this->credenciais();
         $this->seg1 = request()->segment(1);
         //$seg2 = request()->segment(2);
