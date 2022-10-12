@@ -20,6 +20,7 @@ class CreateEtapasTable extends Migration
             $table->string('nome',300)->nullable();
             $table->enum('ativo',['s','n']);
             $table->integer('autor')->nullable();
+            $table->integer('ordem')->nullable();
             $table->longText('obs')->nullable();
             $table->enum('excluido',['n','s']);
             $table->text('reg_excluido')->nullable();
