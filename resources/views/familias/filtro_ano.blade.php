@@ -1,6 +1,7 @@
 @php
     $form = isset($form)?$form:true;
     $onclick=isset($onclick)?$onclick:"$('#frm-ano').submit();$('#preload').css('display','block')";
+    $active=false;
 @endphp
 @if(isset($arr_ano) && is_array($arr_ano))
     @if($form)
@@ -9,7 +10,6 @@
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             @foreach ($arr_ano as $ka=>$va)
                 @php
-                    $active=false;
                     $checked=false;
                     if(isset($_GET['ano'])&&$_GET['ano']==$va->vl){
                         $active='active';
@@ -29,7 +29,7 @@
                     $checkedTodos = 'checked';
                 }
             @endphp
-            <label class="btn btn-outline-secondary {{$active}}">
+            <label class="btn btn-outline-secondary {{@$active}}">
                 <input {{$checkedTodos}} onclick="checkTodosAnos();" type="radio" name="ano" id="todos" value=""/>
                 {{__('Todos Anos')}}
             </label>
