@@ -20,18 +20,21 @@ class EventController extends Controller
         //$ev = new EventController;
         $user = Auth::user();
         $ret =false;
-        if(isset($config['action']) && isset($config['action'])){
-            $action = isset($config['action'])?$config['action']:false;
-            $tab = isset($config['tab'])?$config['tab']:false;
-            $conf = isset($config['config'])?$config['config']:[];
-            $conf['IP'] = Qlib::get_client_ip();
-            $ret = Event::create([
-                'token'=>uniqid(),
-                'user_id'=>$user->id,
-                'action'=>$action,
-                'tab'=>$tab,
-                'config'=>Qlib::lib_array_json($conf),
-            ]);
+        if($user){
+
+            if(isset($config['action']) && isset($config['action'])){
+                $action = isset($config['action'])?$config['action']:false;
+                $tab = isset($config['tab'])?$config['tab']:false;
+                $conf = isset($config['config'])?$config['config']:[];
+                $conf['IP'] = Qlib::get_client_ip();
+                $ret = Event::create([
+                    'token'=>uniqid(),
+                    'user_id'=>$user->id,
+                    'action'=>$action,
+                    'tab'=>$tab,
+                    'config'=>Qlib::lib_array_json($conf),
+                ]);
+            }
         }
         return $ret;
     }

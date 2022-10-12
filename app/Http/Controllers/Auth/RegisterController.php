@@ -78,7 +78,7 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'status' => 'pre_registred',
             'profile' => 'user',
-            'id_permission' => '5',
+            'id_permission' => '6',
         ]);
     }
 }
