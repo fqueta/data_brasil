@@ -193,6 +193,13 @@ class PostController extends Controller
             'view'=>$this->view,
             'i'=>0,
         ];
+         //REGISTRAR EVENTO DE LOGIN
+         $regev = Qlib::regEvent(['action'=>'index','tab'=>$this->tab,'config'=>[
+            'obs'=>'Listou cadastros de '.$this->tab,
+            'link'=>$routa,
+            ]
+        ]);
+
         return view($this->view.'.index',$ret);
     }
     public function create(User $user)
@@ -217,6 +224,13 @@ class PostController extends Controller
             'token'=>uniqid(),
         ];
         $campos = $this->campos();
+         //REGISTRAR EVENTO CADASTRO
+         $regev = Qlib::regEvent(['action'=>'create','tab'=>$this->tab,'config'=>[
+            'obs'=>'Abriu tela de cadastro',
+            'link'=>$this->routa,
+            ]
+        ]);
+
         return view($this->view.'.createedit',[
             'config'=>$config,
             'title'=>$title,
@@ -290,6 +304,14 @@ class PostController extends Controller
                 $mens = $this->label.' cadastrado com sucesso!';
                 $color = 'success';
                 $idCad = $salvar->id;
+                //REGISTRAR EVENTO STORE
+                if($salvar->id){
+                    $regev = Qlib::regEvent(['action'=>'store','tab'=>$this->tab,'config'=>[
+                        'obs'=>'Cadastro guia Id '.$salvar->id,
+                        'link'=>$this->routa,
+                        ]
+                    ]);
+                }
             }else{
                 $mens = 'Erro ao salvar '.$this->label.'';
                 $color = 'danger';
@@ -341,10 +363,13 @@ class PostController extends Controller
                 'view'=>$this->view,
                 'id'=>$id,
             ];
-            // if($dados['loteamento']>0){
-            //     $bairro = Bairro::find($dados['bairro']);
-            //     $dados['matricula'] = isset($bairro['matricula'])?$bairro['matricula']:false;
-            // }
+            //REGISTRAR EVENTO
+            $regev = Qlib::regEvent(['action'=>'show','tab'=>$this->tab,'config'=>[
+                'obs'=>'Visualização cadastro Id '.$id,
+                'link'=>$this->routa,
+                ]
+            ]);
+
             if(!$dados['matricula'])
                 $config['display_matricula'] = 'd-none';
             if(isset($dados['config']) && is_array($dados['config'])){
@@ -450,6 +475,12 @@ class PostController extends Controller
                     $dados[0]['imagem_destacada'] = $imagem_destacada[0];
                 }
             }
+            //REGISTRAR EVENTO
+            $regev = Qlib::regEvent(['action'=>'edit','tab'=>$this->tab,'config'=>[
+                'obs'=>'Abriu Id '.$id.' para edição',
+                'link'=>$this->routa,
+                ]
+            ]);
 
             $ret = [
                 'value'=>$dados[0],
@@ -547,6 +578,12 @@ class PostController extends Controller
                     $mens = $this->label.' cadastrado com sucesso!';
                     $color = 'success';
                     $id = $id;
+                    //REGISTRAR EVENTO
+                    $regev = Qlib::regEvent(['action'=>'update','tab'=>$this->tab,'config'=>[
+                        'obs'=>'Atualização de cadastro Id '.$id,
+                        'link'=>$this->routa,
+                        ]
+                    ]);
                 }else{
                     $mens = 'Erro ao salvar '.$this->label.'';
                     $color = 'danger';
@@ -616,6 +653,13 @@ class PostController extends Controller
             Post::where('id',$id)->delete();
             $mens = 'Registro '.$id.' deletado com sucesso!';
             $color = 'success';
+            //REGISTRAR EVENTO
+            $regev = Qlib::regEvent(['action'=>'destroy','tab'=>$this->tab,'config'=>[
+                'obs'=>'Exclusão de cadastro Id '.$id,
+                'link'=>$this->routa,
+                ]
+            ]);
+
         }
         if($ajax=='s'){
             $ret = response()->json(['mens'=>__($mens),'color'=>$color,'return'=>route($this->routa.'.index')]);

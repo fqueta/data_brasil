@@ -161,6 +161,12 @@ class UserController extends Controller
         $queryUsers['config']['exibe'] = 'html';
         $routa = $this->routa;
         $view = $this->view;
+        //REGISTRAR EVENTO DE LOGIN
+        $regev = Qlib::regEvent(['action'=>'index','tab'=>$this->tab,'config'=>[
+            'obs'=>'Listou cadastros de '.$this->tab,
+            'link'=>$routa,
+            ]
+        ]);
 
         return view($routa.'.index',[
             'dados'=>$queryUsers['user'],
@@ -190,6 +196,13 @@ class UserController extends Controller
             'token'=>uniqid(),
         ];
         $campos = $this->campos();
+        //REGISTRAR EVENTO CADASTRO
+        $regev = Qlib::regEvent(['action'=>'create','tab'=>$this->tab,'config'=>[
+            'obs'=>'Abriu tela de cadastro',
+            'link'=>$this->routa,
+            ]
+        ]);
+
         return view($this->routa.'.createedit',[
             'config'=>$config,
             'title'=>$title,
@@ -213,9 +226,16 @@ class UserController extends Controller
                 unset($dados['password']);
             }
         }
-        //dd($dados);
+
         $salvar = User::create($dados);
         $route = $this->routa.'.index';
+        //REGISTRAR EVENTO STORE
+        $regev = Qlib::regEvent(['action'=>'store','tab'=>$this->tab,'config'=>[
+            'obs'=>'Cadastro guia Id '.$salvar->id,
+            'link'=>$this->routa,
+            ]
+        ]);
+
         $ret = [
             'mens'=>$this->label.' cadastrada com sucesso!',
             'color'=>'success',
@@ -271,6 +291,12 @@ class UserController extends Controller
                 'campos'=>$campos,
                 'exec'=>true,
             ];
+            //REGISTRAR EVENTO
+            $regev = Qlib::regEvent(['action'=>'edit','tab'=>$this->tab,'config'=>[
+                'obs'=>'Abriu Id '.$id.' para edição',
+                'link'=>$this->routa,
+                ]
+            ]);
 
             return view($routa.'.createedit',$ret);
         }else{
@@ -331,6 +357,15 @@ class UserController extends Controller
                 'idCad'=>$id,
                 'return'=>$route,
             ];
+            if($atualizar){
+                //REGISTRAR EVENTO
+                $regev = Qlib::regEvent(['action'=>'update','tab'=>$this->tab,'config'=>[
+                    'obs'=>'Atualização de cadastro Id '.$id,
+                    'link'=>$this->routa,
+                    ]
+                ]);
+
+            }
         }else{
             $route = $this->routa.'.edit';
             $ret = [
@@ -359,6 +394,13 @@ class UserController extends Controller
             }else{
                 $ret = redirect()->route($routa.'.index',['mens'=>'Registro não encontrado!','color'=>'danger']);
             }
+            //REGISTRAR EVENTO
+            $regev = Qlib::regEvent(['action'=>'destroy','tab'=>$this->tab,'config'=>[
+                'obs'=>'Exclusão de cadastro Id '.$id,
+                'link'=>$this->routa,
+                ]
+            ]);
+
             return $ret;
         }
 

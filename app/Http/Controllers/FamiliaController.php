@@ -354,6 +354,13 @@ class FamiliaController extends Controller
         $queryFamilias = $this->queryFamilias($_GET);
         $queryFamilias['config']['exibe'] = 'html';
         $routa = $this->routa;
+        //REGISTRAR EVENTO DE LOGIN
+        $regev = Qlib::regEvent(['action'=>'index','tab'=>$this->tab,'config'=>[
+            'obs'=>'Listou cadastros de '.$this->tab,
+            'link'=>$routa,
+            ]
+        ]);
+
         $campos = $this->campos();
         $ret = [
             'dados'=>$queryFamilias['familia'],
@@ -377,6 +384,12 @@ class FamiliaController extends Controller
     public function exportAll(User $user)
     {
         $this->authorize('is_admin', $user);
+        $regev = Qlib::regEvent(['action'=>'exportAll','tab'=>$this->tab,'config'=>[
+            'obs'=>'Exportou',
+            'link'=>$this->routa,
+            ]
+        ]);
+
         return Excel::download(new FamiliasExport, 'Familias_'.date('d_m_Y').'.xlsx');
     }
     public function exportFilter(User $user)
@@ -717,6 +730,13 @@ class FamiliaController extends Controller
         $this->authorize('create', $this->routa);
         $title = __('Cadastrar Família');
         $titulo = $title;
+        //REGISTRAR EVENTO CADASTRO
+        $regev = Qlib::regEvent(['action'=>'create','tab'=>$this->tab,'config'=>[
+            'obs'=>'Abriu tela de cadastro',
+            'link'=>$this->routa,
+            ]
+        ]);
+
         //$Users = Users::all();
         //$roles = DB::select("SELECT * FROM roles ORDER BY id ASC");
         $familia = ['ac'=>'cad','token'=>uniqid()];
@@ -775,6 +795,14 @@ class FamiliaController extends Controller
         $salvar = Familia::create($dados);
         $route = $this->routa.'.index';
         $dados['id_familia'] = $salvar->id;
+        //REGISTRAR EVENTO STORE
+        if($salvar->id){
+            $regev = Qlib::regEvent(['action'=>'store','tab'=>$this->tab,'config'=>[
+                'obs'=>'Cadastro guia Id '.$salvar->id,
+                'link'=>$this->routa,
+                ]
+            ]);
+        }
         $ret = [
             'mens'=>'Salvo com sucesso!',
             'color'=>'success',
@@ -845,6 +873,12 @@ class FamiliaController extends Controller
                 'route'=>$this->routa,
                 'id'=>$id,
             ];
+            //REGISTRAR EVENTO
+            $regev = Qlib::regEvent(['action'=>'show','tab'=>$this->tab,'config'=>[
+                'obs'=>'Visualização cadastro Id '.$id,
+                'link'=>$this->routa,
+                ]
+            ]);
             // if($dados['loteamento']>0){
             //     $bairro = Bairro::find($dados['bairro']);
             //     $dados['matricula'] = isset($bairro['matricula'])?$bairro['matricula']:false;
@@ -897,7 +931,15 @@ class FamiliaController extends Controller
             $arr_escolaridade = Qlib::sql_array("SELECT id,nome FROM escolaridades ORDER BY nome ", 'nome', 'id');
             $arr_estadocivil = Qlib::sql_array("SELECT id,nome FROM estadocivils ORDER BY nome ", 'nome', 'id');
             $listFiles = false;
-            //$dados[0]['renda_familiar'] = number_format($dados[0]['renda_familiar'],2,',','.');
+
+            //REGISTRAR EVENTO
+            $regev = Qlib::regEvent(['action'=>'edit','tab'=>$this->tab,'config'=>[
+                'obs'=>'Abriu Id '.$id.' para edição',
+                'link'=>$this->routa,
+                ]
+            ]);
+
+
             if(isset($dados[0]['token'])){
                 $listFiles = _upload::where('token_produto','=',$dados[0]['token'])->get();
             }
@@ -987,6 +1029,14 @@ class FamiliaController extends Controller
                 'return'=>$route,
                 'salvarQuadra'=>$this->salvarQuadra($data),
             ];
+            if($atualizar){
+                //REGISTRAR EVENTO
+                $regev = Qlib::regEvent(['action'=>'update','tab'=>$this->tab,'config'=>[
+                    'obs'=>'Atualização de cadastro Id '.$id,
+                    'link'=>$this->routa,
+                    ]
+                ]);
+            }
         }else{
             $route = 'familias.edit';
             $ret = [
@@ -1025,6 +1075,13 @@ class FamiliaController extends Controller
         }else{
             $ret = redirect()->route('familias.index',['mens'=>'Registro deletado com sucesso!','color'=>'success']);
         }
+        //REGISTRAR EVENTO
+        $regev = Qlib::regEvent(['action'=>'destroy','tab'=>$this->tab,'config'=>[
+            'obs'=>'Exclusão de cadastro Id '.$id,
+            'link'=>$this->routa,
+            ]
+        ]);
+
         return $ret;
     }
     public function ajaxPost(Request $request){
