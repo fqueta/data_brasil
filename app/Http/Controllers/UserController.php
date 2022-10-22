@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\admin\EventController;
 use App\Models\_upload;
 use App\Models\User;
 use stdClass;
@@ -254,11 +255,74 @@ class UserController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($id,User $user)
     {
-        //
-    }
+        $dados = User::findOrFail($id);
+        $this->authorize('ler', $this->routa);
+        if(!empty($dados)){
+            $title = 'Cadastro de usuários';
+            $titulo = $title;
+            //dd($dados);
+            $dados['ac'] = 'alt';
+            if(isset($dados['config'])){
+                $dados['config'] = Qlib::lib_json_array($dados['config']);
+            }
+            $arr_escolaridade = Qlib::sql_array("SELECT id,nome FROM escolaridades ORDER BY nome ", 'nome', 'id');
+            $arr_estadocivil = Qlib::sql_array("SELECT id,nome FROM estadocivils ORDER BY nome ", 'nome', 'id');
+            $listFiles = false;
+            //$dados['renda_familiar'] = number_format($dados['renda_familiar'],2,',','.');
+            $campos = $this->campos($dados,'show');
+            if(isset($dados['token'])){
+                $listFiles = _upload::where('token_produto','=',$dados['token'])->get();
+            }
+            $config = [
+                'ac'=>'alt',
+                'frm_id'=>'frm-users',
+                'route'=>$this->routa,
+                'id'=>$id,
+            ];
+            //REGISTRAR EVENTO
+            $regev = Qlib::regEvent(['action'=>'show','tab'=>$this->tab,'config'=>[
+                'obs'=>'Visualização cadastro Id '.$id,
+                'link'=>$this->routa,
+                ]
+            ]);
+            // if($dados['loteamento']>0){
+            //     $bairro = Bairro::find($dados['bairro']);
+            //     $dados['matricula'] = isset($bairro['matricula'])?$bairro['matricula']:false;
+            // }
+            if(!$dados['matricula'])
+                $config['display_matricula'] = 'd-none';
+            if(isset($dados['config']) && is_array($dados['config'])){
+                foreach ($dados['config'] as $key => $value) {
+                    if(is_array($value)){
 
+                    }else{
+                        $dados['config['.$key.']'] = $value;
+                    }
+                }
+            }
+            $ret = [
+                'value'=>$dados,
+                'config'=>$config,
+                'title'=>$title,
+                'titulo'=>$titulo,
+                'arr_escolaridade'=>$arr_escolaridade,
+                'arr_estadocivil'=>$arr_estadocivil,
+                'listFiles'=>$listFiles,
+                'campos'=>$campos,
+                'routa'=>$this->routa,
+                'eventos'=>(new EventController)->listEventsUser(['id_user'=>$id]),
+                'exec'=>true,
+            ];
+            return view($this->routa.'.show',$ret);
+        }else{
+            $ret = [
+                'exec'=>false,
+            ];
+            return redirect()->route($this->routa.'.index',$ret);
+        }
+    }
     public function edit($user)
     {
         $id = $user;
@@ -267,7 +331,7 @@ class UserController extends Controller
         $this->authorize('is_admin', $user);
 
         if(!empty($dados)){
-            $title = 'Editar Cadastro de users';
+            $title = 'Editar Cadastro de usuários';
             $titulo = $title;
             $dados[0]['ac'] = 'alt';
             if(isset($dados[0]['config'])){

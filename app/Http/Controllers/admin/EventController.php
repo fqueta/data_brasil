@@ -38,4 +38,10 @@ class EventController extends Controller
         }
         return $ret;
     }
+    public function listEventsUser($config = null)
+    {
+        $id_user = isset($config['id_user'])?$config['id_user'] : 0;
+        $d = Event::where('id',$id_user)->get();
+        return $d;
+    }
 }

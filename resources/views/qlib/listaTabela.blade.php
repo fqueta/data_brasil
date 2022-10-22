@@ -59,7 +59,7 @@
                     $val->id = $val->ID;
                 }
                 $rlink = 'edit';
-                if($routa=='familias'||$routa=='decretos'){
+                if($routa=='familias'||$routa=='decretos'||$routa=='users'){
                     $rlink = 'show';
                 }
                 $linkShow = route($routa.'.'.$rlink,['id'=>$val->id]). '?redirect='.$redirect.'idCad='.$val->id;
@@ -77,7 +77,7 @@
                                     <i class="fa fa-map-marker" aria-hidden="true"></i>
                                 </a>
                             @endif
-                            @if ($routa=='familias' || $routa=='decretos')
+                            @if ($routa=='familias' || $routa=='decretos' || $routa=='users')
                                 <a href="{{ $linkShow }}" title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
                                     <i class="fas fa-eye"></i>
                                 </a>

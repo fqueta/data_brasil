@@ -11,7 +11,7 @@
         @endif
 
         </div>
-    @elseif ($config['type']=='hidden')
+    @elseif ($config['type']=='hidden' || $config['type']=='password')
     @elseif ($config['type']=='select_multiple')
         @if (isset($config['arr_opc']))
         <div class="col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}">
