@@ -491,7 +491,8 @@ class UserController extends Controller
             if(isset($_GET['teste'])){
                 Qlib::lib_print($verifica_fatura);
             }
-            if($verifica_fatura['acao']=='alertar'){
+            $verifica_fatura['acao'] = isset($verifica_fatura['acao'])?$verifica_fatura['acao']:false;
+            if(isset($verifica_fatura['acao'])&&$verifica_fatura['acao']=='alertar'){
                 if(Qlib::isAdmin()){
                     $cont = @$verifica_fatura['mens'];
                     //echo $cont;
@@ -558,7 +559,9 @@ class UserController extends Controller
 				$ret['acao'] = $arr_response['acao'];
                 session(['verifica_faturas'=>$arr_response]);
 				//$ver_sess=$arr_response;
-			}
+			}else{
+				$ret['acao'] = 'liberar';
+            }
 			if(isset($arr_response['mens'])){
 				$ret['mens'] = $arr_response['mens'];
 			}
@@ -566,6 +569,7 @@ class UserController extends Controller
 		}else{
 			$ret['mens'] = Qlib::formatMensagemInfo('Configuração ou token inválido','danger');
 		}
+        //dd($ret);
         return $ret;
 	}
     public function pararAlertaFaturaVencida(Request $request){
