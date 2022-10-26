@@ -20,6 +20,7 @@ class TesteController extends Controller
     public function index()
     {
 
+        return false;
         $user = Auth::user();
             echo Qlib::get_subdominio();
         $dados = (new UserController())->index();
