@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 class Familia extends Model
 {
     use HasFactory,Notifiable;
+
     protected $casts = [
         'config' => 'array',
         'loteamento' => 'array',
