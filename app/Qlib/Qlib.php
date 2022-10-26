@@ -425,6 +425,19 @@ class Qlib
     static function UrlAtual(){
         return URL::full();
     }
+    static function get_subdominio(){
+        $ret = false;
+        // $url = explode('?',self::UrlAtual());
+        $url = request()->getHost();
+        // $partesUrl = explode('.',$url[0]);
+        $partesUrl = explode('.',$url);
+        // $total = count($partesUrl);
+        if(isset($partesUrl[0])){
+            //$partHost = explode('.',$_SERVER["HTTP_HOST"]);
+            $ret = $partesUrl[0];
+        }
+        return $ret;
+    }
     static function ver_PermAdmin($perm=false,$url=false){
         $ret = false;
         if(!$url){

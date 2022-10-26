@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Qlib\Qlib;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -18,6 +19,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    // protected $connection = 'tenant';
     protected $fillable = [
         'name',
         'email',

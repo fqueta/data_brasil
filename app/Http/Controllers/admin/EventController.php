@@ -5,7 +5,9 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Qlib\Qlib;
+use Carbon\Carbon as CarbonCarbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
@@ -41,7 +43,8 @@ class EventController extends Controller
     public function listEventsUser($config = null)
     {
         $id_user = isset($config['id_user'])?$config['id_user'] : 0;
-        $d = Event::where('id',$id_user)->get();
+        $d = Event::where('user_id','=',$id_user)->orderBy('id','DESC')->get();
         return $d;
+
     }
 }

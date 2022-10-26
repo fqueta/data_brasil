@@ -31,8 +31,9 @@ class UserController extends Controller
 	public $tk_conta;
 	public $seg1;
 
-    public function __construct(User $user)
+    public function __construct()
     {
+        $user = Auth::user();
         $this->middleware('auth');
         $this->user = $user;
         $this->routa = 'users';
@@ -155,8 +156,9 @@ class UserController extends Controller
         ];
         return $ret;
     }
-    public function index(User $user)
+    public function index()
     {
+        $user = $this->user;
         $this->authorize('is_admin', $user);
         $title = 'Usuários Cadastrados';
         $titulo = $title;

@@ -6,9 +6,9 @@ use App\Http\Controllers\admin\CobrancaController;
 use App\Models\Familia;
 use App\Models\User;
 use App\Qlib\Qlib;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 class TesteController extends Controller
 {
@@ -21,12 +21,18 @@ class TesteController extends Controller
     {
 
         $user = Auth::user();
-        $ds = Qlib::sql_distinct();
-        foreach ($ds as $key => $value) {
-            echo $value->vl;
-        }
-        dd($ds);
-        return view('teste',$config);
+            echo Qlib::get_subdominio();
+        $dados = (new UserController())->index();
+        dd($dados);
+            // $host = request()->getHttpHost();
+        // echo $host ."<br/>";
+        // $getHost = request()->getHost();
+        // echo $getHost ."<br/>";
+        // $hostwithHttp = request()->getSchemeAndHttpHost();
+        // echo $hostwithHttp ."<br/>";
+        // $subdomain = $route->getParameter('subdomain');
+        //dd($route);
+        // return view('teste',$config);
     }
     public function ajax(){
         $limit = isset($_GET['limit']) ?$_GET['limit'] : 50;
