@@ -9,6 +9,7 @@ use App\Qlib\Qlib;
 use Illuminate\Support\Str;
 use App\Exports\FamiliasExport;
 use App\Exports\FamiliasExportView;
+use App\Http\Controllers\admin\EventController;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Bairro;
 use App\Models\User;
@@ -127,6 +128,9 @@ class BairroController extends Controller
         $queryBairros = $this->queryBairros($_GET);
         $queryBairros['config']['exibe'] = 'html';
         $routa = $this->routa;
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+
         $ret = [
             'dados'=>$queryBairros['bairro'],
             'title'=>$title,
@@ -187,6 +191,8 @@ class BairroController extends Controller
             'exec'=>true,
             'dados'=>$dados
         ];
+         //REGISTRAR EVENTOS
+         (new EventController)->listarEvent(['tab'=>$this->tab,'id'=>$salvar->id,'this'=>$this]);
 
         if($ajax=='s'){
             $ret['return'] = route($route).'?idCad='.$salvar->id;
@@ -299,6 +305,10 @@ class BairroController extends Controller
                 'mens'=>'Erro ao receber dados',
                 'color'=>'danger',
             ];
+        }
+        if($atualizar){
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
         }
         if($ajax=='s'){
             $ret['return'] = route($route).'?idCad='.$id;

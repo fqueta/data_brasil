@@ -13,9 +13,11 @@ class QuadraRequest implements Rule
      * @return void
      */
     public $dadosForm;
+    public $tab;
     public function __construct()
     {
         $this->dadosForm = $_POST;
+        $this->tab = 'quadras';
     }
 
     /**

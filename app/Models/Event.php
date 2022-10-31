@@ -15,6 +15,7 @@ class Event extends Model
     protected $fillable = [
         'token',
         'user_id',
+        'post_id',
         'action',
         'tab',
         'config',

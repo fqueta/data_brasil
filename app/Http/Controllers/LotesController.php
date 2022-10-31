@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\admin\EventController;
 use App\Http\Requests\StoreLoteRequest;
 use stdClass;
 use App\Models\Lote;
@@ -11,7 +12,7 @@ use App\Models\User;
 use App\Models\_upload;
 use App\Models\Beneficiario;
 use App\Models\Documento;
-use App\Models\Familia;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -25,11 +26,11 @@ class LotesController extends Controller
     public function __construct(User $user)
     {
         $this->middleware('auth');
-        $this->user = $user;
         $this->routa = 'lotes';
         $this->label = 'Lote';
         $this->view = 'padrao';
         $this->tab = $this->routa;
+        //$this->listarEvent();
     }
     public function queryLote($get=false,$config=false)
     {
@@ -205,7 +206,7 @@ class LotesController extends Controller
 
         ];
     }
-    public function index(User $user)
+    public function index()
     {
         $ajax = isset($_GET['ajax'])?$_GET['ajax']:'n';
         $this->authorize('ler', $this->routa);
@@ -214,6 +215,8 @@ class LotesController extends Controller
         $queryLote = $this->queryLote($_GET);
         $queryLote['config']['exibe'] = 'html';
         $routa = $this->routa;
+        (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+
         if(isset($_GET['term'])){
             $ret = false;
             $ajax = 's';
@@ -275,6 +278,9 @@ class LotesController extends Controller
                 'i'=>0,
             ];
         }
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab]);
+
         if($ajax=='s'){
             return response()->json($ret);
         }else{
@@ -296,6 +302,9 @@ class LotesController extends Controller
             //'loteamento'=>[123],
         ];
         $campos = $this->campos();
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab]);
+
         return view($this->view.'.createedit',[
             'config'=>$config,
             'title'=>$title,
@@ -321,6 +330,8 @@ class LotesController extends Controller
         }
         $salvar = Lote::create($dados);
         $dados['id'] = $salvar->id;
+         //REGISTRAR EVENTOS
+         (new EventController)->listarEvent(['tab'=>$this->tab,'id'=>$salvar->id,'this'=>$this]);
 
         $sql = "SELECT l.*,q.nome quadra_valor FROM lotes as l
             JOIN quadras as q ON q.id=l.quadra
@@ -343,6 +354,9 @@ class LotesController extends Controller
             'exec'=>true,
             'dados'=>$d,
         ];
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'id'=>$salvar->id]);
+
         if($ajax=='s'){
             $ret['return'] = route($route).'?idCad='.$salvar->id;
             $ret['redirect'] = route($this->routa.'.edit',['id'=>$salvar->id]);
@@ -404,6 +418,9 @@ class LotesController extends Controller
                 'routa'=>$this->routa,
                 'exec'=>true,
             ];
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+
             return view($this->routa.'.show',$ret);
         }else{
             $ret = [
@@ -578,6 +595,10 @@ class LotesController extends Controller
                 'color'=>'danger',
             ];
         }
+        if($atualizar){
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+        }
         if($ajax=='s'){
             $ret['return'] = route($route).'?idCad='.$id;
             return response()->json($ret);
@@ -609,6 +630,9 @@ class LotesController extends Controller
         }else{
             $ret = redirect()->route($routa.'.index',['mens'=>'Registro deletado com sucesso!','color'=>'success']);
         }
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+
         return $ret;
     }
     public function fichaOcupante($id_lote = false,$id_ocupante=false)

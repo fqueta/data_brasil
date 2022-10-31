@@ -301,6 +301,10 @@ class TagsController extends Controller
                 'color'=>'danger',
             ];
         }
+        if($atualizar){
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+        }
         if($ajax=='s'){
             $ret['return'] = route($route).'?idCad='.$id;
             return response()->json($ret);

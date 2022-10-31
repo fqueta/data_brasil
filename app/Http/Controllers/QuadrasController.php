@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\admin\EventController;
 use App\Http\Requests\StoreQuadraRequest;
 use Illuminate\Http\Request;
 use stdClass;
@@ -18,11 +19,13 @@ class QuadrasController extends Controller
     public $routa;
     public $label;
     public $view;
+    public $tab;
     public function __construct(User $user)
     {
         $this->middleware('auth');
         $this->user = $user;
         $this->routa = 'quadras';
+        $this->tab = 'quadras';
         $this->label = 'Quadra';
         $this->view = 'padrao';
     }
@@ -142,6 +145,8 @@ class QuadrasController extends Controller
         $queryQuadra = $this->queryQuadra($_GET);
         $queryQuadra['config']['exibe'] = 'html';
         $routa = $this->routa;
+        (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+
         $ret = [
             'dados'=>$queryQuadra['quadra'],
             'title'=>$title,
@@ -185,12 +190,6 @@ class QuadrasController extends Controller
     }
     public function store(StoreQuadraRequest $request)
     {
-        /*
-        $validatedData = $request->validate([
-            'nome' => ['required','string','unique:quadras'],
-        ]);*/
-
-        //$valida
         $dados = $request->all();
         $ajax = isset($dados['ajax'])?$dados['ajax']:'n';
         $dados['ativo'] = isset($dados['ativo'])?$dados['ativo']:'n';
@@ -204,6 +203,8 @@ class QuadrasController extends Controller
             'exec'=>true,
             'dados'=>$dados
         ];
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'id'=>$salvar->id,'this'=>$this]);
 
         if($ajax=='s'){
             $ret['return'] = route($route).'?idCad='.$salvar->id;
@@ -335,6 +336,10 @@ class QuadrasController extends Controller
                 'color'=>'danger',
             ];
         }
+        if($atualizar){
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+        }
         if($ajax=='s'){
             $ret['return'] = route($route).'?idCad='.$id;
             return response()->json($ret);
@@ -355,10 +360,15 @@ class QuadrasController extends Controller
             }else{
                 $ret = redirect()->route($this->view.'.index',['mens'=>'Registro não encontrado!','color'=>'danger']);
             }
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
             return $ret;
         }
 
         Quadra::where('id',$id)->delete();
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+
         if($ajax=='s'){
             $ret = response()->json(['mens'=>__('Registro '.$id.' deletado com sucesso!'),'color'=>'success','return'=>route($this->routa.'.index')]);
         }else{

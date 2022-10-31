@@ -166,13 +166,9 @@ class UserController extends Controller
         $queryUsers['config']['exibe'] = 'html';
         $routa = $this->routa;
         $view = $this->view;
-        //REGISTRAR EVENTO DE LOGIN
-        $regev = Qlib::regEvent(['action'=>'index','tab'=>$this->tab,'config'=>[
-            'obs'=>'Listou cadastros de '.$this->tab,
-            'link'=>$routa,
-            ]
-        ]);
 
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
         return view($routa.'.index',[
             'dados'=>$queryUsers['user'],
             'title'=>$title,
@@ -204,7 +200,7 @@ class UserController extends Controller
         //REGISTRAR EVENTO CADASTRO
         $regev = Qlib::regEvent(['action'=>'create','tab'=>$this->tab,'config'=>[
             'obs'=>'Abriu tela de cadastro',
-            'link'=>$this->routa,
+            'link'=>route($this->routa.'.create'),
             ]
         ]);
 
@@ -234,12 +230,9 @@ class UserController extends Controller
 
         $salvar = User::create($dados);
         $route = $this->routa.'.index';
-        //REGISTRAR EVENTO STORE
-        $regev = Qlib::regEvent(['action'=>'store','tab'=>$this->tab,'config'=>[
-            'obs'=>'Cadastro guia Id '.$salvar->id,
-            'link'=>$this->routa,
-            ]
-        ]);
+         //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'id'=>$salvar->id,'this'=>$this]);
+
 
         $ret = [
             'mens'=>$this->label.' cadastrada com sucesso!',
@@ -283,16 +276,9 @@ class UserController extends Controller
                 'route'=>$this->routa,
                 'id'=>$id,
             ];
-            //REGISTRAR EVENTO
-            $regev = Qlib::regEvent(['action'=>'show','tab'=>$this->tab,'config'=>[
-                'obs'=>'Visualização cadastro Id '.$id,
-                'link'=>$this->routa,
-                ]
-            ]);
-            // if($dados['loteamento']>0){
-            //     $bairro = Bairro::find($dados['bairro']);
-            //     $dados['matricula'] = isset($bairro['matricula'])?$bairro['matricula']:false;
-            // }
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+
             if(!$dados['matricula'])
                 $config['display_matricula'] = 'd-none';
             if(isset($dados['config']) && is_array($dados['config'])){
@@ -362,7 +348,7 @@ class UserController extends Controller
             //REGISTRAR EVENTO
             $regev = Qlib::regEvent(['action'=>'edit','tab'=>$this->tab,'config'=>[
                 'obs'=>'Abriu Id '.$id.' para edição',
-                'link'=>$this->routa,
+                'link'=>route($this->routa.'.edit',['id'=>$id]),
                 ]
             ]);
 
@@ -426,13 +412,8 @@ class UserController extends Controller
                 'return'=>$route,
             ];
             if($atualizar){
-                //REGISTRAR EVENTO
-                $regev = Qlib::regEvent(['action'=>'update','tab'=>$this->tab,'config'=>[
-                    'obs'=>'Atualização de cadastro Id '.$id,
-                    'link'=>$this->routa,
-                    ]
-                ]);
-
+                //REGISTRAR EVENTOS
+                (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
             }
         }else{
             $route = $this->routa.'.edit';
@@ -465,7 +446,7 @@ class UserController extends Controller
             //REGISTRAR EVENTO
             $regev = Qlib::regEvent(['action'=>'destroy','tab'=>$this->tab,'config'=>[
                 'obs'=>'Exclusão de cadastro Id '.$id,
-                'link'=>$this->routa,
+                'link'=>'#',
                 ]
             ]);
 
@@ -479,10 +460,6 @@ class UserController extends Controller
             $ret = redirect()->route($routa.'.index',['mens'=>'Registro deletado com sucesso!','color'=>'success']);
         }
         return $ret;
-    }
-    public function testeF($var = null)
-    {
-        return 'ola user';
     }
 
     public function exec($token_conta = null)

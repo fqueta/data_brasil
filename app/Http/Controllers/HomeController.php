@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\admin\EventController;
 use App\Models\User;
 use App\Models\relatorio;
 use App\Models\Assistencia;
@@ -21,10 +22,13 @@ class HomeController extends Controller
      * @return void
      */
     protected $user;
+    public $tab;
     public function __construct(User $user)
     {
         $this->middleware('auth');
         $this->user = $user;
+        $this->tab = 'home';
+        $this->title = 'Dashboard';
         $this->routa = 'painel';
     }
 
@@ -51,6 +55,8 @@ class HomeController extends Controller
         }else{
             $dadosMp = false;
         }
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
         $totalDecretos = Post::where('post_type','=','decreto')->count();
         $config = [
             'c_familias'=>$dadosFamilias,

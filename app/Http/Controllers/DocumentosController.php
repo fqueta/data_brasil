@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\admin\EventController;
 use Illuminate\Http\Request;
 use stdClass;
 use App\Models\Documento;
@@ -189,6 +190,8 @@ class DocumentosController extends Controller
             'exec'=>true,
             'dados'=>$dados
         ];
+         //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'id'=>$salvar->id,'this'=>$this]);
 
         if($ajax=='s'){
             $ret['return'] = route($route).'?idCad='.$salvar->id;

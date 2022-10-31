@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Controllers\admin\EventController;
 use stdClass;
 use App\Models\Beneficiario;
 use Illuminate\Http\Request;
@@ -19,14 +21,15 @@ class BeneficiariosController extends Controller
     public $label;
     public $view;
     public $tab;
-    public function __construct(User $user)
+    public function __construct()
     {
         $this->middleware('auth');
-        $this->user = $user;
+        //$this->user = $user;
         $this->routa = 'beneficiarios';
-        $this->label = 'Beneficiario';
+        $this->label = 'Beneficiário';
         $this->view = 'padrao';
         $this->tab = $this->routa;
+        //dd($user);
     }
     public function queryBeneficiario($get=false,$config=false)
     {
@@ -319,11 +322,14 @@ class BeneficiariosController extends Controller
     {
         $ajax = isset($_GET['ajax'])?$_GET['ajax']:'n';
         $this->authorize('ler', $this->routa);
-        $title = 'Beneficiários Cadastrados';
+        $title = ''.$this->label.' Cadastrados';
         $titulo = $title;
         $queryBeneficiario = $this->queryBeneficiario($_GET);
         $queryBeneficiario['config']['exibe'] = 'html';
         $routa = $this->routa;
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+
         if(isset($_GET['term'])){
             $ret = false;
             $ajax = 's';
@@ -361,6 +367,13 @@ class BeneficiariosController extends Controller
         $this->authorize('create', $this->routa);
         $title = 'Cadastrar beneficiario';
         $titulo = $title;
+        //REGISTRAR EVENTO CADASTRO
+        $regev = Qlib::regEvent(['action'=>'create','tab'=>$this->tab,'config'=>[
+            'obs'=>'Abriu tela de cadastro',
+            'link'=>route($this->routa.'.create'),
+            ]
+        ]);
+
         $config = [
             'ac'=>'cad',
             'frm_id'=>'frm-beneficiarios',
@@ -393,8 +406,12 @@ class BeneficiariosController extends Controller
         $route = $this->routa.'.index';
         /** criar vinculo com  **/
         $verificaCriaVinculo = false;
-        if($salvar->id)
+        if($salvar->id){
             $verificaCriaVinculo = $this->verificaCriaVinculo($dados,$salvar->id,'cad');
+             //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'id'=>$salvar->id,'this'=>$this]);
+        }
+
         $dados['id'] = $salvar->id;
         $ret = [
             'mens'=>$this->label.' cadastrada com sucesso!',
@@ -463,6 +480,13 @@ class BeneficiariosController extends Controller
                 'route'=>$this->routa,
                 'id'=>$id,
             ];
+            //REGISTRAR EVENTO
+            $regev = Qlib::regEvent(['action'=>'show','tab'=>$this->tab,'config'=>[
+                'obs'=>'Visualização cadastro Id '.$id,
+                'link'=>route($this->routa.'.show',['id'=>$id]),
+                ]
+            ]);
+
             /*
             $d_tab = Qlib::html_vinculo([
                 'campos'=>$campos,
@@ -533,6 +557,10 @@ class BeneficiariosController extends Controller
                 'return'=>$route,
                 'dados'=>$dadosAtualizados,
             ];
+            if($atualizar){
+                //REGISTRAR EVENTOS
+                (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+            }
         }else{
             $route = $this->routa.'.edit';
             $ret = [
@@ -571,6 +599,13 @@ class BeneficiariosController extends Controller
         }else{
             $ret = redirect()->route($routa.'.index',['mens'=>'Registro deletado com sucesso!','color'=>'success']);
         }
+        //REGISTRAR EVENTO
+        $regev = Qlib::regEvent(['action'=>'destroy','tab'=>$this->tab,'config'=>[
+            'obs'=>'Exclusão de cadastro Id '.$id,
+            'link'=>'#',
+            ]
+        ]);
+
         return $ret;
     }
 }

@@ -37,6 +37,7 @@ class PostController extends Controller
         $this->user = $user;
         $this->routa = $this->sec;
         $this->label = 'Posts';
+        $this->tab = 'posts';
         $this->view = 'admin.posts';
         $this->i_wp = Qlib::qoption('i_wp');//indegração com Wp s para sim
         //$this->wp_api = new ApiWpController();
@@ -172,6 +173,7 @@ class PostController extends Controller
             $title = 'Cadastro de paginas';
         }elseif($this->sec=='decretos'){
             $title = 'Cadastro de Decretos';
+            $this->label='Decretos';
         }else{
             $title = 'Sem tipo';
         }
@@ -193,12 +195,9 @@ class PostController extends Controller
             'view'=>$this->view,
             'i'=>0,
         ];
-         //REGISTRAR EVENTO DE LOGIN
-         $regev = Qlib::regEvent(['action'=>'index','tab'=>$this->tab,'config'=>[
-            'obs'=>'Listou cadastros de '.$this->tab,
-            'link'=>$routa,
-            ]
-        ]);
+
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
 
         return view($this->view.'.index',$ret);
     }
@@ -318,6 +317,9 @@ class PostController extends Controller
                 $idCad = 0;
             }
         }
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'id'=>@$salvar->id,'this'=>$this]);
+
         $route = $this->routa.'.index';
         $ret = [
             'mens'=>$mens,
@@ -363,12 +365,8 @@ class PostController extends Controller
                 'view'=>$this->view,
                 'id'=>$id,
             ];
-            //REGISTRAR EVENTO
-            $regev = Qlib::regEvent(['action'=>'show','tab'=>$this->tab,'config'=>[
-                'obs'=>'Visualização cadastro Id '.$id,
-                'link'=>$this->routa,
-                ]
-            ]);
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
 
             if(!$dados['matricula'])
                 $config['display_matricula'] = 'd-none';
@@ -475,12 +473,8 @@ class PostController extends Controller
                     $dados[0]['imagem_destacada'] = $imagem_destacada[0];
                 }
             }
-            //REGISTRAR EVENTO
-            $regev = Qlib::regEvent(['action'=>'edit','tab'=>$this->tab,'config'=>[
-                'obs'=>'Abriu Id '.$id.' para edição',
-                'link'=>$this->routa,
-                ]
-            ]);
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
 
             $ret = [
                 'value'=>$dados[0],
@@ -578,12 +572,9 @@ class PostController extends Controller
                     $mens = $this->label.' cadastrado com sucesso!';
                     $color = 'success';
                     $id = $id;
-                    //REGISTRAR EVENTO
-                    $regev = Qlib::regEvent(['action'=>'update','tab'=>$this->tab,'config'=>[
-                        'obs'=>'Atualização de cadastro Id '.$id,
-                        'link'=>$this->routa,
-                        ]
-                    ]);
+                    //REGISTRAR EVENTOS
+                    (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+
                 }else{
                     $mens = 'Erro ao salvar '.$this->label.'';
                     $color = 'danger';

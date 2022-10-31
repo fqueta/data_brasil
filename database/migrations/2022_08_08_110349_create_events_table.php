@@ -18,6 +18,7 @@ class CreateEventsTable extends Migration
             $table->timestamps();
             $table->string('token',100)->nullable();
             $table->integer('user_id')->nullable();
+            $table->integer('post_id')->nullable();
             $table->enum('action',['create','store','edit','show','update','delete','index','login','logout','print']);
             $table->string('tab',300)->nullable();
             $table->json('config')->nullable();

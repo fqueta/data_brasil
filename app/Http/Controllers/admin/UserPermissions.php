@@ -18,11 +18,13 @@ class UserPermissions extends Controller
     public $routa;
     public $label;
     public $view;
+    public $tab;
     public function __construct(User $user)
     {
         $this->middleware('auth');
         $this->user = $user;
         $this->routa = 'permissions';
+        $this->tab = 'permissions';
         $this->label = 'Permissões';
         $this->view = 'padrao';
     }
@@ -123,6 +125,8 @@ class UserPermissions extends Controller
         $routa = $this->routa;
         $view = $this->view;
 
+        //REGISTRAR EVENTOS
+        (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
         return view($routa.'.index',[
             'dados'=>$queryPermissions['permission'],
             'title'=>$title,
@@ -314,6 +318,10 @@ class UserPermissions extends Controller
                 'mens'=>'Erro ao receber dados',
                 'color'=>'danger',
             ];
+        }
+        if($atualizar){
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
         }
         if($ajax=='s'){
             $ret['return'] = route($route).'?idCad='.$id;

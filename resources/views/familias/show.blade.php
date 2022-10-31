@@ -9,7 +9,7 @@
 <div class="row">
     <div class="col-md-12 mens">
     </div>
-    <div class="col-md-12">
+    <div class="col-md-8">
         <div class="card card-primary card-outline">
             <div class="card-header">
                 <h3 class="card-title">{{__('Informações')}}</h3>
@@ -29,6 +29,11 @@
         </div>
         @include('qlib.show_files')
     </div>
+    @if(isset($eventos) && is_object($eventos))
+    <div class="col-md-4 mt-0 mb-5">
+        @include('qlib.eventos.lista_eventos',['eventos'=>$eventos])
+    </div>
+    @endif
 </div>
 
 @stop
