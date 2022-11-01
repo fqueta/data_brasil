@@ -742,7 +742,7 @@ class FamiliaController extends Controller
             ],*/
             //'situacao_profissional'=>['label'=>'Situação Profissional','type'=>'text','active'=>true,'exibe_busca'=>'d-block','event'=>'','tam'=>'4'],
             'bcp_bolsa_familia'=>['label'=>'BPC ou Bolsa Família','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
-            'renda_familiar'=>['label'=>'Renda Fam.','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','class'=>''],
+            'renda_familiar'=>['label'=>'Renda Fam.','active'=>true,'type'=>'moeda','exibe_busca'=>'d-block','event'=>'','tam'=>'3','class'=>''],
             'doc_imovel'=>['label'=>'Doc Imóvel','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
             'qtd_membros'=>['label'=>'Membros','active'=>true,'type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
             'membros'=>['label'=>'lista de Membros','active'=>false,'type'=>'html','exibe_busca'=>'d-none','event'=>'','tam'=>'12','script'=>'familias.lista_membros','script_show'=>'familias.show_membros'],
@@ -750,16 +750,16 @@ class FamiliaController extends Controller
             'crianca_adolescente'=>['label'=>'Criança e Adolescente','active'=>true,'exibe_busca'=>'d-none','event'=>'','type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             'obs'=>['label'=>'Observação','active'=>true,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','rows'=>'4','cols'=>'80','tam'=>'12','class'=>'summernote'],
         ];
-        if(isset($dados['tags']) && is_array($dados['tags']) && $local=='show'){
-            //Cadastros completos tag=10
-            if(in_array(10,$dados['tags'])){
-                unset($ret['config[categoria_pendencia]']);
-            }
-            //Cadastros pendentes tag=3
-            if(in_array(3,$dados['tags'])){
-                unset($ret['config[categoria_processo]']);
-            }
-        }
+        // if(isset($dados['tags']) && is_array($dados['tags']) && $local=='show'){
+        //     //Cadastros completos tag=10
+        //     if(in_array(10,$dados['tags'])){
+        //         unset($ret['config[categoria_pendencia]']);
+        //     }
+        //     //Cadastros pendentes tag=3
+        //     if(in_array(3,$dados['tags'])){
+        //         unset($ret['config[categoria_processo]']);
+        //     }
+        // }
         return $ret;
     }
     public function camposJson(User $user)
@@ -904,8 +904,11 @@ class FamiliaController extends Controller
                 'frm_id'=>'frm-familias',
                 'route'=>$this->routa,
                 'id'=>$id,
+                'class_card1'=>'col-md-8',
+                'class_card2'=>'col-md-4',
             ];
-
+            $config['class_card1'] = 'col-md-12';
+            $config['class_card2'] = 'd-none';
             //REGISTRAR EVENTOS
             (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
             if(!$dados['matricula'])

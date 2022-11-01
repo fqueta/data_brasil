@@ -77,8 +77,8 @@
         .note-table,.note-insert,.note-view{
             display: none;
         }
-        {!!$exibeCategoria!!}
-        {!!$exibeProcesso!!}
+        /* {!!$exibeCategoria!!}
+        {!!$exibeProcesso!!} */
     </style>
 
 @stop

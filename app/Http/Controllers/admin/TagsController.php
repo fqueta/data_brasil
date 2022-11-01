@@ -19,11 +19,13 @@ class TagsController extends Controller
     public $routa;
     public $label;
     public $view;
+    public $tab;
     public function __construct(User $user)
     {
         $this->middleware('auth');
         $this->user = $user;
         $this->routa = 'tags';
+        $this->tab = 'tags';
         $this->label = 'Tag';
         $this->view = 'padrao';
     }

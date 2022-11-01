@@ -291,10 +291,15 @@
         <label for="{{$config['campo']}}">{{$config['label']}}:</label>
         {!! @$config['value'] !!}
     </div>
+    @elseif($config['type']=='moeda')
+    <div class="col-{{$config['tam']}}" div-id="{{$config['campo']}}">
+        <label for="{{$config['campo']}}">{{$config['label']}}:</label>
+        R$ {{ number_format(@$config['value'],2,',','.') }}
+    </div>
     @elseif($config['type']=='date')
     <div class="col-{{$config['tam']}}" div-id="{{$config['campo']}}">
         <label for="{{$config['campo']}}">{{$config['label']}}:</label>
-        {{ @$config['value'] }}
+        {{ App\Qlib\Qlib::dataExibe(@$config['value']) }}
     </div>
     @else
     <div class="col-{{$config['tam']}}" div-id="{{$config['campo']}}">
