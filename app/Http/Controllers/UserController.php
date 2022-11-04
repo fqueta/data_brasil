@@ -149,8 +149,8 @@ class UserController extends Controller
             ],
             'name'=>['label'=>'Nome completo','active'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            'email'=>['label'=>'Email','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4'],
-            'password'=>['label'=>'Senha','active'=>false,'type'=>'password','exibe_busca'=>'d-none','event'=>'','tam'=>'6'],
+            'email'=>['label'=>'Email','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
+            'password'=>['label'=>'Senha','active'=>false,'type'=>'password','exibe_busca'=>'d-none','event'=>'','tam'=>'4'],
             'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','checked'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'2','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             //'email'=>['label'=>'Observação','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
         ];
@@ -302,6 +302,7 @@ class UserController extends Controller
                     }
                 }
             }
+            $campos['ativo']['type']='hidden';
             $ret = [
                 'value'=>$dados,
                 'config'=>$config,
@@ -357,6 +358,9 @@ class UserController extends Controller
                 'id'=>$id,
             ];
             $campos = $this->campos();
+            if($local=='perfil'){
+                $campos['ativo']['type']='hidden';
+            }
             $ret = [
                 'value'=>$dados[0],
                 'config'=>$config,
@@ -366,12 +370,9 @@ class UserController extends Controller
                 'campos'=>$campos,
                 'exec'=>true,
             ];
-            //REGISTRAR EVENTO
-            $regev = Qlib::regEvent(['action'=>'edit','tab'=>$this->tab,'config'=>[
-                'obs'=>'Abriu Id '.$id.' para edição',
-                'link'=>route($this->routa.'.edit',['id'=>$id]),
-                ]
-            ]);
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+
 
             return view($routa.'.createedit',$ret);
         }else{
