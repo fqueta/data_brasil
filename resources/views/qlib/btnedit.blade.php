@@ -21,7 +21,7 @@
             @can('create',$config['route'])
                 <a href="{{route($config['route'].'.create')}}" class="btn btn-default"> <i class="fas fa-plus"></i> Novo cadastro</a>
             @endcan
-            @if($config['route']=='users' && isset($config['local']) && $config['local']=='perfil')
+            @if($config['route']=='users' && isset($config['local']) && $config['local']=='sistema.perfil')
                 <a href="{{route('sistema.perfil.edit')}}?redirect={{App\Qlib\Qlib::urlAtual()}}" btn="editar"  class="btn btn-outline-primary"> <i class="fa fa-pen" aria-hidden="true"></i> Editar</a>
             @else
                 @can('update',$config['route'])

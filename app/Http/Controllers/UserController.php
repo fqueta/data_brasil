@@ -254,10 +254,16 @@ class UserController extends Controller
         $id = Auth::id();
         return $this->show($id,'perfil');
     }
-    public function show($id,$local='')
+    public function show($id)
     {
+        $local = request()->route()->getName();
         $dados = User::findOrFail($id);
-        $this->authorize('ler', $this->routa);
+        if($local=='sistema.perfil'){
+            $rt = 'sistema';
+        }else{
+            $rt = $this->routa;
+        }
+        $this->authorize('ler', $rt);
         if(!empty($dados)){
             $title = 'Cadastro de usuários';
             $titulo = $title;
@@ -283,7 +289,7 @@ class UserController extends Controller
                 'class_card1'=>'col-md-8',
                 'class_card2'=>'col-md-4',
             ];
-            if($local=='perfil'){
+            if($local=='sistema.perfil'){
                 $config['class_card1'] = 'col-md-12';
                 $config['class_card2'] = 'd-none';
             }else{
@@ -327,14 +333,16 @@ class UserController extends Controller
     public function perfilEdit($user,$local=false)
     {
         $id = Auth::id();
-        return $this->edit($id,'perfil');
+        return $this->edit($id);
     }
-    public function edit($user,$local=false)
+    public function edit($user)
     {
         $id = $user;
         $dados = User::where('id',$id)->get();
+        $local = request()->route()->getName();
+
         $routa = 'users';
-        if($local=='perfil'){
+        if($local=='sistema.perfil.edit'){
             $this->authorize('is_admin_logado', $user);
         }else{
             $this->authorize('is_admin', $user);
