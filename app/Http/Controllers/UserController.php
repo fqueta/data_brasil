@@ -371,7 +371,7 @@ class UserController extends Controller
                 'exec'=>true,
             ];
             //REGISTRAR EVENTOS
-            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this,'id'=>$id]);
 
 
             return view($routa.'.createedit',$ret);

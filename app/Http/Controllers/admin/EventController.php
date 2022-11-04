@@ -44,7 +44,7 @@ class EventController extends Controller
                     'tab'=>$tab,
                     'config'=>Qlib::lib_array_json($conf),
                 ];
-                //dd($ds);
+                // dd($ds);
                 $ret = Event::create($ds);
             }
         }
@@ -92,6 +92,11 @@ class EventController extends Controller
                 $acaoObs = __('Visualizou cadastros de ').$label;
                 $link = route($routeName,['id'=>$id]);
             }elseif($action=='edit'){
+                $link = route($routeName,['id'=>$id]);
+                $acaoObs = __('Abriu tela de Edição de ').$label;
+            }elseif($action=='perfil'){
+                $action = 'edit';
+                $id = isset($config['id'])?$config['id']:$id;
                 $link = route($routeName,['id'=>$id]);
                 $acaoObs = __('Abriu tela de Edição de ').$label;
             }elseif($action=='update'){
