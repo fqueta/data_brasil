@@ -366,7 +366,7 @@ class UserController extends Controller
                 'id'=>$id,
             ];
             $campos = $this->campos();
-            if($local=='perfil'){
+            if($local=='sistema.perfil.edit'){
                 $campos['ativo']['type']='hidden';
             }
             $ret = [
