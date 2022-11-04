@@ -119,7 +119,7 @@ Route::prefix('relatorios')->group(function(){
     //Route::get('/{id}/edit',[RelatoriosController::class,'edit'])->name('relatorios.edit');
     //Route::put('/{id}',[RelatoriosController::class,'update'])->where('id', '[0-9]+')->name('relatorios.update');
     //Route::post('/{id}',[RelatoriosController::class,'update'])->where('id', '[0-9]+')->name('relatorios.update-ajax');
-    //Route::delete('/{id}',[RelatoriosController::class,'destroy'])->where('id', '[0-9]+')->name('relatorios.destroy');
+    Route::delete('/{id}',[RelatoriosController::class,'destroy'])->where('id', '[0-9]+')->name('relatorios.destroy');
 });
 Route::prefix('sistema')->group(function(){
     Route::get('/pefil',[UserController::class,'perfilShow'])->name('sistema.perfil');
