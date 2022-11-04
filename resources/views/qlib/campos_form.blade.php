@@ -257,7 +257,7 @@
             @php
                 $class = 'moeda '.$config['class'];
                 if(!empty($config['value']))
-                $value = 'R$'.number_format($config['value'],2,',','.');
+                $value = 'R$'.number_format((double)$config['value'],2,',','.');
             @endphp
             <input type="text" class="form-control @error($config['campo']) is-invalid @enderror {{$class}}" id="inp-{{$config['campo']}}" name="{{$config['campo']}}" aria-describedby="{{$config['campo']}}" placeholder="{{$config['placeholder']}}" value="@if(isset($value)){{$value}}@elseif($config['ac']=='cad'){{old($config['campo'])}}@endif" {{$config['event']}} />
             @error($config['campo'])
