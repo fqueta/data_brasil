@@ -294,7 +294,7 @@
     @elseif($config['type']=='moeda')
     <div class="col-{{$config['tam']}}" div-id="{{$config['campo']}}">
         <label for="{{$config['campo']}}">{{$config['label']}}:</label>
-        R$ {{ number_format(@$config['value'],2,',','.') }}
+        R$ {{ number_format(@(double)$config['value'],2,',','.') }}
     </div>
     @elseif($config['type']=='date')
     <div class="col-{{$config['tam']}}" div-id="{{$config['campo']}}">
