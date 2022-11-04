@@ -122,7 +122,9 @@ Route::prefix('relatorios')->group(function(){
     //Route::delete('/{id}',[RelatoriosController::class,'destroy'])->where('id', '[0-9]+')->name('relatorios.destroy');
 });
 Route::prefix('sistema')->group(function(){
-    Route::get('/pefil',[EtapaController::class,'index'])->name('sistema.perfil');
+    Route::get('/pefil',[UserController::class,'perfilShow'])->name('sistema.perfil');
+    Route::get('/perfil/edit',[UserController::class,'perfilEdit'])->name('sistema.perfil.edit');
+    Route::post('/perfil/store',[UserController::class,'perfilStore'])->name('sistema.perfil.store');
     Route::get('/config',[EtapaController::class,'config'])->name('sistema.config');
     Route::post('/{id}',[EtapaController::class,'update'])->where('id', '[0-9]+')->name('sistema.update-ajax');
 });

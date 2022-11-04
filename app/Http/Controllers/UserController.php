@@ -250,7 +250,11 @@ class UserController extends Controller
         }
     }
 
-    public function show($id,User $user)
+    public function perfilShow(){
+        $id = Auth::id();
+        return $this->show($id,'perfil');
+    }
+    public function show($id,$local='')
     {
         $dados = User::findOrFail($id);
         $this->authorize('ler', $this->routa);
@@ -275,9 +279,17 @@ class UserController extends Controller
                 'frm_id'=>'frm-users',
                 'route'=>$this->routa,
                 'id'=>$id,
+                'local'=>$local,
+                'class_card1'=>'col-md-8',
+                'class_card2'=>'col-md-4',
             ];
-            //REGISTRAR EVENTOS
-            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+            if($local=='perfil'){
+                $config['class_card1'] = 'col-md-12';
+                $config['class_card2'] = 'd-none';
+            }else{
+                //REGISTRAR EVENTOS
+                (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+            }
 
             if(!$dados['matricula'])
                 $config['display_matricula'] = 'd-none';
@@ -311,12 +323,21 @@ class UserController extends Controller
             return redirect()->route($this->routa.'.index',$ret);
         }
     }
-    public function edit($user)
+    public function perfilEdit($user,$local=false)
+    {
+        $id = Auth::id();
+        return $this->edit($id,'perfil');
+    }
+    public function edit($user,$local=false)
     {
         $id = $user;
         $dados = User::where('id',$id)->get();
         $routa = 'users';
-        $this->authorize('is_admin', $user);
+        if($local=='perfil'){
+            $this->authorize('is_admin_logado', $user);
+        }else{
+            $this->authorize('is_admin', $user);
+        }
 
         if(!empty($dados)){
             $title = 'Editar Cadastro de usuários';
