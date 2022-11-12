@@ -531,7 +531,7 @@ class FamiliaController extends Controller
                 'arr_opc'=>Qlib::sql_array("SELECT value,nome FROM tags WHERE ativo='s' AND pai='3'",'nome','value'),
                 'exibe_busca'=>'d-block',
                 'event'=>'',
-                'tam'=>'12',
+                'tam'=>'6',
                 'id'=>'categoria_pendencia',
                 'cp_busca'=>'categoria_pendencia][',
                 'class'=>'',
@@ -545,7 +545,7 @@ class FamiliaController extends Controller
                 'arr_opc'=>Qlib::sql_array("SELECT value,nome FROM tags WHERE ativo='s' AND pai='10'",'nome','value'),
                 'exibe_busca'=>'d-block',
                 'event'=>'',
-                'tam'=>'12',
+                'tam'=>'6',
                 'id'=>'categoria_processo',
                 'cp_busca'=>'categoria_processo][',
                 'class'=>'',
@@ -935,7 +935,7 @@ class FamiliaController extends Controller
                 'eventos'=>(new EventController)->listEventsPost(['post_id'=>$id]),
                 'exec'=>true,
             ];
-            return view($this->routa.'.show',$ret);
+            return view('padrao.show',$ret);
         }else{
             $ret = [
                 'exec'=>false,

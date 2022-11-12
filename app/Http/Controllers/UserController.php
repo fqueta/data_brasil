@@ -319,10 +319,12 @@ class UserController extends Controller
                 'listFiles'=>$listFiles,
                 'campos'=>$campos,
                 'routa'=>$this->routa,
-                'eventos'=>(new EventController)->listEventsUser(['id_user'=>$id]),
+                'eventos'=>(new EventController)->listEventsPost(['post_id'=>$id]),
+                // 'eventos'=>(new EventController)->listEventsUser(['id_user'=>$id]),
                 'exec'=>true,
             ];
-            return view($this->routa.'.show',$ret);
+            // return view($this->routa.'.show',$ret);
+            return view($this->view.'.show',$ret);
         }else{
             $ret = [
                 'exec'=>false,

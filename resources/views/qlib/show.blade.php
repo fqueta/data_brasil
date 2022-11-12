@@ -49,6 +49,6 @@
                 ]) !!}
             @endforeach
         @endif
-        @csrf
+        {{-- @csrf --}}
     </div>
     @include('qlib.btnedit')

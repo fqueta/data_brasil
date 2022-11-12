@@ -22,13 +22,16 @@ class BairroController extends Controller
     public $routa;
     public $label;
     public $view;
+    public $tab;
     public function __construct(User $user)
     {
         $this->middleware('auth');
         $this->user = $user;
         $this->routa = 'bairros';
+        $this->tab = $this->routa;
         $this->label = 'Bairro';
-        $this->view = $this->routa;
+        $this->view = $this->routa;;
+        $this->view = 'padrao';
     }
     public function queryBairros($get=false,$config=false)
     {
@@ -204,7 +207,54 @@ class BairroController extends Controller
 
     public function show($id)
     {
-        //
+        $dados = Bairro::findOrFail($id);
+        $this->authorize('ler', $this->routa);
+        if(!empty($dados)){
+            $title = __('Cadastro de bairros');
+            $titulo = $title;
+            $dados['ac'] = 'alt';
+            if(isset($dados['config'])){
+                $dados['config'] = Qlib::lib_json_array($dados['config']);
+            }
+            $listFiles = false;
+            $campos = $this->campos();
+            if(isset($dados['token'])){
+                $listFiles = _upload::where('token_produto','=',$dados['token'])->get();
+            }
+            $config = [
+                'ac'=>'alt',
+                'frm_id'=>'frm-bairros',
+                'route'=>$this->routa,
+                'id'=>$id,
+                'class_card1'=>'col-md-8',
+                'class_card2'=>'col-md-4',
+            ];
+            if(!$dados['matricula'])
+                $config['display_matricula'] = 'd-none';
+            if(isset($dados['config']) && is_array($dados['config'])){
+                foreach ($dados['config'] as $key => $value) {
+                    if(is_array($value)){
+
+                    }else{
+                        $dados['config['.$key.']'] = $value;
+                    }
+                }
+            }
+            $ret = [
+                'value'=>$dados,
+                'config'=>$config,
+                'title'=>$title,
+                'titulo'=>$titulo,
+                'listFiles'=>$listFiles,
+                'campos'=>$campos,
+                'routa'=>$this->routa,
+                'eventos'=>(new EventController)->listEventsPost(['post_id'=>$id]),
+                'exec'=>true,
+            ];
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+            return view($this->view.'.show',$ret);
+        }
     }
 
     public function edit($id,User $user)

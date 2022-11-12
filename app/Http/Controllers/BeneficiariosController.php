@@ -393,15 +393,10 @@ class BeneficiariosController extends Controller
     }
     public function store(StoreBeneficiarioRequest $request)
     {
-        /*$validatedData = $request->validate([
-            'nome' => ['required','string','unique:beneficiarios'],
-        ]);*/
-
         $dados = $request->all();
         $ajax = isset($dados['ajax'])?$dados['ajax']:'n';
         $dados['ativo'] = isset($dados['ativo'])?$dados['ativo']:'n';
 
-        //dd($dados);
         $salvar = Beneficiario::create($dados);
         $route = $this->routa.'.index';
         /** criar vinculo com  **/
@@ -445,9 +440,59 @@ class BeneficiariosController extends Controller
         }
         return $ret;
     }
-    public function show($id)
+    public function show($beneficiario)
     {
-        //
+        $id = $beneficiario;
+        $dados = Beneficiario::where('id',$id)->get();
+        $routa = 'beneficiarios';
+        $this->authorize('ler', $this->routa);
+
+        if(!empty($dados)){
+            $title = 'Visualizar Cadastro de beneficiarios';
+            $titulo = $title;
+            $dados[0]['ac'] = 'alt';
+            if(isset($dados[0]['config']) && is_array($dados[0]['config'])){
+                foreach ($dados[0]['config'] as $key => $value) {
+                    if(is_array($value)){
+
+                    }else{
+                        $dados[0]['config['.$key.']'] = $value;
+                    }
+                }
+            }
+            $listFiles = false;
+            $campos = $this->campos();
+            if(isset($dados[0]['token'])){
+                $listFiles = _upload::where('token_produto','=',$dados[0]['token'])->get();
+            }
+            $config = [
+                'ac'=>'alt',
+                'frm_id'=>'frm-beneficiarios',
+                'route'=>$this->routa,
+                'id'=>$id,
+                'class_card1'=>'col-md-8',
+                'class_card2'=>'col-md-4',
+            ];
+            $ret = [
+                'value'=>$dados[0],
+                'config'=>$config,
+                'title'=>$title,
+                'titulo'=>$titulo,
+                'listFiles'=>$listFiles,
+                'campos'=>$campos,
+                'routa'=>$this->routa,
+                'eventos'=>(new EventController)->listEventsPost(['post_id'=>$id]),
+                'exec'=>true,
+            ];
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+            return view($this->view.'.show',$ret);
+        }else{
+            $ret = [
+                'exec'=>false,
+            ];
+            return redirect()->route($this->view.'.index',$ret);
+        }
     }
     public function edit($beneficiario,User $user)
     {
@@ -480,21 +525,9 @@ class BeneficiariosController extends Controller
                 'route'=>$this->routa,
                 'id'=>$id,
             ];
-            //REGISTRAR EVENTO
-            $regev = Qlib::regEvent(['action'=>'show','tab'=>$this->tab,'config'=>[
-                'obs'=>'Visualização cadastro Id '.$id,
-                'link'=>route($this->routa.'.show',['id'=>$id]),
-                ]
-            ]);
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
 
-            /*
-            $d_tab = Qlib::html_vinculo([
-                'campos'=>$campos,
-                'type'=>'html_vinculo',
-                'dados'=>$dados[0],
-            ]);
-            $dados[0]['html_vinculo'] = $d_tab;
-            */
             $ret = [
                 'value'=>$dados[0],
                 'config'=>$config,

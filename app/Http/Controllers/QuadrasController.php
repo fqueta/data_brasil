@@ -217,7 +217,59 @@ class QuadrasController extends Controller
 
     public function show($id)
     {
-        //
+        $dados = Quadra::findOrFail($id);
+        $this->authorize('ler', $this->routa);
+        if(!empty($dados)){
+            $title = __('Visualização de quadras');
+            $titulo = $title;
+            $dados['ac'] = 'alt';
+            if(isset($dados['config'])){
+                $dados['config'] = Qlib::lib_json_array($dados['config']);
+            }
+            $listFiles = false;
+            $campos = $this->campos();
+            if(isset($dados['token'])){
+                $listFiles = _upload::where('token_produto','=',$dados['token'])->get();
+            }
+            $config = [
+                'ac'=>'alt',
+                'frm_id'=>'frm-quadras',
+                'route'=>$this->routa,
+                'id'=>$id,
+                'class_card1'=>'col-md-8',
+                'class_card2'=>'col-md-4',
+            ];
+            if(!$dados['matricula'])
+                $config['display_matricula'] = 'd-none';
+            if(isset($dados['config']) && is_array($dados['config'])){
+                foreach ($dados['config'] as $key => $value) {
+                    if(is_array($value)){
+
+                    }else{
+                        $dados['config['.$key.']'] = $value;
+                    }
+                }
+            }
+            $ret = [
+                'value'=>$dados,
+                'config'=>$config,
+                'title'=>$title,
+                'titulo'=>$titulo,
+                'listFiles'=>$listFiles,
+                'campos'=>$campos,
+                'routa'=>$this->routa,
+                'eventos'=>(new EventController)->listEventsPost(['post_id'=>$id]),
+                'exec'=>true,
+            ];
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+            return view($this->view.'.show',$ret);
+        }else{
+            $ret = [
+                'exec'=>false,
+            ];
+            return redirect()->route($this->routa.'.index',$ret);
+        }
     }
 
     public function edit($quadra,User $user)

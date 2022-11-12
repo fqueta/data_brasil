@@ -390,6 +390,8 @@ class LotesController extends Controller
                 'frm_id'=>'frm-familias',
                 'route'=>$this->routa,
                 'id'=>$id,
+                'class_card1'=>'col-md-8',
+                'class_card2'=>'col-md-4',
             ];
             // if($dados['loteamento']>0){
             //     $bairro = Bairro::find($dados['bairro']);
@@ -416,12 +418,12 @@ class LotesController extends Controller
                 'listFiles'=>$listFiles,
                 'campos'=>$campos,
                 'routa'=>$this->routa,
+                'eventos'=>(new EventController)->listEventsPost(['post_id'=>$id]),
                 'exec'=>true,
             ];
             //REGISTRAR EVENTOS
             (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
-
-            return view($this->routa.'.show',$ret);
+            return view($this->view.'.show',$ret);
         }else{
             $ret = [
                 'exec'=>false,

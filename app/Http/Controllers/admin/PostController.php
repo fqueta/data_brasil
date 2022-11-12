@@ -343,15 +343,13 @@ class PostController extends Controller
         $dados = Post::findOrFail($id);
         $this->authorize('ler', $this->routa);
         if(!empty($dados)){
-            $title = 'Cadastro da decretos';
+            $title = 'Visualização da decretos';
             $titulo = $title;
             //dd($dados);
             $dados['ac'] = 'alt';
             if(isset($dados['config'])){
                 $dados['config'] = Qlib::lib_json_array($dados['config']);
             }
-            $arr_escolaridade = Qlib::sql_array("SELECT id,nome FROM escolaridades ORDER BY nome ", 'nome', 'id');
-            $arr_estadocivil = Qlib::sql_array("SELECT id,nome FROM estadocivils ORDER BY nome ", 'nome', 'id');
             $listFiles = false;
             //$dados['renda_familiar'] = number_format($dados['renda_familiar'],2,',','.');
             $campos = $this->campos();
@@ -364,9 +362,9 @@ class PostController extends Controller
                 'route'=>$this->routa,
                 'view'=>$this->view,
                 'id'=>$id,
+                'class_card1'=>'col-md-8',
+                'class_card2'=>'col-md-4',
             ];
-            //REGISTRAR EVENTOS
-            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
 
             if(!$dados['matricula'])
                 $config['display_matricula'] = 'd-none';
@@ -384,14 +382,17 @@ class PostController extends Controller
                 'config'=>$config,
                 'title'=>$title,
                 'titulo'=>$titulo,
-                'arr_escolaridade'=>$arr_escolaridade,
-                'arr_estadocivil'=>$arr_estadocivil,
                 'listFiles'=>$listFiles,
                 'campos'=>$campos,
                 'routa'=>$this->routa,
+                'routa'=>$this->routa,
+                'eventos'=>(new EventController)->listEventsPost(['post_id'=>$id]),
                 'exec'=>true,
             ];
-            return view($this->view.'.show',$ret);
+            //REGISTRAR EVENTOS
+            (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+
+            return view('padrao.show',$ret);
         }else{
             $ret = [
                 'exec'=>false,
