@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\EventController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\admin\UserPermissions;
@@ -112,7 +113,7 @@ Route::prefix('etapas')->group(function(){
 Route::prefix('relatorios')->group(function(){
     Route::get('/',[RelatoriosController::class,'index'])->name('relatorios.index');
     Route::get('/social',[RelatoriosController::class,'realidadeSocial'])->name('relatorios.social');
-    Route::get('/evolucao',[RelatoriosController::class,'create'])->name('relatorios.evolucao');
+    Route::get('/acessos',[EventController::class,'listAcessos'])->name('relatorios.acessos');
     Route::get('export/filter', [RelatoriosController::class, 'exportFilter'])->name('relatorios.export_filter');
     //Route::post('/',[RelatoriosController::class,'store'])->name('relatorios.store');
     //Route::get('/{id}/show',[RelatoriosController::class,'show'])->name('relatorios.show');

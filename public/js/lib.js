@@ -1873,6 +1873,12 @@ function buscaCep1_0(cep_code){
           $('#numero,#Numero,[q-inp="numero"],[name="numero"],[numero="cep"]').select();
        });
 }
+function Meses(val){
+    if(val !=''){
+        var mese = {01:"JANEIRO",02:"FEVEREIRO",03:"MARCO",04:"ABRIL",05:"MAIO",06:"JUNHO",07:"JULHO",08:"AGOSTO",09:"SETEMBRO",10:"OUTUBRO",11:"NOVEMBRO",12:"DEZEMBRO"};
+        return mese[val];
+    }
+}
 function popupCallback_vinculo(res){
     var obj = $('obj').html();
     var d = decodeArray(obj);

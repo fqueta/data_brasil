@@ -114,15 +114,15 @@ class MenuSeeder extends Seeder
                 'route'=>'bairros.index',
                 'pai'=>'cad-topografico'
             ],
-            [
-                'categoria'=>'',
-                'description'=>'Etapas',
-                'icon'=>'fas fa-list',
-                'actived'=>true,
-                'url'=>'etapas',
-                'route'=>'etapas.index',
-                'pai'=>'cad-social'
-            ],
+            // [
+            //     'categoria'=>'',
+            //     'description'=>'Etapas',
+            //     'icon'=>'fas fa-list',
+            //     'actived'=>true,
+            //     'url'=>'etapas',
+            //     'route'=>'etapas.index',
+            //     'pai'=>'cad-social'
+            // ],
             [
                 'categoria'=>'',
                 'description'=>'Escolaridade',
@@ -161,11 +161,11 @@ class MenuSeeder extends Seeder
             ],
             [
                 'categoria'=>'',
-                'description'=>'Evolução',
-                'icon'=>'fa fa-chart-bar',
+                'description'=>'Acessos',
+                'icon'=>'fas fa-calendar-alt',
                 'actived'=>true,
-                'url'=>'relatorios_evolucao',
-                'route'=>'relatorios.evolucao',
+                'url'=>'relatorios_acessos',
+                'route'=>'relatorios.acessos',
                 'pai'=>'relatorios'
             ],
             /*[

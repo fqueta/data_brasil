@@ -907,8 +907,8 @@ class FamiliaController extends Controller
                 'class_card1'=>'col-md-8',
                 'class_card2'=>'col-md-4',
             ];
-            $config['class_card1'] = 'col-md-12';
-            $config['class_card2'] = 'd-none';
+            // $config['class_card1'] = 'col-md-12';
+            // $config['class_card2'] = 'd-none';
             //REGISTRAR EVENTOS
             (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
             if(!$dados['matricula'])
