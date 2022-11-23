@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', $title)
 
 @section('content_header')
     <h3>{{$titulo}}</h3>
@@ -29,9 +29,9 @@
         </div>
         @include('qlib.show_files')
     </div>
-    @if(isset($eventos) && is_object($eventos))
+    @if(isset($config['eventos']) && is_object($config['eventos']))
     <div class="{{$config['class_card2']}} mt-0 mb-5">
-        @include('qlib.eventos.lista_eventos',['eventos'=>$eventos])
+        @include('qlib.eventos.lista_eventos',['eventos'=>$config['eventos']])
     </div>
     @endif
 </div>

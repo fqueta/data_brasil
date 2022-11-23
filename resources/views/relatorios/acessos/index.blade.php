@@ -5,6 +5,9 @@
     <h3>{{$titulo}}</h3>
 @stop
 @section('content')
+    @php
+        $_GET['limit'] = isset($_GET['limit'])?$_GET['limit']:'20';
+    @endphp
   <!--<p>Selecione os publicadores do seu familia para enviar o relatorio para o secretário</p>-->
   <style media="print">
       #DataTables_Table_0_wrapper .row:first-child{
@@ -21,7 +24,7 @@
       }
   </style>
   <div class="row">
-    {{-- @include('relatorios.config_exibe') --}}
+    @include('relatorios.config_exibe')
     <div class="col-md-12 mens">
     </div>
     @can('is_admin')
@@ -76,28 +79,24 @@
 
             @can('is_admin')
             <div class="card-tools d-flex d-print-none">
-                    {{-- @include('relatorios.dropdow_actions') --}}
+                    @include('relatorios.dropdow_actions')
                     <!--include('qlib.dropdow_acaomassa')-->
             </div>
             @endcan
         </div>
         <div class="card-body">
+            @include('qlib.menus.datas')
             <div class="table-responsive">
-                {{-- {{App\Qlib\Qlib::listaTabela([
-                    'campos_tabela'=>$campos_tabela,
-                    'config'=>$config,
-                    'dados'=>$dados,
-                    'routa'=>$routa,
-                    'redirect'=>$redirect,
-                ])}} --}}
-                @include('qlib.menus.datas')
+                @if (isset($dados['dados']) && !empty($dados['dados']))
+                    @include('qlib.eventos.table_events_user')
+                @endif
             </div>
         </div>
         <div class="card-footer d-print-none">
             <div class="table-responsive">
-                {{-- @if ($config['limit']!='todos')
-                {{ $familias->appends($_GET)->links() }}
-                @endif --}}
+                @if ($_GET['limit']!='todos')
+                {{ $dados['dados']->appends($_GET)->links() }}
+                @endif
             </div>
         </div>
       </div>
@@ -111,12 +110,5 @@
 
   @section('js')
     @include('qlib.jslib')
-    <script>
-        $(function(){
-            $('.dataTable').DataTable({
-                "paging":   false,
-                stateSave: true
-            });
-        });
-    </script>
-   @stop
+
+  @stop

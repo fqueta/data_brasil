@@ -31,6 +31,14 @@ class PermissionSeeder extends Seeder
                 "update"=>["familias"=>"s","quadras"=>"s","lotes"=>"s","bairros"=>"s","beneficiarios"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios_social"=>"s","relatorios_acessos"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s","documentos"=>"s"],
                 "delete"=>["familias"=>"s","quadras"=>"s","lotes"=>"s","bairros"=>"s","beneficiarios"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios_social"=>"s","relatorios_acessos"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s","documentos"=>"s"]
             ],
+            "gerente"=>
+            [
+                "ler"=>["painel"=>"s","transparencia"=>"s","cad-social"=>"s","cad-topografico"=>"s","familias"=>"s","quadras"=>"s","lotes"=>"s","beneficiarios"=>"s","bairros"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios"=>"n","relatorios_social"=>"n","relatorios_acessos"=>"n","documentos"=>"s","config"=>"s","sistema"=>"n","users"=>"s","permissions"=>"s"],
+                "ler_arquivos"=>["cad-social"=>"s","cad-topografico"=>"s","familias"=>"s","quadras"=>"s","lotes"=>"s","beneficiarios"=>"s","bairros"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios"=>"s","relatorios_social"=>"s","relatorios_acessos"=>"s","documentos"=>"s","qoptions"=>"s","config"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s"],
+                "create"=>["familias"=>"s","quadras"=>"s","lotes"=>"s","bairros"=>"s","beneficiarios"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios_social"=>"s","relatorios_acessos"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s","documentos"=>"s"],
+                "update"=>["familias"=>"s","quadras"=>"s","lotes"=>"s","bairros"=>"s","beneficiarios"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios_social"=>"s","relatorios_acessos"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s","documentos"=>"s"],
+                "delete"=>["familias"=>"s","quadras"=>"s","lotes"=>"s","bairros"=>"s","beneficiarios"=>"s","etapas"=>"s","escolaridades"=>"s","estado-civil"=>"s","relatorios_social"=>"s","relatorios_acessos"=>"s","sistema"=>"s","users"=>"s","permissions"=>"s","documentos"=>"s"]
+            ],
         ];
         DB::table('permissions')->insert([
             [
@@ -71,3 +79,4 @@ class PermissionSeeder extends Seeder
         ]);
     }
 }
+

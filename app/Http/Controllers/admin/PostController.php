@@ -12,7 +12,10 @@ use App\Qlib\Qlib;
 use App\Models\User;
 use App\Models\_upload;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 
 class PostController extends Controller
 {
@@ -203,7 +206,7 @@ class PostController extends Controller
     }
     public function create(User $user)
     {
-        $this->authorize('is_admin', $user);
+        $this->authorize('is_admin2', $user);
         if($this->sec=='posts'){
             $title = 'Cadastro de postagens';
         }elseif($this->sec=='decretos'){
@@ -377,6 +380,13 @@ class PostController extends Controller
                     }
                 }
             }
+            $subdomain = Qlib::get_subdominio();
+            if(Gate::allows('is_admin2', [$this->routa]) && $subdomain !='cmd'){
+                $config['eventos'] = (new EventController)->listEventsPost(['post_id'=>$id]);
+            }else{
+                $config['class_card1'] = 'col-md-12';
+                $config['class_card2'] = 'd-none';
+            }
             $ret = [
                 'value'=>$dados,
                 'config'=>$config,
@@ -386,12 +396,10 @@ class PostController extends Controller
                 'campos'=>$campos,
                 'routa'=>$this->routa,
                 'routa'=>$this->routa,
-                'eventos'=>(new EventController)->listEventsPost(['post_id'=>$id]),
                 'exec'=>true,
             ];
             //REGISTRAR EVENTOS
             (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
-
             return view('padrao.show',$ret);
         }else{
             $ret = [

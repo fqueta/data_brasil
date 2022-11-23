@@ -34,6 +34,13 @@ class AuthServiceProvider extends ServiceProvider
                 return Response::deny('Você deve ser um administrador.');
             }
         });
+        Gate::define('is_admin2', function ($user) {
+            if(($user->id_permission==1 || $user->id_permission==2 || $user->id_permission==3) && $user->ativo=='s'){
+                return Response::allow();
+            }else{
+                return Response::deny('Você deve ser um administrador nivel 3.');
+            }
+        });
         Gate::define('is_admin_logado', function ($user) {
             if(($user->id_permission<=4) && $user->ativo=='s'){
                 return Response::allow();

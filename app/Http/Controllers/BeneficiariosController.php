@@ -12,7 +12,7 @@ use App\Qlib\Qlib;
 use App\Models\User;
 use App\Models\_upload;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Gate;
 
 class BeneficiariosController extends Controller
 {
@@ -473,6 +473,13 @@ class BeneficiariosController extends Controller
                 'class_card1'=>'col-md-8',
                 'class_card2'=>'col-md-4',
             ];
+            $subdomain = Qlib::get_subdominio();
+            if(Gate::allows('is_admin2', [$this->routa]) && $subdomain !='cmd'){
+                $config['eventos'] = (new EventController)->listEventsPost(['post_id'=>$id]);
+            }else{
+                $config['class_card1'] = 'col-md-12';
+                $config['class_card2'] = 'd-none';
+            }
             $ret = [
                 'value'=>$dados[0],
                 'config'=>$config,
@@ -481,7 +488,7 @@ class BeneficiariosController extends Controller
                 'listFiles'=>$listFiles,
                 'campos'=>$campos,
                 'routa'=>$this->routa,
-                'eventos'=>(new EventController)->listEventsPost(['post_id'=>$id]),
+                // 'eventos'=>(new EventController)->listEventsPost(['post_id'=>$id]),
                 'exec'=>true,
             ];
             //REGISTRAR EVENTOS
