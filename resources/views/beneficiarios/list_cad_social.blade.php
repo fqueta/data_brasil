@@ -34,7 +34,7 @@
                             {{$vl['lotes']}}
                         </td>
                         <td class="text-right">
-                            <a href="{{ route('familias.show',$vl['id']) }}?idCad=3203" target="_blank" class="btn btn-default" rel="noopener noreferrer"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                            <a href="{{ route('familias.show',$vl['id']) }}?redirect={{ route('beneficiarios.show',$config['id']) }}" class="btn btn-default" rel="noopener noreferrer"><i class="fa fa-eye" aria-hidden="true"></i></a>
                         </td>
                     </tr>
                     @endforeach
