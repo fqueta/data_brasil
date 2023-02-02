@@ -11,6 +11,9 @@ use App\Http\Requests\StoreBeneficiarioRequestUp;
 use App\Qlib\Qlib;
 use App\Models\User;
 use App\Models\_upload;
+use App\Models\Familia;
+use App\Models\Lote;
+use App\Models\Quadra;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
@@ -52,7 +55,11 @@ class BeneficiariosController extends Controller
         $arr_titulo = false;
         if(isset($get['term'])){
             //Autocomplete
-            $get['filter']['nome'] = $get['term'];
+            if(isset($get['a-campo'])&&!empty(['a-campo'])){
+                $get['filter'][$get['a-campo']] = $get['term'];
+            }else{
+                $get['filter']['nome'] = $get['term'];
+            }
         }
         if(isset($get['filter'])){
                 $titulo_tab = false;
@@ -473,6 +480,43 @@ class BeneficiariosController extends Controller
                 'class_card1'=>'col-md-8',
                 'class_card2'=>'col-md-4',
             ];
+            // listar cadastro social
+            if(isset($dados[0]['id']) && isset($dados[0]['tipo'])){
+                if($dados[0]['tipo']==1){
+                    $cad_social = Familia::where('id_beneficiario',$dados[0]['id'])->get();
+                    if(!$cad_social->isEmpty()){
+                        $config['cad_social'] = $cad_social;
+                    }
+                }
+                if($dados[0]['tipo']==2){
+                    $cad_social = Familia::where('id_conjuge',$dados[0]['id'])->get();
+                    if(!$cad_social->isEmpty()){
+                        $config['cad_social'] = $cad_social;
+                    }
+                }
+                if(isset($config['cad_social'])){
+                    foreach ($config['cad_social'] as $ks => $vs) {
+                        if(!empty($vs['loteamento'])){
+                            $arr_lote = Qlib::lib_json_array($vs['loteamento']);
+                            $lotes = false;
+                            foreach ($arr_lote as $kl => $vl) {
+                                $n_lote = Lote::find($vl);
+                                if(!$n_lote->isDirty()) {
+                                    $lotes .= $n_lote['nome'].',';
+                                }
+                            }
+                            if($lotes){
+                                $config['cad_social'][$ks]['lotes'] = $lotes;
+                            }
+                        }
+                        $n_quadra = Quadra::find($vs['quadra']);
+                        if(!$n_quadra->isDirty()) {
+                            $config['cad_social'][$ks]['n_quadra'] = $n_quadra['nome'];
+                        }
+                    }
+                }
+                // dd($config);
+            }
             $subdomain = Qlib::get_subdominio();
             if(Gate::allows('is_admin2', [$this->routa]) && $subdomain !='cmd'){
                 $config['eventos'] = (new EventController)->listEventsPost(['post_id'=>$id]);

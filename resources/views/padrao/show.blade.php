@@ -27,6 +27,11 @@
                 ])}}
             </div>
         </div>
+        @if (isset($config['route']) && ($r=$config['route']))
+            @if ($r=='beneficiarios')
+                @include('beneficiarios.list_cad_social')
+            @endif
+        @endif
         @include('qlib.show_files')
     </div>
     @if(isset($config['eventos']) && is_object($config['eventos']))

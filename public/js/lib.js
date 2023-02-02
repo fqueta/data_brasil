@@ -2145,3 +2145,21 @@ function checkTodosAnos() {
     window.location=urlAtual;
     $('#preload').show();
 }
+function lib_autocompleteGeral(cl,funCall){
+    var urlAuto = $(cl).attr('url');
+    if(typeof funCall=='undefined'){
+        $( cl ).autocomplete({
+            source: urlAuto,
+            select: function (event, ui) {
+                lib_listarCadastro(ui.item,$(this));
+            },
+        });
+    }else{
+        $( cl ).autocomplete({
+            source: urlAuto,
+            select: function (event, ui) {
+                funCall(ui.item,$(this));
+            },
+        });
+    }
+}

@@ -6,6 +6,7 @@
     'botao_fechar'=>true,
     'tam'=>'modal-lg',
 ]])
+@include('qlib.modal_pesquisa')
 <script src="{{url('/')}}/js/jquery.maskMoney.min.js"></script>
 <script src="{{url('/')}}/js/jquery-ui.min.js"></script>
 <script src="{{url('/')}}/js/jquery.inputmask.bundle.min.js"></script>
@@ -38,13 +39,18 @@
         $(document).on('select2:open', () => {
             document.querySelector('.select2-search__field').focus();
         });
-        var urlAuto = $('.autocomplete').attr('url');
-        $( ".autocomplete" ).autocomplete({
-            source: urlAuto,
-            select: function (event, ui) {
-                //var sec = $(this).attr('sec');
-                lib_listarCadastro(ui.item,$(this));
-            },
+
+        lib_autocompleteGeral('.autocomplete');
+        lib_autocompleteGeral('.autocomplete-pesq',function(ui,el){
+            console.log(ui);
+            try {
+                if(ui.id){
+                    let ur = '/beneficiarios/'+ui.id+'?redirect='+window.location.href;
+                    window.location = ur;
+                }
+            } catch (error) {
+                console.log(error);
+            }
         });
         $('.summernote').summernote({
             height: 250,
@@ -59,5 +65,10 @@
         });
         $('[data-toggle="tooltip"]').tooltip({html:true});
         $('[data-toggle="popover"]').popover({html:true,container: 'body'});
+        $('[data-widget="navbar-search"]').on('click', function(){
+            $('.navbar-search-block').hide();
+            $('#pesquisar').modal('show');
+            // $('[type="button"][data-widget="navbar-search"]').click();
+        });
     });
 </script>
