@@ -44,6 +44,12 @@
             var url = '{{ route('beneficiarios.index')}}'+'?a-campo='+obj.value;
             var inp = document.querySelector(id);
             inp.setAttribute('url',url);
+            if(obj.value=='cpf'){
+                $(classe).inputmask('999.999.999-99');
+            }else{
+                $(classe).inputmask('remove');
+            }
+            $(classe).focus();
         }
         lib_autocompleteGeral(classe,function(ui,el){
             console.log(ui);
@@ -57,8 +63,15 @@
             }
         });
     }
+
     $('[data-dismiss="modal"]').on('click', function(){
         $('.navbar-search-block.navbar-search-open').hide();
     });
+
+    window.onload = function(){
+        $('.autocomplete-pesq').on('click', function(){
+            $(this).val('');
+        });
+    };
 
 </script>
