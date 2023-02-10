@@ -18,11 +18,32 @@
         </div>
         @if (isset($campos) && is_array($campos))
             @foreach ($campos as $k=>$v)
+                @php
+                    if($v['type'] == 'checkbox'){
+                        if(isset($v['cp_busca']) && !empty($v['cp_busca'])){
+                            $arrcp = explode('][', $v['cp_busca']);
+                            if(isset($arrcp[1]) && !empty($arrcp[1])){
+                                //exe $value['config'][$arrcp[1]];
+                                if(isset($value[$arrcp[0]][$arrcp[1]])){
+                                    $value[$k] = $value[$arrcp[0]][$arrcp[1]];
+                                }else{
+                                    $value[$k] = false;
+                                    if($v['arr_opc']){
+                                        $value[$k] = 'n';
+                                    }
+                                }
+                            }
+                        }
+                        if(isset($v['arr_opc'][$value[$k]])){
+                            $v['value'] = $v['arr_opc'][$value[$k]];
+                        }
+                    }
+                @endphp
                 @if ($v['type']=='select_multiple')
-                    @php
+                @php
                         $nk = str_replace('[]','',$k);
                         $value[$k] = isset($value[$nk])?$value[$nk]:false;
-                    @endphp
+                @endphp
                 @endif
 
                 {!! App\Qlib\Qlib::qShow([

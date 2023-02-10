@@ -69,11 +69,14 @@
                 @if ($config['label'])
                     <label for="{{$config['campo']}}">{{$config['label']}}</label>
                 @endif
-                @foreach ($config['arr_opc'] as $k=>$v)
-                <label class="{{ $config['class'] }} @if(isset($config['value']) && $config['value'] == $k) active @endif ">
-                    <input type="radio" name="{{ $config['campo']}}" {{$config['event']}} value="{{$k}}" id="" autocomplete="off" @if(isset($config['value']) && $config['value'] == $k) checked @endif > {{ $v }}
-                </label>
-                @endforeach
+                {{-- {{dd($config)}} --}}
+                @if(is_array($config['arr_opc']))
+                    @foreach ($config['arr_opc'] as $k=>$v)
+                    <label class="{{ $config['class'] }} @if(isset($config['value']) && $config['value'] == $k) active @endif ">
+                        <input type="{{$config['type']}}" name="{{ $config['campo']}}" {{$config['event']}} value="{{$k}}" id="" @if(isset($config['value']) && $config['value'] == $k) checked @endif > {{ $v }}
+                    </label>
+                    @endforeach
+                @endif
             </div>
         </div>
     @elseif ($config['type']=='hidden')
@@ -84,6 +87,36 @@
             <input type="{{$config['type']}}" class="form-control @error($config['campo']) is-invalid @enderror {{$config['class']}}" id="inp-{{$config['campo']}}" name="{{$config['campo']}}" aria-describedby="{{$config['campo']}}" placeholder="{{$config['placeholder']}}" value="@if(isset($config['value'])){{$config['value']}}@elseif($config['ac']=='cad'){{old($config['campo'])}}@endif" {{$config['event']}} />
             @error($config['campo'])
                 <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+        </div>
+    @elseif ($config['type']=='checkbox')
+        {{-- @php
+            $checked = false;
+
+            if(isset($_GET['dados']['config']['nome_municipio']) && $_GET['dados']['config']['nome_municipio'] =='s'){
+                $checked = 'checked';
+            }
+            // if(isset($_GET['config']))
+        @endphp --}}
+        {{-- <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}">
+            <label for="id-{{$config['campo']}}">
+            <input id="id-{{$config['campo']}}" type="{{$config['type']}}" {{$checked}} name="{{$config['campo']}}" value="{{@$config['value']}}" class="">
+            <span class="">{{$config['label']}}</span>
+            </label>
+            @error($config['campo'])
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+        </div> --}}
+        @php
+            // dd($config);
+        @endphp
+        <div class="form-group col-{{$config['col']}}-{{$config['tam']}}">
+            <label for="{{$config['campo']}}">
+                <input type="checkbox" class="{{$config['class']}}" @if(isset($config['checked']) && $config['checked'] == $config['value']) checked @endif  value="{{$config['value']}}"  name="{{$config['campo']}}" id="{{$config['campo']}}">
+                    {{$config['label']}}
+            </label>
+            @error($config['campo'])
+            <div class="alert alert-danger">{{ $message }}</div>
             @enderror
         </div>
     @elseif ($config['type']=='hidden_text')

@@ -28,6 +28,9 @@
                             if(empty($value[$k]))
                                 $value[$k] = @$value[$cf[0]][$cf[1]];
                         }
+                        if($v['type']=='checkbox'){
+                            // dd($value);
+                        }
                     @endphp
                 @endif
                 @if ($v['type']=='select_multiple')

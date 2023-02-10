@@ -200,7 +200,7 @@ class LotesController extends Controller
             'config[area_lote]'=>['label'=>'Área quadrada(m²)','active'=>false,'js'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-none','event'=>'','tam'=>'6','class'=>'','cp_busca'=>'config][area_lote'],
             'config[area_construcao]'=>['label'=>'Área construção(m²)','active'=>false,'js'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-none','event'=>'','tam'=>'6','class'=>'','cp_busca'=>'config][area_construcao'],
             //'config[registro]'=>['label'=>'Registro','active'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','cp_busca'=>'config][registro'],
-            //'config[livro]'=>['label'=>'Livro','active'=>true,'placeholder'=>'','type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','cp_busca'=>'config][livro'],
+            'config[nome_municipio]'=>['label'=>'Cadastro em nome do município','active'=>true,'placeholder'=>'','type'=>'checkbox','exibe_busca'=>'d-block','event'=>'','tam'=>'12','cp_busca'=>'config][nome_municipio','valor_padrao'=>'n','arr_opc'=>['s'=>'Sim','n'=>'Não'],'value'=>'s'],
             'obs'=>['label'=>'Observação','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             'ocupantes'=>['label'=>'lista de Ocupantes','active'=>false,'type'=>'html','exibe_busca'=>'d-none','event'=>'','tam'=>'12','script'=>'lotes.lista_ocupantes','script_show'=>'lotes.show_ocupantes','arr_opc'=>$arr_opc_ocupantes],

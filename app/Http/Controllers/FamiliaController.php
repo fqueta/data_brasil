@@ -467,9 +467,9 @@ class FamiliaController extends Controller
         $lote = new LotesController($user);
         $data = $dados?$dados:false;
         if(isset($data['bairro'])){
-            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$data['bairro']."' AND ".Qlib::compleDelete(),'nome','id');
+            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$data['bairro']."' AND ".Qlib::compleDelete()." ORDER BY nome ASC",'nome','id');
         }else{
-            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s'",'nome','id');
+            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' ORDER BY nome ASC",'nome','id');
         }
         $ret = [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],

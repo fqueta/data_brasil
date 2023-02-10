@@ -1823,7 +1823,7 @@ function carregaQuadras(val,selQuadra){
         return
     }
     getAjax({
-        url:'/quadras?ajax=s&filter[bairro]='+val+'&campo_order=id&order=ASC',
+        url:'/quadras?ajax=s&filter[bairro]='+val+'&campo_order=nome&order=ASC',
     },function(res){
         $('#preload').fadeOut("fast");
         var option_select = '<option value="{value}" class="opcs">{label}</option>';
