@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\URL;
 use App\Exports\UsersExport;
 use App\Http\Controllers\admin\EventController;
 use App\Models\Bairro;
+use App\Models\Beneficiario;
 use App\Models\Etapa;
 use App\Models\Tag;
 use DataTables;
@@ -697,53 +698,8 @@ class FamiliaController extends Controller
             ],
             'config[registro]'=>['label'=>'Registro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][registro'],
             'config[livro]'=>['label'=>'Livro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][livro'],
-            //'lote'=>['label'=>'Lote*','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            //'nome_completo'=>['label'=>'Proprietário','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            //'cpf'=>['label'=>'CPF proprietário','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            //'nome_conjuge'=>['label'=>'Nome do Cônjuge','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            //'cpf_conjuge'=>['label'=>'CPF do Cônjuge','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
-            //'telefone'=>['label'=>'Telefone','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'onblur=mask(this,clientes_mascaraTelefone); onkeypress=mask(this,clientes_mascaraTelefone);'],
-            //'config[telefone2]'=>['label'=>'Telefone2','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'onblur=mask(this,clientes_mascaraTelefone); onkeypress=mask(this,clientes_mascaraTelefone);','cp_busca'=>'config][telefone2'],
-            /*
-            'escolaridade'=>[
-                'label'=>'Escolaridade',
-                'active'=>true,
-                'type'=>'selector',
-                'data_selector'=>[
-                    'campos'=>$escolaridade->campos(),
-                    'route_index'=>route('escolaridades.index'),
-                    'id_form'=>'frm-escolaridades',
-                    'action'=>route('escolaridades.store'),
-                    'campo_id'=>'id',
-                    'campo_bus'=>'nome',
-                    'label'=>'Escolaridade',
-                ],
-                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM escolaridades WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
-                'tam'=>'3',
-                'class'=>'select2',
-            ],
-            'estado_civil'=>[
-                'label'=>'Estado Civil',
-                'active'=>true,
-                'type'=>'selector',
-                'data_selector'=>[
-                    'campos'=>$estadocivil->campos(),
-                    'route_index'=>route('estado-civil.index'),
-                    'id_form'=>'frm-estado-civil',
-                    'action'=>route('estado-civil.store'),
-                    'campo_id'=>'id',
-                    'campo_bus'=>'nome',
-                    'label'=>'Estado Civil',
-                ],
-                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM estadocivils WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
-                'tam'=>'3',
-                'class'=>'select2',
-            ],*/
-            //'situacao_profissional'=>['label'=>'Situação Profissional','type'=>'text','active'=>true,'exibe_busca'=>'d-block','event'=>'','tam'=>'4'],
             'bcp_bolsa_familia'=>['label'=>'BPC ou Bolsa Família','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
-            'renda_familiar'=>['label'=>'Renda Fam.','active'=>true,'type'=>'moeda','exibe_busca'=>'d-block','event'=>'','tam'=>'3','class'=>''],
+            'renda_familiar'=>['label'=>'Renda Fam.','active'=>true,'type'=>'moeda','exibe_busca'=>'d-block','event'=>'disabled','tam'=>'3','class'=>''],
             'doc_imovel'=>['label'=>'Doc Imóvel','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
             'qtd_membros'=>['label'=>'Membros','active'=>true,'type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
             'membros'=>['label'=>'lista de Membros','active'=>false,'type'=>'html','exibe_busca'=>'d-none','event'=>'','tam'=>'12','script'=>'familias.lista_membros','script_show'=>'familias.show_membros'],
@@ -1047,7 +1003,7 @@ class FamiliaController extends Controller
         $data['config']['atualizado_por'] = $userLogadon;
         $data['tags'] = isset($data['tags'])?$data['tags']:false;
         if(!empty($data)){
-            //dd($data);
+            //Salvar renda familiar calculada
             $atualizar=Familia::where('id',$id)->update($data);
             $route = 'familias.index';
             $data['id_familia'] = $id;
@@ -1059,8 +1015,16 @@ class FamiliaController extends Controller
                 'idCad'=>$id,
                 'return'=>$route,
                 'salvarQuadra'=>$this->salvarQuadra($data),
+                'data'=>$data,
             ];
             if($atualizar){
+                $rf = $this->rendaFamiliar($data['id']);
+                if(isset($rf['renda_familiar'])){
+                    $atr['renda_familiar'] = $rf['renda_familiar'];
+                    $ret['atualizar_renda']=Familia::where('id',$id)->update($atr);
+
+                }
+
                 //REGISTRAR EVENTOS
                 (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
             }
@@ -1169,5 +1133,50 @@ class FamiliaController extends Controller
             }
         }
         return response()->json($ret);
+    }
+    public function rendaFamiliar($id=false) {
+        $rf = 0;    //renda Familiar
+        $rdp = 0;   //renda do proprietário..
+        $rdc = 0;   //renda do conjuge..
+        $d = Familia::where('familias.id','=',$id)
+        ->Join('beneficiarios','familias.id_beneficiario','=','beneficiarios.id')
+        ->select('familias.renda_familiar','familias.membros','familias.id_conjuge','beneficiarios.config')->get();
+        if($d->count()){
+            $confProp = Qlib::lib_json_array($d[0]['config']);
+            if(isset($confProp['renda'])){
+                $rd = str_replace('R$','',$confProp['renda']);
+                $rdp = Qlib::precoBanco($rd,2,'.',''); //renda do proprietário..
+                if(isset($d[0]['id_conjuge']) && !empty($d[0]['id_conjuge'])){
+                    $dc = Beneficiario::FindOrFail($d[0]['id_conjuge']);
+                    if($dc->count()){
+                        $confCon = Qlib::lib_json_array($dc['config']);
+                        if(isset($confCon['renda']) && !empty($confCon['renda'])){
+                            $rd = str_replace('R$','',$confCon['renda']);
+                            $rdc = Qlib::precoBanco($rd,2,'.',''); //renda do conjuge..
+                        }
+                    }
+                }
+                $rf = $rdp+$rdc;
+            }
+            $ret['renda_proprietario'] = $rdp;
+            $ret['renda_conjuge'] = $rdc;
+            $ret['renda_familiar'] = $rf;
+
+            if(isset($d[0]['membros']) && !empty($d[0]['membros'])){
+                $m = Qlib::lib_json_array($d[0]['membros']);
+                if(is_array($m)){
+                    foreach($m as $k=>$dmemb){
+                        $rd = str_replace('R$','',$dmemb['renda']);
+                        $rdm = Qlib::precoBanco($rd,2,'.',''); //renda do Membro..
+                        $rf += $rdm;
+                        $ret['renda_membros'][$k] = $rdm;
+                    }
+                }
+            }
+            $ret['renda_familiar'] = $rf;
+
+        }
+
+        return $ret;
     }
 }

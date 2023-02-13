@@ -89,6 +89,11 @@ class Qlib
         if($data){
            $val = trim(strlen($data));
 			$data = trim($data);$rs = false;
+            $agulha   = '/';
+            $pos = strpos( $data, $agulha );
+            if ($pos != false) {
+                return $data;
+            }
 			if($val == 10){
 					$arr_data = explode("-",$data);
 					$data_banco = @$arr_data[2]."/".@$arr_data[1]."/".@$arr_data[0];
@@ -128,7 +133,7 @@ class Qlib
                 $preco_venda1 = str_replace(".", "", $preco);
                 $preco_venda1 = str_replace(",", ".", $preco_venda1);
             }
-            return $preco_venda1;
+            return (Double)$preco_venda1;
     }
     static function isJson($string) {
 		$ret=false;

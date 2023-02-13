@@ -35,7 +35,7 @@
         @include('qlib.show_files')
     </div>
     @if(isset($config['eventos']) && is_object($config['eventos']))
-    <div class="{{$config['class_card2']}} mt-0 mb-5">
+    <div class="{{$config['class_card2']}} mt-0 mb-5 d-print-none">
         @include('qlib.eventos.lista_eventos',['eventos'=>$config['eventos']])
     </div>
     @endif

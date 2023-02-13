@@ -185,7 +185,7 @@
                                         <div class="row" id="tr-{{@$config['data_selector']['list']['id']}}">
                                             @foreach ($config['data_selector']['campos'] as $kb=>$vb)
 
-                                                @if ($vb['type']=='text' || $vb['type']=='date' || $vb['type']=='tel' || $vb['type']=='number')
+                                                @if ($vb['type']=='text' || $vb['type']=='date' || $vb['type']=='tel' || $vb['type']=='number' || $vb['type']=='moeda')
                                                     @php
                                                         if(isset($vb['cp_busca']) && !empty($vb['cp_busca']))
                                                         {
@@ -294,7 +294,17 @@
     @elseif($config['type']=='moeda')
     <div class="col-{{$config['tam']}}" div-id="{{$config['campo']}}">
         <label for="{{$config['campo']}}">{{$config['label']}}:</label>
-        R$ {{ number_format(@(double)$config['value'],2,',','.') }}
+        @php
+            if(!empty($config['value'])){
+                    $sigla   = 'R$';
+                    $value = $config['value'];
+                    $pos = strpos( $value, $sigla );
+                    if ($pos === false) {
+                        $value = 'R$'.number_format((double)$config['value'],2,',','.');
+                    }
+            }
+            echo $value;
+        @endphp
     </div>
     @elseif($config['type']=='date')
     <div class="col-{{$config['tam']}}" div-id="{{$config['campo']}}">

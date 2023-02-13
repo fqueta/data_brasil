@@ -90,27 +90,7 @@
             @enderror
         </div>
     @elseif ($config['type']=='checkbox')
-        {{-- @php
-            $checked = false;
-
-            if(isset($_GET['dados']['config']['nome_municipio']) && $_GET['dados']['config']['nome_municipio'] =='s'){
-                $checked = 'checked';
-            }
-            // if(isset($_GET['config']))
-        @endphp --}}
-        {{-- <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}">
-            <label for="id-{{$config['campo']}}">
-            <input id="id-{{$config['campo']}}" type="{{$config['type']}}" {{$checked}} name="{{$config['campo']}}" value="{{@$config['value']}}" class="">
-            <span class="">{{$config['label']}}</span>
-            </label>
-            @error($config['campo'])
-                <div class="alert alert-danger">{{ $message }}</div>
-            @enderror
-        </div> --}}
-        @php
-            // dd($config);
-        @endphp
-        <div class="form-group col-{{$config['col']}}-{{$config['tam']}}">
+            <div class="form-group col-{{$config['col']}}-{{$config['tam']}}">
             <label for="{{$config['campo']}}">
                 <input type="checkbox" class="{{$config['class']}}" @if(isset($config['checked']) && $config['checked'] == $config['value']) checked @endif  value="{{$config['value']}}"  name="{{$config['campo']}}" id="{{$config['campo']}}">
                     {{$config['label']}}
@@ -289,8 +269,15 @@
             @endif
             @php
                 $class = 'moeda '.$config['class'];
-                if(!empty($config['value']))
-                $value = 'R$'.number_format((double)$config['value'],2,',','.');
+                // dd($config);
+                if(!empty($config['value'])){
+                    $sigla   = 'R$';
+                    $value = $config['value'];
+                    $pos = strpos( $value, $sigla );
+                    if ($pos === false) {
+                        $value = 'R$'.number_format((double)$config['value'],2,',','.');
+                    }
+                }
             @endphp
             <input type="text" class="form-control @error($config['campo']) is-invalid @enderror {{$class}}" id="inp-{{$config['campo']}}" name="{{$config['campo']}}" aria-describedby="{{$config['campo']}}" placeholder="{{$config['placeholder']}}" value="@if(isset($value)){{$value}}@elseif($config['ac']=='cad'){{old($config['campo'])}}@endif" {{$config['event']}} />
             @error($config['campo'])

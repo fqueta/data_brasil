@@ -20,10 +20,10 @@ class TesteController extends Controller
     public function index()
     {
 
-        return false;
+        // return false;
         $user = Auth::user();
-            echo Qlib::get_subdominio();
-        $dados = (new UserController())->index();
+        //     echo Qlib::get_subdominio();
+        $dados = (new FamiliaController($user))->rendaFamiliar(3145);
         dd($dados);
             // $host = request()->getHttpHost();
         // echo $host ."<br/>";
