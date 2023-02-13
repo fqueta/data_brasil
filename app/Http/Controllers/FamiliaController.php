@@ -781,7 +781,7 @@ class FamiliaController extends Controller
         }
         $dados['idoso'] = isset($dados['idoso'])?$dados['idoso']:'n';
         $dados['crianca_adolescente'] = isset($dados['crianca_adolescente'])?$dados['crianca_adolescente']:'n';
-        $dados['renda_familiar'] = $dados['renda_familiar']?$dados['renda_familiar']:'0,00';
+        $dados['renda_familiar'] = isset($dados['renda_familiar'])?$dados['renda_familiar']:'0,00';
         $dados['autor'] = $userLogadon;
         $dados['token'] = uniqid();
         $renda_familiar = str_replace('R$','',$dados['renda_familiar']);
