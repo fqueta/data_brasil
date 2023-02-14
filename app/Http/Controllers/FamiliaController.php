@@ -789,6 +789,13 @@ class FamiliaController extends Controller
         $salvar = Familia::create($dados);
         $route = $this->routa.'.index';
         $dados['id_familia'] = $salvar->id;
+        if(isset($salvar->id)){
+            $rf = $this->rendaFamiliar($salvar->id);
+                if(isset($rf['renda_familiar'])){
+                    $atr['renda_familiar'] = $rf['renda_familiar'];
+                    $ret['atualizar_renda']=Familia::where('id',$salvar->id)->update($atr);
+                }
+        }
         //REGISTRAR EVENTOS
         (new EventController)->listarEvent(['tab'=>$this->tab,'id'=>$salvar->id,'this'=>$this]);
 
@@ -868,6 +875,7 @@ class FamiliaController extends Controller
             // $config['class_card2'] = 'd-none';
             //REGISTRAR EVENTOS
             (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
+
             if(!$dados['matricula'])
                 $config['display_matricula'] = 'd-none';
             if(isset($dados['config']) && is_array($dados['config'])){
@@ -899,6 +907,17 @@ class FamiliaController extends Controller
                 // 'eventos'=>(new EventController)->listEventsPost(['post_id'=>$id]),
                 'exec'=>true,
             ];
+            //Veririca se a renda está atualizada
+            if(isset($dados['renda_familiar']) && $dados['renda_familiar']==0 && isset($dados['id'])){
+                $rf = $this->rendaFamiliar($dados['id']);
+                if(isset($rf['renda_familiar'])){
+                    $atr['renda_familiar'] = $rf['renda_familiar'];
+                    $ret['atualizar_renda']=Familia::where('id',$id)->update($atr);
+                    if($ret['atualizar_renda']){
+                        $ret['value']['renda_familiar'] = $rf['renda_familiar'];
+                    }
+                }
+            }
             return view('padrao.show',$ret);
         }else{
             $ret = [

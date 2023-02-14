@@ -878,6 +878,11 @@ class LotesController extends Controller
             $familia = $this->ocupantes($id_lote);
             $dLote = Lote::FindOrFail($id_lote);
             if($familia && $dLote){
+                $dLotConf = Qlib::lib_json_array(@$dLote['config']);
+                if(isset($dLotConf['nome_municipio']) && $dLotConf['nome_municipio']=='s'){
+                    $ret = $this->loteSemBeneficiario($id_lote,$dLote);
+                    return $ret;
+                }
                 $tema = Documento::where('url','lista-beneficiario')->where('excluido','n')->where('deletado','n')->get();
                 $tema2 = Documento::where('url','lista-beneficiario-2')->where('excluido','n')->where('deletado','n')->get();
                 $tema3 = Documento::where('url','lista-beneficiario-3')->where('excluido','n')->where('deletado','n')->get();
