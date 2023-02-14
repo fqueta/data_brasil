@@ -295,6 +295,7 @@
     <div class="col-{{$config['tam']}}" div-id="{{$config['campo']}}">
         <label for="{{$config['campo']}}">{{$config['label']}}:</label>
         @php
+            $value = 0;
             if(!empty($config['value'])){
                     $sigla   = 'R$';
                     $value = $config['value'];
