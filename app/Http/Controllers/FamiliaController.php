@@ -1162,21 +1162,23 @@ class FamiliaController extends Controller
         ->select('familias.renda_familiar','familias.membros','familias.id_conjuge','beneficiarios.config')->get();
         if($d->count()){
             $confProp = Qlib::lib_json_array($d[0]['config']);
+            $rdp = 0;
+            $rdc = 0;
             if(isset($confProp['renda'])){
                 $rd = str_replace('R$','',$confProp['renda']);
                 $rdp = Qlib::precoBanco($rd,2,'.',''); //renda do proprietário..
-                if(isset($d[0]['id_conjuge']) && !empty($d[0]['id_conjuge'])){
-                    $dc = Beneficiario::FindOrFail($d[0]['id_conjuge']);
-                    if($dc->count()){
-                        $confCon = Qlib::lib_json_array($dc['config']);
-                        if(isset($confCon['renda']) && !empty($confCon['renda'])){
-                            $rd = str_replace('R$','',$confCon['renda']);
-                            $rdc = Qlib::precoBanco($rd,2,'.',''); //renda do conjuge..
-                        }
+            }
+            if(isset($d[0]['id_conjuge']) && !empty($d[0]['id_conjuge'])){
+                $dc = Beneficiario::FindOrFail($d[0]['id_conjuge']);
+                if($dc->count()){
+                    $confCon = Qlib::lib_json_array($dc['config']);
+                    if(isset($confCon['renda']) && !empty($confCon['renda'])){
+                        $rd = str_replace('R$','',$confCon['renda']);
+                        $rdc = Qlib::precoBanco($rd,2,'.',''); //renda do conjuge..
                     }
                 }
-                $rf = $rdp+$rdc;
             }
+            $rf = $rdp+$rdc;
             $ret['renda_proprietario'] = $rdp;
             $ret['renda_conjuge'] = $rdc;
             $ret['renda_familiar'] = $rf;
