@@ -515,6 +515,18 @@ class FamiliaController extends Controller
                 'exibe_busca'=>true,
                 'option_select'=>false,
             ],
+            'config[func_autor]'=>[
+                'label'=>'Quem realizou o cadastro',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT id,name FROM users WHERE ativo='s' AND id_permission>'1'",'name','id'),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'12',
+                'exibe_busca'=>true,
+                'option_select'=>true,
+                'cp_busca'=>'config][func_autor',
+                'class'=>'select2',
+            ],
             'tags[]'=>[
                 'label'=>'Situação',
                 'active'=>true,
