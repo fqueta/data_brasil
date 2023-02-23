@@ -91,8 +91,8 @@
                 <div class="card-body text-light text-center p-2">
                     <h6 class="border-bottom border-secondary pb-2">{{@$config['dados']['arr_bairros'][$config['dados']['bairro']]}}</h6>
                     <p><b>{{__('Quadra')}}:</b> {{$config['dados']['nome']}}</p>
-                    <p><b>{{__('Total de lotes')}}:</b> <span class="total-lotes">{{@$config['dados']['lotes']}}</span></p>
-                    <p><b>{{__('Total de famílias')}}:</b> <span class="total-familias">{{@$config['dados']['familias']}}</span></p>
+                    <p><b>{{__('Total de lotes')}}:</b> <span class="total-lotes-">{{@$config['dados']['lotes']}}</span></p>
+                    <p><b>{{__('Total de famílias')}}:</b> <span class="total-familias-">{{@$config['dados']['familias']}}</span></p>
                 </div>
             </div>
             <!--include('mapas.'.$config['local'].'.'.$config['dados']['id'])-->

@@ -2014,7 +2014,7 @@ function lib_infoMaps(config){
         let redirect = '?redirect=/mapas/'+config.local+'/'+config.quadra;
         let redirect2 = '&redirect=/mapas/'+config.local+'/'+config.quadra;
         if(dl=config.res[0].dados){
-            let link_lote = '/lotes/'+dl.id+'/edit'+redirect;
+            let link_lote = '/lotes/'+dl.id+''+redirect;
             if(fam=dl.familias){
                 let cont = '';
                 if(fam[0]){
