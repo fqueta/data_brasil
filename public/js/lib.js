@@ -1844,7 +1844,7 @@ function carregaQuadras(val,selQuadra){
         }
     });
     $.ajax({
-        url:'/quadras?ajax=s&filter[bairro]=1',
+        url:'/quadras?ajax=s&filter[bairro]=1&campo_order=nome&order=ASC',
         type:'GET',
         success:'GET',
     });

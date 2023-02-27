@@ -45,7 +45,7 @@ class MapasController extends Controller
                     $dados['lotes'] = Qlib::totalReg('lotes',"WHERE quadra='".$dados['id']."' AND ".Qlib::compleDelete());
                     $dados['familias'] = Qlib::totalReg('familias',"WHERE quadra='".$dados['id']."' AND ".Qlib::compleDelete());
                     $dados['arr_bairros'] = Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s' AND ".Qlib::compleDelete(),'nome','id');
-                    $dados['arr_quadras'] = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$dados['bairro']."' AND ".Qlib::compleDelete(),'nome','id');
+                    $dados['arr_quadras'] = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$dados['bairro']."' AND ".Qlib::compleDelete()." ORDER BY nome ASC",'nome','id');
                     if(isset($file[0]['pasta']) && $file[0]['pasta'] && $arr_confile['extenssao']=='svg'){
                         $config = [
                             'dados'=>$dados,
