@@ -22,13 +22,14 @@ class EventController extends Controller
      */
     protected $user;
     public $label;
+    public $routa;
     public $view;
     public $tab;
     public function __construct()
     {
         $this->middleware('auth');
         $this->user = Auth::user();
-        $this->routa = request()->route()->getName();
+        // $this->routa = request()->route()->getName();
         $this->label = 'Relatorios';
         $this->view = 'padrao';
         $this->tab = 'events';

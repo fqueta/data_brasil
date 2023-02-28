@@ -181,6 +181,9 @@ Route::resource('permissions','\App\Http\Controllers\admin\UserPermissions',['pa
 Route::resource('decretos','\App\Http\Controllers\admin\PostController',['parameters' => [
     'decretos' => 'id'
 ]]);
+Route::resource('processos','\App\Http\Controllers\admin\PostController',['parameters' => [
+    'processos' => 'id'
+]]);
 
 
 Auth::routes();

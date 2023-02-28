@@ -53,10 +53,10 @@ class MenuSeeder extends Seeder
             ],
             [
                 'categoria'=>'JURÍDICO',
-                'description'=>'Processo Jurídico',
+                'description'=>'Departamento Jurídico',
                 'icon'=>'fas fa-gavel',
                 'actived'=>true,
-                'url'=>'processo-juridico',
+                'url'=>'departamento-juridico',
                 'route'=>'',
                 'pai'=>''
             ],
@@ -67,7 +67,16 @@ class MenuSeeder extends Seeder
                 'actived'=>true,
                 'url'=>'decretos',
                 'route'=>'decretos.index',
-                'pai'=>'processo-juridico'
+                'pai'=>'departamento-juridico'
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Processos Jurídico',
+                'icon'=>'fas fa-file',
+                'actived'=>true,
+                'url'=>'processos',
+                'route'=>'processos.index',
+                'pai'=>'departamento-juridico'
             ],
             [
                 'categoria'=>'',

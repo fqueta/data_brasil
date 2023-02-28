@@ -1169,6 +1169,7 @@ class FamiliaController extends Controller
         $rf = 0;    //renda Familiar
         $rdp = 0;   //renda do proprietário..
         $rdc = 0;   //renda do conjuge..
+        $ret = false;
         $d = Familia::where('familias.id','=',$id)
         ->Join('beneficiarios','familias.id_beneficiario','=','beneficiarios.id')
         ->select('familias.renda_familiar','familias.membros','familias.id_conjuge','beneficiarios.config')->get();

@@ -145,8 +145,7 @@ class PostController extends Controller
         ];
         return $ret;
     }
-    public function campos($sec=false){
-        $sec = $sec?$sec:$this->sec;
+    public function campos_precessos($sec=false){
         $hidden_editor = '';
         if(Qlib::qoption('editor_padrao')=='laraberg'){
             $hidden_editor = 'hidden';
@@ -155,15 +154,81 @@ class PostController extends Controller
             'ID'=>['label'=>'Id','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'post_type'=>['label'=>'tipo de post','active'=>false,'type'=>'hidden','exibe_busca'=>'d-none','event'=>'','tam'=>'2','value'=>$this->post_type],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            'config[numero]'=>['label'=>'Numero','active'=>true,'placeholder'=>'','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'2','cp_busca'=>'config][numero'],
-            'post_date_gmt'=>['label'=>'Data do decreto','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
-            'post_title'=>['label'=>'Título','active'=>true,'placeholder'=>'Ex.: Título do decreto','type'=>'text','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'7'],
+            'config[ano_base]'=>[
+                'label'=>'Ano Base',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT id,name FROM users WHERE ativo='s' AND id_permission>'1'",'name','id'),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'2',
+                'exibe_busca'=>true,
+                'option_select'=>true,
+                'cp_busca'=>'config][ano_base',
+                'class'=>'select2',
+            ],
+            'post_date_gmt'=>['label'=>'Data de entrega','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'config[numero_oficio]'=>['label'=>'N° Ofício','active'=>true,'placeholder'=>'','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'2','cp_busca'=>'config][numero_oficio'],
+            'post_title'=>['label'=>'Título','active'=>true,'placeholder'=>'Ex.: Título do processo','type'=>'text','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'7'],
             'post_name'=>['label'=>'Slug','active'=>false,'placeholder'=>'Ex.: nome-do-post','type'=>'hidden','exibe_busca'=>'d-block','event'=>'type_slug=true','tam'=>'12'],
             //'post_excerpt'=>['label'=>'Resumo (Opcional)','active'=>true,'placeholder'=>'Uma síntese do um post','type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             //'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             'post_status'=>['label'=>'Status','active'=>true,'type'=>'chave_checkbox','value'=>'publish','valor_padrao'=>'publish','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['publish'=>'Em vigor','pending'=>'Cancelado']],
             'post_content'=>['label'=>'Conteudo','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
         ];
+        return $ret;
+    }
+    public function campos($sec=false){
+        $sec = $sec?$sec:$this->sec;
+        $hidden_editor = '';
+        if(Qlib::qoption('editor_padrao')=='laraberg'){
+            $hidden_editor = 'hidden';
+        }
+        if($this->post_type=='processo'){
+            $ret = $this->campos_precessos();
+        }elseif($this->post_type=='menu'){
+            $ret = $this->campos_menus();
+        }else{
+            $ret = [
+                'ID'=>['label'=>'Id','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+                'post_type'=>['label'=>'tipo de post','active'=>false,'type'=>'hidden','exibe_busca'=>'d-none','event'=>'','tam'=>'2','value'=>$this->post_type],
+                'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+                'config[numero]'=>['label'=>'Numero','active'=>true,'placeholder'=>'','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'2','cp_busca'=>'config][numero'],
+                'post_date_gmt'=>['label'=>'Data do decreto','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+                'post_title'=>['label'=>'Título','active'=>true,'placeholder'=>'Ex.: Título do decreto','type'=>'text','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'7'],
+                'post_name'=>['label'=>'Slug','active'=>false,'placeholder'=>'Ex.: nome-do-post','type'=>'hidden','exibe_busca'=>'d-block','event'=>'type_slug=true','tam'=>'12'],
+                //'post_excerpt'=>['label'=>'Resumo (Opcional)','active'=>true,'placeholder'=>'Uma síntese do um post','type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
+                //'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+                'post_status'=>['label'=>'Status','active'=>true,'type'=>'chave_checkbox','value'=>'publish','valor_padrao'=>'publish','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['publish'=>'Em vigor','pending'=>'Cancelado']],
+                'post_content'=>['label'=>'Conteudo','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
+            ];
+        }
+        return $ret;
+    }
+    public function selectType($sec=false)
+    {
+        $ret['exec']=false;
+        $ret['title']=false;
+        $title = false;
+        if($sec){
+            $name = request()->route()->getName();
+            if($sec=='posts'){
+                $title = __('Cadastro de postagens');
+            }elseif($sec=='decretos'){
+                $title = __('Cadastro de Decretos');
+                if($name=='decretos.edit'){
+                    $title = __('Editar Cadastro de Decretos');
+                }
+            }elseif($sec=='processos'){
+                $title = __('Cadastro de processos');
+            }elseif($sec=='menus'){
+                $title = __('Cadastro de menus');
+            }elseif($sec=='pacotes_lances'){
+                $title = __('Cadastro de pacotes');
+            }else{
+                $title = __('Sem titulo');
+            }
+        }
+        $ret['title'] = $title;
         return $ret;
     }
     public function index(User $user)
@@ -207,13 +272,10 @@ class PostController extends Controller
     public function create(User $user)
     {
         $this->authorize('is_admin2', $user);
-        if($this->sec=='posts'){
-            $title = 'Cadastro de postagens';
-        }elseif($this->sec=='decretos'){
-            $title = 'Cadastro de decreto';
-        }elseif($this->sec=='pages'){
-            $title = 'Cadastro de paginas';
-        }
+        //Selecionar o tipo de postagem
+
+        $selTypes = $this->selectType($this->sec);
+        $title = $selTypes['title'];
         $titulo = $title;
         $config = [
             'ac'=>'cad',
