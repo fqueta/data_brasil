@@ -56,7 +56,17 @@ class QoptionSeeder extends Seeder
                     {"label":"escritura pública de cessão de direitos hereditários"},
                     {"label":"Invasão"}
                 ]',
-            ]
+            ],
+            [
+                'nome'=>'Opção sim ou não json ',
+                'url'=>'json_sim_nao',
+                'valor'=>'{"s":"Sim","n":"Não"}',
+            ],
+            [
+                'nome'=>'Opção Não ou são json ',
+                'url'=>'json_nao_sim',
+                'valor'=>'{"n":"Não","s":"Sim"}',
+            ],
         ]);
     }
 }

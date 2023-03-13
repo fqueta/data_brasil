@@ -59,7 +59,7 @@
                     $val->id = $val->ID;
                 }
                 $rlink = 'edit';
-                if($routa=='familias'||$routa=='decretos'||$routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros'){
+                if($routa=='familias'||$routa=='decretos'||$routa=='processos'||$routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros'){
                     $rlink = 'show';
                 }
                 $linkShow = route($routa.'.'.$rlink,['id'=>$val->id]). '?redirect='.$redirect.'idCad='.$val->id;
@@ -77,7 +77,7 @@
                                     <i class="fa fa-map-marker" aria-hidden="true"></i>
                                 </a>
                             @endif
-                            @if ($routa=='familias' || $routa=='decretos' || $routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros')
+                            @if ($routa=='familias' || $routa=='decretos' || $routa=='processos' || $routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros')
                                 <a href="{{ $linkShow }}" title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
                                     <i class="fas fa-eye"></i>
                                 </a>
@@ -94,8 +94,8 @@
                                     <i class="fas fa-eye"></i>
                                 </a>
                             @else
-                                <a href=" {{ route($routa.'.edit',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " class="btn btn-sm btn-outline-primary mr-2" title="Visualizar">
-                                    <i class="fas fa-search"></i>
+                                <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " class="btn btn-sm btn-outline-primary mr-2" title="Visualizar">
+                                    <i class="fas fa-eye"></i>
                                 </a>
                             @endif
 
@@ -117,7 +117,16 @@
                     @foreach ($campos_tabela as $kd=>$vd)
                         @if (isset($vd['label']) && $vd['active'])
                             @if (isset($vd['type']) && ($vd['type']=='select' || $vd['type']=='selector'))
-                                <td class="{{str_replace('[]','',$kd)}}" title="{{@$vd['arr_opc'][$val->$kd]}}">{{@$vd['arr_opc'][$val->$kd]}}</td>
+                                @php
+                                    if(isset($vd['cp_busca']) && !empty($vd['cp_busca'])){
+                                        $cp = explode('][',$vd['cp_busca']);
+                                        $kr = @$val[$cp[0]][$cp[1]];
+                                        $td = @$vd['arr_opc'][$kr];
+                                    }else{
+                                        $td = @$vd['arr_opc'][$val->$kd];
+                                    }
+                                @endphp
+                                <td class="{{str_replace('[]','',$kd)}}" title="{{@$vd['arr_opc'][$val->$kd]}}">{{$td}}</td>
                             @elseif (isset($vd['type']) && ($vd['type']=='select_multiple'))
                                 @php
                                     $nk = str_replace('[]','',$kd);

@@ -53,30 +53,57 @@ class MenuSeeder extends Seeder
             ],
             [
                 'categoria'=>'JURÍDICO',
-                'description'=>'Departamento Jurídico',
+                'description'=>'Decretos Municipais',
                 'icon'=>'fas fa-gavel',
                 'actived'=>true,
-                'url'=>'departamento-juridico',
+                'url'=>'decretos',
+                'route'=>'decretos.index',
+                'pai'=>''
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Processos',
+                'icon'=>'fas fa-file',
+                'actived'=>true,
+                'url'=>'processos',
                 'route'=>'',
                 'pai'=>''
             ],
             [
                 'categoria'=>'',
-                'description'=>'Decretos Municipais',
-                'icon'=>'fas fa-file',
-                'actived'=>true,
-                'url'=>'decretos',
-                'route'=>'decretos.index',
-                'pai'=>'departamento-juridico'
-            ],
-            [
-                'categoria'=>'',
-                'description'=>'Processos Jurídico',
-                'icon'=>'fas fa-file',
+                'description'=>'Todos',
+                'icon'=>'fas fa-list',
                 'actived'=>true,
                 'url'=>'processos',
                 'route'=>'processos.index',
-                'pai'=>'departamento-juridico'
+                'pai'=>'processos'
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Processos em campo',
+                'icon'=>'fas fa-list',
+                'actived'=>true,
+                'url'=>'processos-campo',
+                'route'=>'processos-campo.index',
+                'pai'=>'processos'
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Processos na prefeitura',
+                'icon'=>'fas fa-list',
+                'actived'=>true,
+                'url'=>'processos-prefeitura',
+                'route'=>'processos-prefeitura.index',
+                'pai'=>'processos'
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Processos em cartorio',
+                'icon'=>'fas fa-list',
+                'actived'=>true,
+                'url'=>'processos-cartorio',
+                'route'=>'processos-cartorio.index',
+                'pai'=>'processos'
             ],
             [
                 'categoria'=>'',

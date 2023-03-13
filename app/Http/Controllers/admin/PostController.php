@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Http\Controllers\BairroController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LotesController;
+use App\Http\Controllers\QuadrasController;
 use App\Http\Controllers\wp\ApiWpController;
 use App\Http\Requests\StorePostRequest;
 use Illuminate\Http\Request;
@@ -35,7 +38,8 @@ class PostController extends Controller
         if($seg1){
             $type = substr($seg1,0,-1);
         }
-        $this->post_type = $type;
+        // $this->post_type = $type;
+        $this->post_type = trim($seg1);
         $this->sec = $seg1;
         $this->user = $user;
         $this->routa = $this->sec;
@@ -60,7 +64,11 @@ class PostController extends Controller
             'order'=>isset($get['order']) ? $get['order']: 'desc',
         ];
         if($this->post_type){
-            $post =  Post::where('post_status','!=','inherit')->where('post_type','=',$this->post_type)->orderBy('id',$config['order']);
+            if($this->post_type=='processos'){
+                $post =  Post::where('post_status','!=','inherit')->where('post_type','LIKE','%'.$this->post_type.'%')->orderBy('id',$config['order']);
+            }else{
+                $post =  Post::where('post_status','!=','inherit')->where('post_type','=',$this->post_type)->orderBy('id',$config['order']);
+            }
         }else{
             $post =  Post::where('post_status','!=','inherit')->orderBy('id',$config['order']);
         }
@@ -145,46 +153,511 @@ class PostController extends Controller
         ];
         return $ret;
     }
-    public function campos_precessos($sec=false){
+    public function campos_precessos($dados=false){
         $hidden_editor = '';
+        $user = $this->user;
+        $bairro = new BairroController($user);
+        $quadra = new QuadrasController($user);
+        $data = $dados?$dados:false;
+        if(isset($data['bairro'])){
+            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$data['bairro']."' AND ".Qlib::compleDelete()." ORDER BY nome ASC",'nome','id');
+        }else{
+            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' ORDER BY nome ASC",'nome','id');
+        }
         if(Qlib::qoption('editor_padrao')=='laraberg'){
             $hidden_editor = 'hidden';
+        }
+        $arr_ano_base=[];
+        foreach (range(2019,date('Y')) as $value) {
+            $arr_ano_base[$value] = $value;
         }
         $ret = [
             'ID'=>['label'=>'Id','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'post_type'=>['label'=>'tipo de post','active'=>false,'type'=>'hidden','exibe_busca'=>'d-none','event'=>'','tam'=>'2','value'=>$this->post_type],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'config[local]'=>[
+                'label'=>'Local do processo',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM tags WHERE ativo='s' AND pai='14' ORDER BY ordem ASC",'nome','id'),'exibe_busca'=>'d-block',
+                'event'=>'required onchange=selectLocalProcesso(this.value)',
+                'tam'=>'12',
+                'exibe_busca'=>true,
+                'option_select'=>true,
+                'cp_busca'=>'config][local',
+                'class'=>'select2',
+            ],
             'config[ano_base]'=>[
                 'label'=>'Ano Base',
                 'active'=>true,
                 'type'=>'select',
-                'arr_opc'=>Qlib::sql_array("SELECT id,name FROM users WHERE ativo='s' AND id_permission>'1'",'name','id'),'exibe_busca'=>'d-block',
+                'arr_opc'=>$arr_ano_base,'exibe_busca'=>'d-block',
                 'event'=>'',
-                'tam'=>'2',
+                'tam'=>'3',
                 'exibe_busca'=>true,
                 'option_select'=>true,
                 'cp_busca'=>'config][ano_base',
                 'class'=>'select2',
             ],
-            'post_date_gmt'=>['label'=>'Data de entrega','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
-            'config[numero_oficio]'=>['label'=>'N° Ofício','active'=>true,'placeholder'=>'','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'2','cp_busca'=>'config][numero_oficio'],
+            'post_date_gmt'=>['label'=>'Entrega Prefeitura','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'config[numero_oficio]'=>['label'=>'N° Ofício','active'=>true,'placeholder'=>'','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'3','cp_busca'=>'config][numero_oficio'],
+            'post_modified_gmt'=>['label'=>'Entrega Cartório','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
             'post_title'=>['label'=>'Título','active'=>true,'placeholder'=>'Ex.: Título do processo','type'=>'text','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'7'],
             'post_name'=>['label'=>'Slug','active'=>false,'placeholder'=>'Ex.: nome-do-post','type'=>'hidden','exibe_busca'=>'d-block','event'=>'type_slug=true','tam'=>'12'],
+            'config[area]'=>[
+                'label'=>'Área',
+                'active'=>true,
+                'type'=>'select',
+                'campo'=>'bairro',
+                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                //'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
+                'event'=>'onchange=carregaQuadras($(this).val())',
+                'tam'=>'6',
+                //'value'=>@$_GET['config']['area'],
+                'cp_busca'=>'config][area',
+                'class'=>'select2'
+            ],
+            'config[quadras][]'=>[
+                'label'=>'Quadras',
+                'active'=>true,
+                'type'=>'select_multiple',
+                'arr_opc'=>$arr_opc_quadras,
+                'exibe_busca'=>'d-block',
+                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\');',
+                'tam'=>'3',
+                'cp_busca'=>'config][quadras',
+                'class'=>'select2',
+                'value'=>@$_GET['config']['quadras'],
+            ],
+            'config[matricula]'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][matricula'],
+            'config[responsável]'=>[
+                'label'=>'Responsável',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT id,name FROM users WHERE ativo='s' AND id_permission>'1'",'name','id'),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'12',
+                'exibe_busca'=>true,
+                'option_select'=>true,
+                'cp_busca'=>'config][responsável',
+                'class'=>'select2',
+            ],
+
             //'post_excerpt'=>['label'=>'Resumo (Opcional)','active'=>true,'placeholder'=>'Uma síntese do um post','type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             //'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             'post_status'=>['label'=>'Status','active'=>true,'type'=>'chave_checkbox','value'=>'publish','valor_padrao'=>'publish','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['publish'=>'Em vigor','pending'=>'Cancelado']],
-            'post_content'=>['label'=>'Conteudo','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
+            'post_content'=>['label'=>'Ocorrências','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
+        ];
+        return $ret;
+    }
+    public function campos_pc($dados=false){
+        // Processos em campo
+        $hidden_editor = '';
+        $user = $this->user;
+        $bairro = new BairroController($user);
+        $quadra = new QuadrasController($user);
+        $lote = new LotesController($user);
+        $data = $dados?$dados:false;
+        if(isset($data['bairro'])){
+            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$data['bairro']."' AND ".Qlib::compleDelete()." ORDER BY nome ASC",'nome','id');
+        }else{
+            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' ORDER BY nome ASC",'nome','id');
+        }
+        $data['post_type'] = isset($data['post_type']) ? $data['post_type'] : $this->post_type;
+        $data['post_title'] = isset($data['post_title']) ? $data['post_title'] : __('Processo em campo');
+        if(Qlib::qoption('editor_padrao')=='laraberg'){
+            $hidden_editor = 'hidden';
+        }
+        $arr_ano_base=[];
+        foreach (range(2019,date('Y')) as $value) {
+            $arr_ano_base[$value] = $value;
+        }
+        $json_nao_sim = Qlib::qoption('json_nao_sim');
+        $arr_nao_sim = Qlib::lib_json_array($json_nao_sim);
+        $ret = [
+            'ID'=>['label'=>'Id','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            // 'post_type'=>['label'=>'tipo de post','active'=>false,'type'=>'hidden','exibe_busca'=>'d-none','event'=>'','tam'=>'2','value'=>$this->post_type],
+            'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'post_type'=>[
+                'label'=>'Local do processo',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT value,nome FROM tags WHERE ativo='s' AND pai='14' ORDER BY ordem ASC",'nome','value'),'exibe_busca'=>'d-block',
+                'event'=>'required onchange=selectLocalProcesso(this.value)',
+                'tam'=>'12',
+                'exibe_busca'=>true,
+                'option_select'=>false,
+                // 'cp_busca'=>'config][local',
+                'value'=>$data['post_type'],
+                'class'=>'select2',
+            ],
+            'config[ano_base]'=>[
+                'label'=>'Ano Base',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>$arr_ano_base,'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'3',
+                'exibe_busca'=>true,
+                'option_select'=>true,
+                'cp_busca'=>'config][ano_base',
+                'class'=>'select2',
+            ],
+            // 'post_date_gmt'=>['label'=>'Entrega Prefeitura','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            // 'config[numero_oficio]'=>['label'=>'N° Ofício','active'=>true,'placeholder'=>'','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'3','cp_busca'=>'config][numero_oficio'],
+            // 'post_modified_gmt'=>['label'=>'Entrega Cartório','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'post_title'=>['label'=>'Título','active'=>true,'placeholder'=>'Ex.: Título do processo','type'=>'hidden','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'7','value'=>$data['post_title']],
+            'post_name'=>['label'=>'Slug','active'=>false,'placeholder'=>'Ex.: nome-do-post','type'=>'hidden','exibe_busca'=>'d-block','event'=>'type_slug=true','tam'=>'12'],
+            'config[area]'=>[
+                'label'=>'Área',
+                'active'=>true,
+                'type'=>'select',
+                'campo'=>'bairro',
+                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                //'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
+                'event'=>'onchange=carregaQuadras($(this).val()); data-selector=bairro',
+                'tam'=>'6',
+                //'value'=>@$_GET['config']['area'],
+                'cp_busca'=>'config][area',
+                'class'=>'select2'
+            ],
+            'config[quadras][]'=>[
+                'label'=>'Quadras',
+                'active'=>true,
+                'type'=>'select_multiple',
+                'arr_opc'=>$arr_opc_quadras,
+                'exibe_busca'=>'d-block',
+                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\'); data-selector=quadra',
+                'tam'=>'3',
+                'cp_busca'=>'config][quadras',
+                'class'=>'select2',
+                'value'=>@$_GET['config']['quadras'],
+            ],
+            'config[matricula]'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][matricula'],
+            'config[responsavel]'=>[
+                'label'=>'Responsável',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT id,name FROM users WHERE ativo='s' AND id_permission>'1'",'name','id'),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'6',
+                'exibe_busca'=>true,
+                'option_select'=>true,
+                'cp_busca'=>'config][responsavel',
+                'class'=>'select2',
+            ],
+            'config[data_realizado]'=>['label'=>'Data realizado','cp_busca'=>'config][data_realizado','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+             'config[lotes]'=>[
+                'label'=>'Informações do lote',
+                'active'=>false,
+                'type'=>'html_vinculo',
+                'exibe_busca'=>'d-none',
+                'event'=>'', //dampo para selecionar esse input
+                'tam'=>'12',
+                'script'=>'',
+                'data_selector'=>[
+                    'campos'=>$lote->campos(),
+                    'route_index'=>route('lotes.index'),
+                    'id_form'=>'frm-loteamento',
+                    'tipo'=>'array', // int para somente um ou array para vários
+                    'action'=>route('lotes.store'),
+                    'campo_id'=>'id',
+                    'campo_bus'=>'nome',
+                    'campo'=>'config[lotes]',
+                    'value'=>[],
+                    'label'=>'Informações do lote',
+                    'table'=>[
+                        'quadra'=>['label'=>'Quadra','type'=>'arr_tab',
+                        'conf_sql'=>[
+                            'tab'=>'quadras',
+                            'campo_bus'=>'id',
+                            'select'=>'nome',
+                            'param'=>['bairro'],
+                            ]
+                        ],
+                        'nome'=>['label'=>'Lote','type'=>'text'],
+                    ],
+                    'tab' =>'lotes',
+                    'placeholder' =>'Digite somente o número do Lote...',
+                    'janela'=>[
+                        'url'=>route('lotes.create').'',
+                        'param'=>['bairro','quadra'],
+                        'form-param'=>'',
+                    ],
+                    'salvar_primeiro' =>false,//exigir cadastro do vinculo antes de cadastrar este
+                ],
+                'cp_busca'=>'config][lotes',
+            ],
+            'config[cadastro]'=>[
+                'label'=>'Cadastro',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>$arr_nao_sim,'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'4',
+                'exibe_busca'=>true,
+                'option_select'=>false,
+                'cp_busca'=>'config][cadastro',
+                // 'class'=>'select2',
+            ],
+            'config[mapa_memorial]'=>[
+                'label'=>'Mapa e Memorial',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>$arr_nao_sim,'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'4',
+                'exibe_busca'=>true,
+                'option_select'=>false,
+                'cp_busca'=>'config][mapa_memorial',
+                // 'class'=>'select2',
+            ],
+            'config[atendimento]'=>[
+                'label'=>'Atendimento Jurídico',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>['Nenhuma'=>'Nenhuma ação','agendado'=>'Agendado','realizado'=>'Realizado'],'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'4',
+                'exibe_busca'=>true,
+                'option_select'=>false,
+                'cp_busca'=>'config][atendimento',
+                // 'class'=>'select2',
+            ],
+            'config[processo]'=>[
+                'label'=>'Processo',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>$arr_nao_sim,'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'6',
+                'exibe_busca'=>true,
+                'option_select'=>false,
+                'cp_busca'=>'config][processo',
+                // 'class'=>'select2',
+            ],
+            'post_date_gmt'=>['label'=>'Data Entregue','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'6'],
+
+            //'post_excerpt'=>['label'=>'Resumo (Opcional)','active'=>true,'placeholder'=>'Uma síntese do um post','type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
+            //'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+            'post_content'=>['label'=>'Relato da(s) pendência(s) encontrada(s)','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
+            'post_status'=>['label'=>'Status','active'=>true,'type'=>'chave_checkbox','value'=>'publish','valor_padrao'=>'publish','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['publish'=>'Resolvido','pending'=>'Não resolvido']],
+        ];
+        return $ret;
+    }
+    public function campos_pp($dados=false){
+        // Processos na prefeitura
+        $hidden_editor = '';
+        $user = $this->user;
+        $bairro = new BairroController($user);
+        $quadra = new QuadrasController($user);
+        $data = $dados?$dados:false;
+        if(isset($data['bairro'])){
+            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$data['bairro']."' AND ".Qlib::compleDelete()." ORDER BY nome ASC",'nome','id');
+        }else{
+            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' ORDER BY nome ASC",'nome','id');
+        }
+        $data['post_type'] = isset($data['post_type']) ? $data['post_type'] : $this->post_type;
+        if(Qlib::qoption('editor_padrao')=='laraberg'){
+            $hidden_editor = 'hidden';
+        }
+        $arr_ano_base=[];
+        foreach (range(2019,date('Y')) as $value) {
+            $arr_ano_base[$value] = $value;
+        }
+        $ret = [
+            'ID'=>['label'=>'Id','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            // 'post_type'=>['label'=>'tipo de post','active'=>false,'type'=>'hidden','exibe_busca'=>'d-none','event'=>'','tam'=>'2','value'=>$this->post_type],
+            'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'post_type'=>[
+                'label'=>'Local do processo',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT value,nome FROM tags WHERE ativo='s' AND pai='14' ORDER BY ordem ASC",'nome','value'),'exibe_busca'=>'d-block',
+                'event'=>'required onchange=selectLocalProcesso(this.value)',
+                'tam'=>'12',
+                'exibe_busca'=>true,
+                'option_select'=>false,
+                // 'cp_busca'=>'config][local',
+                'value'=>$data['post_type'],
+                'class'=>'select2',
+            ],
+            'config[ano_base]'=>[
+                'label'=>'Ano Base',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>$arr_ano_base,'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'3',
+                'exibe_busca'=>true,
+                'option_select'=>true,
+                'cp_busca'=>'config][ano_base',
+                'class'=>'select2',
+            ],
+            'post_date_gmt'=>['label'=>'Entrega Prefeitura','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'config[numero_oficio]'=>['label'=>'N° Ofício','active'=>true,'placeholder'=>'','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'3','cp_busca'=>'config][numero_oficio'],
+            'post_modified_gmt'=>['label'=>'Entrega Cartório','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'post_title'=>['label'=>'Título','active'=>true,'placeholder'=>'Ex.: Título do processo','type'=>'text','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'7'],
+            'post_name'=>['label'=>'Slug','active'=>false,'placeholder'=>'Ex.: nome-do-post','type'=>'hidden','exibe_busca'=>'d-block','event'=>'type_slug=true','tam'=>'12'],
+            'config[area]'=>[
+                'label'=>'Área',
+                'active'=>true,
+                'type'=>'select',
+                'campo'=>'bairro',
+                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                //'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
+                'event'=>'onchange=carregaQuadras($(this).val())',
+                'tam'=>'6',
+                //'value'=>@$_GET['config']['area'],
+                'cp_busca'=>'config][area',
+                'class'=>'select2'
+            ],
+            'config[quadras][]'=>[
+                'label'=>'Quadras',
+                'active'=>true,
+                'type'=>'select_multiple',
+                'arr_opc'=>$arr_opc_quadras,
+                'exibe_busca'=>'d-block',
+                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\');',
+                'tam'=>'3',
+                'cp_busca'=>'config][quadras',
+                'class'=>'select2',
+                'value'=>@$_GET['config']['quadras'],
+            ],
+            'config[matricula]'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][matricula'],
+            'config[responsável]'=>[
+                'label'=>'Responsável',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT id,name FROM users WHERE ativo='s' AND id_permission>'1'",'name','id'),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'12',
+                'exibe_busca'=>true,
+                'option_select'=>true,
+                'cp_busca'=>'config][responsável',
+                'class'=>'select2',
+            ],
+
+            //'post_excerpt'=>['label'=>'Resumo (Opcional)','active'=>true,'placeholder'=>'Uma síntese do um post','type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
+            //'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+            'post_status'=>['label'=>'Status','active'=>true,'type'=>'chave_checkbox','value'=>'publish','valor_padrao'=>'publish','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['publish'=>'Em vigor','pending'=>'Cancelado']],
+            'post_content'=>['label'=>'Ocorrências','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
+        ];
+        return $ret;
+    }
+    public function campos_pca($dados=false){
+        $hidden_editor = '';
+        $user = $this->user;
+        $bairro = new BairroController($user);
+        $quadra = new QuadrasController($user);
+        $data = $dados?$dados:false;
+        if(isset($data['bairro'])){
+            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$data['bairro']."' AND ".Qlib::compleDelete()." ORDER BY nome ASC",'nome','id');
+        }else{
+            $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' ORDER BY nome ASC",'nome','id');
+        }
+        $data['post_type'] = isset($data['post_type']) ? $data['post_type'] : $this->post_type;
+        if(Qlib::qoption('editor_padrao')=='laraberg'){
+            $hidden_editor = 'hidden';
+        }
+        $arr_ano_base=[];
+        foreach (range(2019,date('Y')) as $value) {
+            $arr_ano_base[$value] = $value;
+        }
+        $ret = [
+            'ID'=>['label'=>'Id','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            // 'post_type'=>['label'=>'tipo de post','active'=>false,'type'=>'hidden','exibe_busca'=>'d-none','event'=>'','tam'=>'2','value'=>$this->post_type],
+            'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'post_type'=>[
+                'label'=>'Local do processo',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT value,nome FROM tags WHERE ativo='s' AND pai='14' ORDER BY ordem ASC",'nome','value'),'exibe_busca'=>'d-block',
+                'event'=>'required onchange=selectLocalProcesso(this.value)',
+                'tam'=>'12',
+                'exibe_busca'=>true,
+                'option_select'=>false,
+                // 'cp_busca'=>'config][local',
+                'value'=>$data['post_type'],
+                'class'=>'select2',
+            ],
+            'config[ano_base]'=>[
+                'label'=>'Ano Base',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>$arr_ano_base,'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'3',
+                'exibe_busca'=>true,
+                'option_select'=>true,
+                'cp_busca'=>'config][ano_base',
+                'class'=>'select2',
+            ],
+            'post_date_gmt'=>['label'=>'Entrega Prefeitura','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'config[numero_oficio]'=>['label'=>'N° Ofício','active'=>true,'placeholder'=>'','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'3','cp_busca'=>'config][numero_oficio'],
+            'post_modified_gmt'=>['label'=>'Entrega Cartório','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'post_title'=>['label'=>'Título','active'=>true,'placeholder'=>'Ex.: Título do processo','type'=>'text','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'7'],
+            'post_name'=>['label'=>'Slug','active'=>false,'placeholder'=>'Ex.: nome-do-post','type'=>'hidden','exibe_busca'=>'d-block','event'=>'type_slug=true','tam'=>'12'],
+            'config[area]'=>[
+                'label'=>'Área',
+                'active'=>true,
+                'type'=>'select',
+                'campo'=>'bairro',
+                'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
+                //'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
+                'event'=>'onchange=carregaQuadras($(this).val())',
+                'tam'=>'6',
+                //'value'=>@$_GET['config']['area'],
+                'cp_busca'=>'config][area',
+                'class'=>'select2'
+            ],
+            'config[quadras][]'=>[
+                'label'=>'Quadras',
+                'active'=>true,
+                'type'=>'select_multiple',
+                'arr_opc'=>$arr_opc_quadras,
+                'exibe_busca'=>'d-block',
+                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\');',
+                'tam'=>'3',
+                'cp_busca'=>'config][quadras',
+                'class'=>'select2',
+                'value'=>@$_GET['config']['quadras'],
+            ],
+            'config[matricula]'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][matricula'],
+            'config[responsável]'=>[
+                'label'=>'Responsável',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>Qlib::sql_array("SELECT id,name FROM users WHERE ativo='s' AND id_permission>'1'",'name','id'),'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'12',
+                'exibe_busca'=>true,
+                'option_select'=>true,
+                'cp_busca'=>'config][responsável',
+                'class'=>'select2',
+            ],
+
+            //'post_excerpt'=>['label'=>'Resumo (Opcional)','active'=>true,'placeholder'=>'Uma síntese do um post','type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
+            //'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+            'post_status'=>['label'=>'Status','active'=>true,'type'=>'chave_checkbox','value'=>'publish','valor_padrao'=>'publish','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['publish'=>'Em vigor','pending'=>'Cancelado']],
+            'post_content'=>['label'=>'Ocorrências','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
         ];
         return $ret;
     }
     public function campos($sec=false){
-        $sec = $sec?$sec:$this->sec;
+        $sec = $sec ? $sec : $this->sec;
         $hidden_editor = '';
         if(Qlib::qoption('editor_padrao')=='laraberg'){
             $hidden_editor = 'hidden';
         }
         if($this->post_type=='processo'){
             $ret = $this->campos_precessos();
+        }elseif($this->post_type=='processos-campo'){
+            $ret = $this->campos_pc();
+        }elseif($this->post_type=='processos-prefeitura'){
+            $ret = $this->campos_pca();
+        }elseif($this->post_type=='processos-cartorio'){
+            $ret = $this->campos_pp();
         }elseif($this->post_type=='menu'){
             $ret = $this->campos_menus();
         }else{
@@ -220,6 +693,8 @@ class PostController extends Controller
                 }
             }elseif($sec=='processos'){
                 $title = __('Cadastro de processos');
+            }elseif($sec=='processos-campo'){
+                $title = __('Cadastro de processos em campo');
             }elseif($sec=='menus'){
                 $title = __('Cadastro de menus');
             }elseif($sec=='pacotes_lances'){
@@ -235,16 +710,8 @@ class PostController extends Controller
     {
         //$this->authorize('is_admin', $user);
         $this->authorize('ler', $this->routa);
-        if($this->sec=='posts'){
-            $title = 'Cadastro de postagens';
-        }elseif($this->sec=='pages'){
-            $title = 'Cadastro de paginas';
-        }elseif($this->sec=='decretos'){
-            $title = 'Cadastro de Decretos';
-            $this->label='Decretos';
-        }else{
-            $title = 'Sem tipo';
-        }
+        $selTypes = $this->selectType($this->sec);
+        $title = $selTypes['title'];
         $titulo = $title;
         $queryPost = $this->queryPost($_GET);
         $queryPost['config']['exibe'] = 'html';
@@ -335,6 +802,8 @@ class PostController extends Controller
         $userLogadon = Auth::id();
         $dados['post_author'] = $userLogadon;
         $dados['token'] = !empty($dados['token'])?$dados['token']:uniqid();
+        $dados['post_date_gmt'] = !empty($dados['post_date_gmt'])?$dados['post_date_gmt']:'STR_TO_DATE(0000-00-00 00:00:00)';
+        // dd($dados);
         if($this->i_wp=='s' && isset($dados['post_type'])){
             //$endPoint = isset($dados['endPoint'])?$dados['endPoint']:$dados['post_type'].'s';
             $endPoint = 'post';
@@ -498,7 +967,6 @@ class PostController extends Controller
         $dados = Post::where('id',$id)->get();
         $routa = 'posts';
         $this->authorize('ler', $this->routa);
-
         if(!empty($dados)){
             $title = 'Editar Cadastro de posts';
             $titulo = $title;
@@ -583,16 +1051,10 @@ class PostController extends Controller
             }
             unset($dados['d_meta']);
         }
+        // dd($dados['config']);
         foreach ($dados as $key => $value) {
             if($key!='_method'&&$key!='_token'&&$key!='ac'&&$key!='ajax'){
-                /*if($key=='data_batismo' || $key=='data_nasci'){
-                    if($value=='0000-00-00' || $value=='00/00/0000'){
-                    }else{
-                        $data[$key] = Qlib::dtBanco($value);
-                    }
-                }else{*/
-                    $data[$key] = $value;
-                //}
+                $data[$key] = $value;
             }
         }
         $data['post_status'] = isset($data['post_status'])?$data['post_status']:'pending';

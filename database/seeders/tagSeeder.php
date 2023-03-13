@@ -81,8 +81,38 @@ class tagSeeder extends Seeder
                 'obs'=>'Trata-se do atendimento final. É quando o beneficiário recebe sua Certidão que todo o processo se consolida e atinge seu objetivo.',
                 'config'=>['color'=>'success','icon'=>'fa fa-check']
             ],
-
-
+            [
+                'nome'=>'Locais dos processos',
+                'pai'=>0,
+                'value'=>'l_procesos',
+                'ordem'=>4,
+                'obs'=>'Locais de passagem de um processo que são: Campo,Prefeitura e Cartório.',
+                'config'=>[]
+            ],
+            [
+                'nome'=>'1 - Campo',
+                'pai'=>14,
+                'value'=>'processos-campo', //locais de procesos filho
+                'ordem'=>1,
+                'obs'=>'Processos em campo. 1 etapa',
+                'config'=>[]
+            ],
+            [
+                'nome'=>'2 - Prefeitura',
+                'pai'=>14,
+                'value'=>'processos-prefeitura', //locais de procesos filho
+                'ordem'=>2,
+                'obs'=>'Processos na prefeitura. 2 etapa',
+                'config'=>[]
+            ],
+            [
+                'nome'=>'3 - Cartório',
+                'pai'=>14,
+                'value'=>'processos-cartorio', //locais de procesos filho
+                'ordem'=>3,
+                'obs'=>'Processos em cartório. 3 etapa',
+                'config'=>[]
+            ],
         ];
 
         foreach ($arr as $key => $value) {

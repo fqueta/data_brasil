@@ -1047,7 +1047,7 @@ function lib_vinculoCad(obj){
             if(pr=d.janela.param){
                 for (let i = 0; i < pr.length; i++) {
                     const el = pr[i];
-                    url += '&'+el+'='+$('[name="'+el+'"]').val();
+                    url += '&'+el+'='+$('[data-selector="'+el+'"]').val();
                 }
             }
         } catch (e) {
@@ -1604,8 +1604,8 @@ function lib_listDadosHtmlVinculo(res,campos,ac,lin){
         var tipo='int';
     }
     if((d=res.dados) && ac =='cad'){
-        var table = $('#table-html_vinculo-'+dt.campo);
-        lin = calculaLinCad('#table-html_vinculo-'+dt.campo+' tbody tr');
+        var sle = '[id="table-html_vinculo-'+dt.campo+'"]',table = $(sle);
+        lin = calculaLinCad(sle+' tbody tr');
        // alert(lin);
         var tm = $('tm').html();
         var tm0 = '<tr id="tr-{id}">{td}</tr>';
@@ -1628,18 +1628,6 @@ function lib_listDadosHtmlVinculo(res,campos,ac,lin){
             if (tipo=='array'&&lin){
                 if(lin=='0')
                     lin=0;
-                /*try {
-
-                    if(typeof dt.list[lin]=='undefined'){
-                        dt.list = [d];
-                    }else{
-                        dt.list[lin] = d;
-                    }
-                    console.log(dt);
-                } catch (e) {
-                    dt.list = [d];
-                    console.log(e);
-                }*/
             }else{
                 dt.list = d;
             }
@@ -1717,14 +1705,15 @@ function lib_listarCadastro(res,obj){
 }
 function lib_abrirModalConsultaVinculo(campo,ac){
 
-    var btnAbrir = $('#row-'+campo+' .btn-consulta-vinculo'),btnFechar = $('#row-'+campo+' .btn-voltar-vinculo'),ef='slow';
+    var btnAbrir = $('[id="row-'+campo+'"] .btn-consulta-vinculo'),btnFechar = $('[id="row-'+campo+'"] .btn-voltar-vinculo'),ef='slow';
+    var scap = '[id="inp-cad-'+campo+'"]';
     if(ac=='abrir'){
         btnAbrir.hide(ef);
         btnFechar.show(ef);
-        $('#inp-cad-'+campo).show(ef);
-        $('#inp-cad-'+campo+' input').val('');
-        $('#inp-cad-'+campo+' input').focus();
-        lib_autocomplete($('#inp-auto-'+campo));
+        $(scap).show(ef);
+        $(scap+' input').val('');
+        $(scap+' input').focus();
+        lib_autocomplete($('[id="inp-auto-'+campo+'"]'));
     }
     if(ac=='fechar'){
         btnAbrir.show(ef);
@@ -1743,9 +1732,9 @@ function lib_autocomplete(obs){
                 for (let i = 0; i < pr.length; i++) {
                     const el = pr[i];
                     if(i==0){
-                        urlAuto += '?'+el+'='+$('[name="'+el+'"]').val();
+                        urlAuto += '?'+el+'='+$('[data-selector="'+el+'"]').val();
                     }else{
-                        urlAuto += '&'+el+'='+$('[name="'+el+'"]').val();
+                        urlAuto += '&'+el+'='+$('[data-selector="'+el+'"]').val();
                     }
                 }
             }
@@ -2165,4 +2154,7 @@ function lib_autocompleteGeral(cl,funCall){
             },
         });
     }
+}
+function selectLocalProcesso(id){
+    // alert(id);
 }

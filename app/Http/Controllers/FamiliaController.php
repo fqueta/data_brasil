@@ -474,23 +474,6 @@ class FamiliaController extends Controller
         }
         $ret = [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
-            /*'etapa'=>[
-                'label'=>'Etapa',
-                'active'=>true,
-                'type'=>'select',
-                'data_selector'=>[
-                    'campos'=>$etapa->campos(),
-                    'route_index'=>route('etapas.index'),
-                    'id_form'=>'frm-etapas',
-                    'action'=>route('etapas.store'),
-                    'campo_id'=>'id',
-                    'campo_bus'=>'nome',
-                    'label'=>'Etapa',
-                ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM etapas WHERE ativo='s' ORDER BY ordem ASC",'nome','id'),'exibe_busca'=>'d-block',
-                'event'=>'',
-                'tam'=>'6',
-                'value'=>@$_GET['etapa'],
-            ],*/
             'config[qualificacao]'=>[
                 'label'=>'Qualificação*',
                 'active'=>true,
@@ -581,7 +564,7 @@ class FamiliaController extends Controller
                     'label'=>'Etapa',
                 ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 //'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
-                'event'=>'onchange=carregaQuadras($(this).val())',
+                'event'=>'onchange=carregaQuadras($(this).val()) data-selector=bairro',
                 'tam'=>'6',
                 'value'=>@$_GET['bairro'],
             ],
@@ -601,7 +584,7 @@ class FamiliaController extends Controller
                 ],
                 'arr_opc'=>$arr_opc_quadras,
                 'exibe_busca'=>'d-block',
-                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\');',
+                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\'); data-selector=quadra',
                 'tam'=>'3',
                 //'class'=>'select2'
                 'value'=>@$_GET['quadra'],
@@ -637,7 +620,7 @@ class FamiliaController extends Controller
                             'tab'=>'quadras',
                             'campo_bus'=>'id',
                             'select'=>'nome',
-                            'param'=>['bairro','etapa'],
+                            'param'=>['bairro'],
                             ]
                         ],
                         'nome'=>['label'=>'Lote','type'=>'text'],
@@ -646,12 +629,12 @@ class FamiliaController extends Controller
                     'placeholder' =>'Digite somente o número do Lote...',
                     'janela'=>[
                         'url'=>route('lotes.create').'',
-                        'param'=>['bairro','etapa','quadra'],
+                        'param'=>['bairro','quadra'],
                         'form-param'=>'',
                     ],
                     'salvar_primeiro' =>false,//exigir cadastro do vinculo antes de cadastrar este
                 ],
-                'script' =>'familias.loteamento',
+                // 'script' =>'familias.loteamento',
             ],
             'id_beneficiario'=>[
                 'label'=>'Proprietário',

@@ -33,10 +33,18 @@
                         }
                     @endphp
                 @endif
-                @if ($v['type']=='select_multiple')
+                @if ($v['type']=='select_multiple' || $v['type']=='html_vinculo')
                     @php
                         $nk = str_replace('[]','',$k);
-                        $value[$k] = isset($value[$nk])?$value[$nk]:false;
+                        if (isset($v['cp_busca'])&&!empty($v['cp_busca'])){
+                            $cf = explode('][',$v['cp_busca']);
+                            if(isset($cf[1])){
+                                if(empty($value[$k]))
+                                    $value[$k] = @$value[$cf[0]][$cf[1]];
+                            }
+                        }else{
+                            $value[$k] = isset($value[$nk])?$value[$nk]:false;
+                        }
                     @endphp
                 @endif
 

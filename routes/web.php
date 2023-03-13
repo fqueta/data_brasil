@@ -184,6 +184,15 @@ Route::resource('decretos','\App\Http\Controllers\admin\PostController',['parame
 Route::resource('processos','\App\Http\Controllers\admin\PostController',['parameters' => [
     'processos' => 'id'
 ]]);
+Route::resource('processos-campo','\App\Http\Controllers\admin\PostController',['parameters' => [
+    'processos-campo' => 'id'
+]]);
+Route::resource('processos-prefeitura','\App\Http\Controllers\admin\PostController',['parameters' => [
+    'processos-prefeitura' => 'id'
+]]);
+Route::resource('processos-cartorio','\App\Http\Controllers\admin\PostController',['parameters' => [
+    'processos-cartorio' => 'id'
+]]);
 
 
 Auth::routes();

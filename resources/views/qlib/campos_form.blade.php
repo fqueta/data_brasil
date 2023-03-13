@@ -23,6 +23,7 @@
         <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}">
             @php
                 //$config['value'] = json_decode($config['value'],true);
+                // dd($config);
             @endphp
             @if ($config['label'])
                 <label for="{{$config['campo']}}">{{$config['label']}}</label>
@@ -181,7 +182,9 @@
                             </button>
                         </div>
                         <div class="col-6 mb-2">
-                            <button type="button" class="btn btn-outline-primary btn-block" data-ac="{{$config['ac']}}" data-selector="{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}" onclick="lib_vinculoCad($(this));" > <i class="fa fa-plus" aria-hidden="true"></i> {{__('Cadastrar')}}</button>
+                            <button type="button" class="btn btn-outline-primary btn-block" data-ac="{{$config['ac']}}" data-selector="{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}" onclick="lib_vinculoCad($(this));" >
+                                 <i class="fa fa-plus" aria-hidden="true"></i> {{__('Cadastrar')}}
+                            </button>
                         </div>
                         <div class="col-md-12 mb-2" style="display: none;" id="inp-cad-{{$config['data_selector']['campo']}}">
                             <input id="inp-auto-{{$config['data_selector']['campo']}}" type="text"
@@ -197,6 +200,7 @@
                         <div class="col-md-12 ">
                             @php
                                 $tema = '<td id="td-{k}">{v}</td>';
+                                // dd($config['data_selector']);
                                 @endphp
                             <tm class="d-none">{{$tema}}</tm>
                             <table class="table table-hover" id="table-{{$config['type']}}-{{$config['data_selector']['campo']}}">
@@ -208,6 +212,11 @@
                                         <th class="text-right">{{__('Ação')}}</th>
                                     </tr>
                                 </thead>
+                                @php
+                                // if($config['type'] =='html_vinculo'){
+                                //     dd($config['data_selector']);
+                                // }
+                            @endphp
                                 <tbody>
                                 @if (isset($config['data_selector']['list']) && is_array($config['data_selector']['list']) && isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
                                     @if (@$config['data_selector']['tipo']=='array')
