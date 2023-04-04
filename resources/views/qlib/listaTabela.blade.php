@@ -59,7 +59,7 @@
                     $val->id = $val->ID;
                 }
                 $rlink = 'edit';
-                if($routa=='familias'||$routa=='decretos'||$routa=='processos'||$routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros'){
+                if($routa=='familias'||$routa=='decretos'||$routa=='processos-campo'||$routa=='processos'||$routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros'){
                     $rlink = 'show';
                 }
                 $linkShow = route($routa.'.'.$rlink,['id'=>$val->id]). '?redirect='.$redirect.'idCad='.$val->id;
@@ -77,19 +77,25 @@
                                     <i class="fa fa-map-marker" aria-hidden="true"></i>
                                 </a>
                             @endif
-                            @if ($routa=='familias' || $routa=='decretos' || $routa=='processos' || $routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros')
+                            @if ($routa=='familias' || $routa=='decretos' || $routa=='processos-campo' || $routa=='processos' || $routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros')
                                 <a href="{{ $linkShow }}" title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             @endif
-                            <a href=" {{ route($routa.'.edit',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="Editar" class="btn btn-sm btn-outline-secondary mr-2">
+                            @php
+                                $linkEdit = $routa.'.edit';
+                                if($routa=='processos'){
+                                    $linkEdit = $val->post_type.'.edit';
+                                }
+                            @endphp
+                            <a href=" {{ route($linkEdit,['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="Editar" class="btn btn-sm btn-outline-secondary mr-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                 <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
                                 </svg>
                             </a>
                             @else
-                            @if ($routa=='familias' || $routa=='decretos')
+                            @if ($routa=='familias' || $routa=='decretos' || $routa=='processos-campo')
                                 <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
                                     <i class="fas fa-eye"></i>
                                 </a>
@@ -129,10 +135,23 @@
                                 <td class="{{str_replace('[]','',$kd)}}" title="{{@$vd['arr_opc'][$val->$kd]}}">{{$td}}</td>
                             @elseif (isset($vd['type']) && ($vd['type']=='select_multiple'))
                                 @php
-                                    $nk = str_replace('[]','',$kd);
-                                    $arr = $val->$nk;
-                                    $td = false;
-                                    if(is_array($arr)){
+                                // echo $kd;
+                                $nk = str_replace('[]','',$kd);
+
+                                $arr = $val->$nk;
+                                if(isset($vd['cp_busca'])){
+                                    $ak = explode('][',$vd['cp_busca']);
+                                    if(isset($ak[1])&&!empty($ak[1])){
+                                        $kd = $ak[1];
+                                        $arr = @$val[$ak[0]][$ak[1]];
+                                        // echo $ak[1];
+                                        // dd($val[$ak[0]]);
+                                        // dd($arr);
+                                        // $arr
+                                    }
+                                }
+                                $td = false;
+                                if(is_array($arr)){
                                         foreach ($arr as $k => $v) {
                                             $td .= @$vd['arr_opc'][$v].',';
                                         }
@@ -141,6 +160,8 @@
                                 <td class="{{str_replace('[]','',$kd)}}" title="{{@$td}}">{{@$td}}</td>
                             @elseif (isset($vd['type']) && $vd['type']=='chave_checkbox' && isset($vd['arr_opc'][$val->$kd]))
                                 <td class="{{str_replace('[]','',$kd)}}" title="{{$vd['arr_opc'][$val->$kd]}}">{{$vd['arr_opc'][$val->$kd]}}</td>
+                            @elseif (isset($vd['type']) && $vd['type']=='date')
+                                <td class="{{str_replace('[]','',$kd)}}" title="{{$val->$kd}}">{{ Carbon\Carbon::parse($val->$kd)->format('d/m/Y')}}</td>
                             @elseif(isset($vd['cp_busca']) && !empty($vd['cp_busca']))
                                 @php
                                     $cp = explode('][',$vd['cp_busca']);
@@ -158,7 +179,7 @@
                                 @endphp
 
                                 <td class="{{str_replace('[]','',$kd)}}" title="{{$td}}">
-                                    {{$td}}
+                                    {!!$td!!}
                                 </td>
                             @endif
                         @endif

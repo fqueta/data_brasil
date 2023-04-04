@@ -90,7 +90,7 @@ class tagSeeder extends Seeder
                 'config'=>[]
             ],
             [
-                'nome'=>'1 - Campo',
+                'nome'=>'Campo',
                 'pai'=>14,
                 'value'=>'processos-campo', //locais de procesos filho
                 'ordem'=>1,
@@ -98,7 +98,7 @@ class tagSeeder extends Seeder
                 'config'=>[]
             ],
             [
-                'nome'=>'2 - Prefeitura',
+                'nome'=>'Prefeitura',
                 'pai'=>14,
                 'value'=>'processos-prefeitura', //locais de procesos filho
                 'ordem'=>2,
@@ -106,7 +106,7 @@ class tagSeeder extends Seeder
                 'config'=>[]
             ],
             [
-                'nome'=>'3 - Cartório',
+                'nome'=>'Cartório',
                 'pai'=>14,
                 'value'=>'processos-cartorio', //locais de procesos filho
                 'ordem'=>3,

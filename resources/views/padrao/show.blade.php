@@ -13,7 +13,7 @@
         <div class="card card-primary card-outline">
             <div class="card-header">
                 <h3 class="card-title">{{__('Informações')}}</h3>
-                <div class="card-tools">
+                <div class="card-tools d-print-none">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                       <i class="fas fa-minus"></i>
                     </button>

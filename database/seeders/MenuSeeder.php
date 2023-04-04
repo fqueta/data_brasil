@@ -62,7 +62,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 'categoria'=>'',
-                'description'=>'Processos',
+                'description'=>'Todos os Processos',
                 'icon'=>'fas fa-file',
                 'actived'=>true,
                 'url'=>'processos',
@@ -98,7 +98,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 'categoria'=>'',
-                'description'=>'Processos em cartorio',
+                'description'=>'Processos em cartório',
                 'icon'=>'fas fa-list',
                 'actived'=>true,
                 'url'=>'processos-cartorio',

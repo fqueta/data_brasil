@@ -55,7 +55,7 @@ class FamiliaController extends Controller
         $acaoObs = false;
         $link = false;
         $user_id = Auth::id();
-        dd($user_id);
+        // dd($user_id);
         $id = $request->route()->parameter('id');
         if($action=='index'){
             $acaoObs = __('Listou cadastros de ').$this->tab;
@@ -421,7 +421,7 @@ class FamiliaController extends Controller
             'view'=>$this->view,
             'i'=>0,
         ];
-        //dd($ret);
+        // dd($routa);
         return view($routa.'.index',$ret);
     }
     public function exportAll(User $user)
@@ -564,7 +564,7 @@ class FamiliaController extends Controller
                     'label'=>'Etapa',
                 ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 //'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
-                'event'=>'onchange=carregaQuadras($(this).val()) data-selector=bairro',
+                'event'=>'onchange=carregaQuadras($(this).val()) data-selector=bairro required',
                 'tam'=>'6',
                 'value'=>@$_GET['bairro'],
             ],
@@ -584,7 +584,7 @@ class FamiliaController extends Controller
                 ],
                 'arr_opc'=>$arr_opc_quadras,
                 'exibe_busca'=>'d-block',
-                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\'); data-selector=quadra',
+                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\'); data-selector=quadra required',
                 'tam'=>'3',
                 //'class'=>'select2'
                 'value'=>@$_GET['quadra'],

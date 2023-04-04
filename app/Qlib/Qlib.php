@@ -24,6 +24,16 @@ class Qlib
     /**
      * Verifica se o usuario logado tem permissao de admin ou alguma expessífica
      */
+    static function dataLocal(){
+        global $dataLocal;
+        $dataLocal = date('d/m/Y H:i:s', time());
+        return $dataLocal;
+    }
+    static function dataBanco(){
+        global $dtBanco;
+        $dtBanco = date('Y-m-d H:i:s', time());
+        return $dtBanco;
+    }
     static function isAdmin($perm_admin = 2)
     {
         $user = Auth::user();
@@ -347,8 +357,12 @@ class Qlib
 
         return $userinfo;
     }
-    static function sql_distinct($tab='familias',$campo='YEAR(`data_exec`)',$order='ORDER BY data_exec ASC'){
-        $ret = DB::select("SELECT DISTINCT $campo As vl  FROM $tab $order");
+    static function sql_distinct($tab='familias',$campo='YEAR(`data_exec`)',$order='ORDER BY data_exec ASC',$debug=false){
+        $sql = "SELECT DISTINCT $campo As vl  FROM $tab $order";
+        if($debug){
+            echo $sql;
+        }
+        $ret = DB::select($sql);
         return $ret;
     }
     static function formatMensagem($config=false){

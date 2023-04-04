@@ -12,6 +12,7 @@
 <script src="{{url('/')}}/js/jquery.inputmask.bundle.min.js"></script>
 <script src="{{url('/')}}/vendor/summernote/summernote.min.js"></script>
 <script src="{{url('/')}}/vendor/venobox/venobox.min.js"></script>
+<script src="{{url('/')}}/js/jquery.validate.min.js"></script>
 <script src=" {{url('/')}}/js/lib.js"></script>
 <script>
     $(function(){

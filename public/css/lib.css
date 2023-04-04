@@ -134,6 +134,24 @@ ul.timeline > li:before {
 .card-h{
     height: 350px
 }
+form label.error, label.error {
+	/* remove the next line when you have trouble in IE6 with labels in list */
+	color: red;
+	font-style: italic;
+    position: absolute;
+    z-index: 2;
+}
+div.error { display: none; }
+input {	border: 1px solid black; }
+input.checkbox { border: none }
+input:focus { border: 1px dotted green; }
+input.error { border: 1px dotted red; }
+form .gray * { color: gray; }
+.grade-img img{
+    object-fit: cover;
+    height: 50px;
+    border-radius: 50%;
+}
 @keyframes lds-dual-ring {
     0% {
       transform: rotate(0deg);

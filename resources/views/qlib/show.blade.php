@@ -10,9 +10,13 @@
         <div class="col-md-12 text-right">
             @if (isset($value['id']))
                 <label for="">Id:</label> {{ $value['id'] }}
+                @elseif (isset($value['ID']))
+                <label for="">Id:</label> {{ $value['ID'] }}
             @endif
             @if (isset($value['created_at']))
                 <label for="">Cadastro:</label> {{ Carbon\Carbon::parse($value['created_at'])->format('d/m/Y') }}
+                @elseif (isset($value['post_date']))
+                <label for="">Cadastro:</label> {{ Carbon\Carbon::parse($value['post_date'])->format('d/m/Y') }}
             @endif
 
         </div>
@@ -39,11 +43,19 @@
                         }
                     }
                 @endphp
-                @if ($v['type']=='select_multiple')
-                @php
+                @if ($v['type']=='select_multiple' || $v['type']=='html_vinculo')
+                    @php
                         $nk = str_replace('[]','',$k);
-                        $value[$k] = isset($value[$nk])?$value[$nk]:false;
-                @endphp
+                        if (isset($v['cp_busca'])&&!empty($v['cp_busca'])){
+                            $cf = explode('][',$v['cp_busca']);
+                            if(isset($cf[1])){
+                                if(empty($value[$k]))
+                                    $value[$k] = @$value[$cf[0]][$cf[1]];
+                            }
+                        }else{
+                            $value[$k] = isset($value[$nk])?$value[$nk]:false;
+                        }
+                    @endphp
                 @endif
 
                 {!! App\Qlib\Qlib::qShow([

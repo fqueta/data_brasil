@@ -49,9 +49,21 @@ class LotesController extends Controller
         if(isset($get['term'])){
             //Autocomplete
             if(isset($get['bairro']) && !empty($get['bairro']) && isset($get['quadra']) && !empty($get['quadra'])){
-               $sql = "SELECT * FROM lotes WHERE (nome LIKE '%".$get['term']."%') AND bairro=".$get['bairro']." AND quadra=".$get['quadra']." AND ".Qlib::compleDelete();
+                $arr_quadra = explode(',', $get['quadra']);
+                $compSquad = "AND quadra='".$get['quadra']."'";
+                if(isset($arr_quadra[1]) && !empty($arr_quadra[1])){
+                    $compSquad = "AND (";
+
+                    foreach ($arr_quadra as $k => $v) {
+                        $compSquad .= "quadra='".$v."' OR ";
+                    }
+                    $compSquad = rtrim($compSquad,"OR ");
+                    $compSquad .= ")";
+                    // dd($compSquad);
+                }
+               $sql = "SELECT * FROM lotes WHERE (nome LIKE '%".$get['term']."%') AND bairro='".$get['bairro']."' $compSquad AND ".Qlib::compleDelete();
             }elseif(isset($get['bairro']) && !empty($get['bairro'])){
-                $sql = "SELECT * FROM lotes WHERE (nome LIKE '%".$get['term']."%') AND bairro=".$get['bairro']." AND ".Qlib::compleDelete();
+                $sql = "SELECT * FROM lotes WHERE (nome LIKE '%".$get['term']."%') AND bairro='".$get['bairro']."' AND ".Qlib::compleDelete();
             }else{
                 $sql = "SELECT l.*,q.nome quadra_valor FROM lotes as l
                 JOIN quadras as q ON q.id=l.quadra

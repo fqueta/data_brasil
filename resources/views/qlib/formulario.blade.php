@@ -8,13 +8,16 @@
     @if($config['ac']=='alt')
     @method('PUT')
     @endif
-    <div class="row">
-        <div class="col-md-12 text-right">
+    <div class="row">        <div class="col-md-12 text-right">
             @if (isset($value['id']))
                 <label for="">Id:</label> {{ $value['id'] }}
+                @elseif (isset($value['ID']))
+                <label for="">Id:</label> {{ $value['ID'] }}
             @endif
             @if (isset($value['created_at']))
                 <label for="">Cadastro:</label> {{ Carbon\Carbon::parse($value['created_at'])->format('d/m/Y') }}
+                @elseif (isset($value['post_date']))
+                <label for="">Cadastro:</label> {{ Carbon\Carbon::parse($value['post_date'])->format('d/m/Y') }}
             @endif
 
         </div>

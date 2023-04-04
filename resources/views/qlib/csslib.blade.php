@@ -3,6 +3,11 @@
 <link rel="stylesheet" href="{{url('/')}}/vendor/venobox/venobox.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/jquery-ui.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/lib.css">
+<style>
+    .note-view,.note-insert,.note-table,.note-color{
+        display: none;
+    }
+</style>
 @if (isset($_GET['popup']) && $_GET['popup'])
 <style>
     aside,.wrapper nav{

@@ -73,7 +73,14 @@ class EventController extends Controller
     {
         //$id_user = isset($config['id_user'])?$config['id_user'] : 0;
         $post_id = isset($config['post_id'])?$config['post_id'] : 0;
-        $d = Event::where('post_id','=',$post_id)->orderBy('id','DESC')->get();
+        $tab = isset($config['tab'])?$config['tab'] : false;
+        if($tab){
+            $d = Event::where('post_id','=',$post_id)->
+            where('tab','=',$tab)->
+            orderBy('id','DESC')->get();
+        }else{
+            $d = Event::where('post_id','=',$post_id)->orderBy('id','DESC')->get();
+        }
         return $d;
     }
     public function listarEvent($config=false){

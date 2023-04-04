@@ -77,6 +77,11 @@
                     <h3 class="card-title">
                         {{__($config['label'])}}
                     </h3>
+                    <div class="card-tools d-print-none">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                          <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                    <div class="row" id="row-{{$config['data_selector']['campo']}}">
@@ -89,15 +94,16 @@
                         @endif
                         @php
                             $d = $config['data_selector'];
+                            // dd($config);
                         @endphp
+
                         @if (isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
                         <div class="col-md-12 ">
+
                                 @if (isset($config['data_selector']['list']) && is_array($config['data_selector']['list']) && isset($config['data_selector']['table']) && is_array($config['data_selector']['table']))
                                     @if (@$config['data_selector']['tipo']=='array')
                                         @foreach ($config['data_selector']['list'] as $klis=>$vlis)
                                             <div class="row" id="tr-{{$klis}}-{{@$config['data_selector']['list'][$klis]['id']}}">
-
-
                                                 @foreach ($config['data_selector']['campos'] as $kb=>$vb)
                                                     @if ($vb['type']=='arr_tab')
                                                         {!! App\Qlib\Qlib::qShow([

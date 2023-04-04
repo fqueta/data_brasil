@@ -15,10 +15,23 @@
                 <div class="row">
                     @if (isset($campos_tabela))
                         @foreach ($campos_tabela as $kbu=>$vbu)
-                            @if ($vbu['active'])
+                            @php
+                                $exibe_busca = isset($vbu['exibe_busca']) ? $vbu['exibe_busca']:true;
+                                if($vbu['type'] == 'hidden'&&$exibe_busca){
+                                    $vbu['type']='text';
+                                }
+                            @endphp
+                            @if ($vbu['active'] && $exibe_busca)
                                 @php
+                                    $value1[$kbu] = isset($_GET['filter'][$kbu])?$_GET['filter'][$kbu]:false;
                                     if($vbu['type']!='text' && $kbu=='id'){
                                         $vbu['type'] = 'text';
+                                    }elseif($vbu['type']=='chave_checkbox'){
+                                        if(!isset($_GET['filter'][$kbu]) && isset($vbu['valor_padrao'])){
+                                            $value1[$kbu] = $vbu['valor_padrao'];
+                                            // $_GET['filter'][$kbu] = $vbu['valor_padrao'];
+                                        }
+
                                     }
                                     if($kbu!='obs')
                                         $vbu['tam'] = 3;
@@ -30,12 +43,16 @@
                                     'placeholder'=>isset($vbu['placeholder'])?$vbu['placeholder']:'',
                                     'label'=>$vbu['label'],
                                     'ac'=>'alt',
-                                    'value'=>@$_GET['filter'][$kbu],
+                                    'value'=>@$value1[$kbu],
                                     'tam'=>isset($vbu['tam'])?$vbu['tam']:'3',
                                     'class_div'=>$vbu['exibe_busca'],
+                                    'valor_padrao'=>@$vbu['valor_padrao'],
                                     'event'=>isset($vbu['event'])?$vbu['event']:'',
                                     'arr_opc'=>isset($vbu['arr_opc'])?$vbu['arr_opc']:'',
                                     'label_option_select'=>'Todas',
+                                    'checked'=>@$value1[$kbu],
+                                    'selected'=>@$vbu['selected'],
+
                                 ])}}
                             @endif
 

@@ -819,28 +819,33 @@ function submitFormulario(objForm,funCall,funError){
     }
     var route = objForm.attr('action');
     //console.log(route);
-    $.ajax({
-        type: 'POST',
-        url: route,
-        data: objForm.serialize()+'&ajax=s',
-        dataType: 'json',
-        beforeSend: function(){
-            $('#preload').fadeIn();
-        },
-        success: function (data) {
-            $('#preload').fadeOut("fast");
-            funCall(data);
-        },
-        error: function (data) {
-            $('#preload').fadeOut("fast");
-            if(data.responseJSON.errors){
-                funError(data.responseJSON.errors);
-                console.log(data.responseJSON.errors);
-            }else{
-                lib_formatMensagem('.mens','Erro','danger');
-            }
+    objForm.validate({
+        submitHandler: function(form) {
+            $.ajax({
+                type: 'POST',
+                url: route,
+                data: objForm.serialize()+'&ajax=s',
+                dataType: 'json',
+                beforeSend: function(){
+                    $('#preload').fadeIn();
+                },
+                success: function (data) {
+                    $('#preload').fadeOut("fast");
+                    funCall(data);
+                },
+                error: function (data) {
+                    $('#preload').fadeOut("fast");
+                    if(data.responseJSON.errors){
+                        funError(data.responseJSON.errors);
+                        console.log(data.responseJSON.errors);
+                    }else{
+                        lib_formatMensagem('.mens','Erro','danger');
+                    }
+                }
+            });
         }
     });
+    objForm.submit();
 }
 function getAjax(config,funCall,funError){
 
@@ -2155,6 +2160,12 @@ function lib_autocompleteGeral(cl,funCall){
         });
     }
 }
-function selectLocalProcesso(id){
-    // alert(id);
+function selectLocalProcesso(id,type_atual){
+    var url = urlAtual();
+    url = url.replaceAll(type_atual,id);
+    if(url){
+        window.location = url;
+        $('#preload').fadeIn();
+    }
+    // console.log(id);
 }

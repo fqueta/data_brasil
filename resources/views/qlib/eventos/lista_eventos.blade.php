@@ -26,12 +26,13 @@
                             }
                             // $createdAt = Illuminate\Support\Carbon::parse($item['created_at']);
                             // dd($createdAt);
+                            // dd($config);
                         @endphp
                         <li>
-                            <a target="_blank" href="{{@$conf['link']}}">Evento</a>
+                            <a target="_blank" href="{{@$conf['link']}}">Evento em:</a>
                             <a href="{{route('users.show',['id'=>$ve['user_id']])}}" target="_blank" class="float-right">{{$data[0]}}</a>
                             {{-- <p>&nbsp;</p> --}}
-                            <p>{{$nome_user}} <b>{{$title}}</b> as {{$data[1]}} </p>
+                            <p>{!!$title!!} as {{$data[1]}}<br>{{__('Usuário')}}: {{$nome_user}}</p>
                         </li>
                     @endforeach
                     {{-- <li>
