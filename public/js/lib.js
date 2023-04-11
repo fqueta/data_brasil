@@ -2169,3 +2169,13 @@ function selectLocalProcesso(id,type_atual){
     }
     // console.log(id);
 }
+function exibeTpc(val){
+    if(val=='p'){
+        $('.tpc-p').show();
+        $('.tpc-a').hide();
+    }
+    if(val=='a'){
+        $('.tpc-p').hide();
+        $('.tpc-a').show();
+    }
+}

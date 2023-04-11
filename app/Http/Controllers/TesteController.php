@@ -26,8 +26,11 @@ class TesteController extends Controller
         //     echo Qlib::get_subdominio();
         // $dados = (new FamiliaController($user))->rendaFamiliar(3145);
         // dd($dados);
-        $d = (new processosController)->register_change_process(['process_id' => 19,'save_status' => 'processos-prefeitura']);
-            // $host = request()->getHttpHost();
+        // $d = (new processosController)->register_change_process(['process_id' => 19,'save_status' => 'processos-prefeitura']);
+        $oc = (new processosController)->ocupantes(21);
+
+        dd($oc);
+        // $host = request()->getHttpHost();
         // echo $host ."<br/>";
         // $getHost = request()->getHost();
         // echo $getHost ."<br/>";

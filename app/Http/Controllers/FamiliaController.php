@@ -98,7 +98,13 @@ class FamiliaController extends Controller
         $idUltimaEtapa=false;
         $tags = Tag::where('ativo','=','s')->where('pai','=','1')->where('excluido','=','n')->where('deletado','=','n')->OrderBy('ordem','asc')->get();
         $id_pendencia = 3;
-        $id_imComRegistro = 4;
+        //tpc = tipo de consulta opçoes são a= anaul, p= periodico m= mensal padrão é anual
+        $tpc = 'a';
+        if(isset($get['dataI'],$get['dataF']) && !empty($get['dataI']) && !empty($get['dataF']) && $get['dataI']!='0000-00-00' && $get['dataF']!='0000-00-00'){
+            $tpc = 'p';unset($get['ano']);
+        }else{
+            $tpc = isset($_GET['tpc']) ? $_GET['tpc'] : 'a';
+        }
         $id_recusas = 5;
         $id_nLocalizado = 6;
         $completos = 0;
@@ -118,6 +124,17 @@ class FamiliaController extends Controller
             //Totalizadores.
             $totProcesso['entregue'] = Familia::where('excluido','=','n')->where('deletado','=','n')->whereYear('data_exec',$get['ano'])->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"processo_entregue"%')->count();
             $totProcesso['certidao'] = Familia::where('excluido','=','n')->where('deletado','=','n')->whereYear('data_exec',$get['ano'])->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"certidao"%')->count();
+        }elseif($tpc=='p' && isset($get['dataI'],$get['dataF']) && !empty($get['dataI']) && !empty($get['dataF'])){
+            $campo_data = isset($get['campo_data'])?$get['campo_data']:'data_exec';
+            // $dataI = Qlib::dtBanco($get['dataI']);
+            // $dataF = Qlib::dtBanco($get['dataF']);
+            $dataI = $get['dataI'];
+            $dataF = $get['dataF'];
+            $familia = Familia::where('excluido','=','n')->where('deletado','=','n')->whereBetween($campo_data,[$dataI,$dataF])->orderBy('id',$config['order']);
+            $countFam = Familia::where('excluido','=','n')->where('deletado','=','n')->whereBetween($campo_data,[$dataI,$dataF])->orderBy('id',$config['order']);
+            //Totalizadores.
+            $totProcesso['entregue'] = Familia::where('excluido','=','n')->where('deletado','=','n')->whereBetween($campo_data,[$dataI,$dataF])->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"processo_entregue"%')->count();
+            $totProcesso['certidao'] = Familia::where('excluido','=','n')->where('deletado','=','n')->whereBetween($campo_data,[$dataI,$dataF])->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"certidao"%')->count();
         }else{
             $familia =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
             $countFam =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
@@ -249,6 +266,13 @@ class FamiliaController extends Controller
         $compleLinkVisu1 = false;
         if(isset($get['ano'])&&$get['ano']){
             $compleLinkVisu = '&ano='.$get['ano'];
+        }
+        if(isset($get['dataI'],$get['dataF'])&&$get['dataI']&&$get['dataF']){
+            $compleLinkVisu = '&dataI='.$get['dataI'];
+            $compleLinkVisu .= '&dataF='.$get['dataF'];
+            if(isset($get['campo_data'])){
+                $compleLinkVisu .= '&campo_data='.$get['campo_data'];
+            }
         }
         if($compleLinkVisu){
             $compleLinkVisu1 = '?'.$compleLinkVisu;

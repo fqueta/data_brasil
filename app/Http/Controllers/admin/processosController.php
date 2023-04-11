@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Familia;
 use App\Models\Post;
 use App\Qlib\Qlib;
+use App\Qlib\QlibFacade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -68,6 +70,31 @@ class processosController extends Controller
 
                     }
                     // dd($ret);
+                }
+            }
+        }
+        return $ret;
+    }
+    /**
+     * @param integer
+     * @return integer
+     *
+     */
+    public function ocupantes($process_id=false){
+        $ret = 0;
+        if($process_id){
+            $quadras = Post::Find($process_id);
+            if($quadras->count() > 0){
+                if(isset($quadras['config'])){
+                    $arr_q = Qlib::lib_json_array($quadras['config']);
+                    if(isset($arr_q['quadras'])){
+                        foreach ($arr_q['quadras'] as $k => $v) {
+                            $fm = Familia::where('quadra','=',$v)->where('deletado','=','n')->where('excluido','=','n');
+                            if($fm->count()){
+                                $ret += $fm->count();
+                            }
+                        }
+                    }
                 }
             }
         }

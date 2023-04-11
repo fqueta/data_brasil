@@ -36,6 +36,7 @@
                 {{__('Todos Anos')}}
             </label>
         </div>
+
     @if($form)
     </form>
     @endif

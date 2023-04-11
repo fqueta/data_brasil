@@ -303,6 +303,16 @@
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
     </div>
+    @elseif ($config['type']=='text_disabled')
+    <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}" >
+        @if ($config['label'])
+            <label for="{{$config['campo']}}">{{$config['label']}}</label>
+        @endif
+        <input type="text" disabled class="form-control @error($config['campo']) is-invalid @enderror {{$config['class']}}" id="inp-{{$config['campo']}}" name="{{$config['campo']}}" aria-describedby="{{$config['campo']}}" placeholder="{{$config['placeholder']}}" value="@if(isset($config['value'])){{$config['value']}}@elseif($config['ac']=='cad'){{old($config['campo'])}}@endif" {{$config['event']}} />
+        @error($config['campo'])
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
+    </div>
     @else
     <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}" >
         @if ($config['label'])

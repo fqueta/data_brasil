@@ -511,7 +511,9 @@ class PostController extends Controller
         }
         $ocupantes = false;
         if($data){
-            // dd($data);
+            if(isset($data['ID'])){
+                $ocupantes = (new processosController)->ocupantes($data['ID']);
+            }
         }
 
         $data['post_type'] = isset($data['post_type']) ? $data['post_type'] : $this->post_type;
@@ -584,7 +586,7 @@ class PostController extends Controller
                 'value'=>@$_GET['config']['quadras'],
             ],
             'config[matricula]'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][matricula'],
-            'config[ocupantes]'=>['label'=>'Ocupantes','active'=>true,'type'=>'hidden_text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','value'=>$ocupantes,'placeholder'=>'','cp_busca'=>'config][ocupantes'],
+            'config[ocupantes]'=>['label'=>'Ocupantes','active'=>true,'type'=>'text_disabled','exibe_busca'=>'d-block','event'=>'','tam'=>'3','value'=>$ocupantes,'placeholder'=>'','cp_busca'=>'config][ocupantes'],
             'config[responsavel]'=>[
                 'label'=>'Responsável',
                 'active'=>false,
@@ -603,7 +605,7 @@ class PostController extends Controller
                 'type'=>'select',
                 'arr_opc'=>Qlib::sql_array("SELECT id,name FROM users WHERE ativo='s' AND id_permission>'1'",'name','id'),'exibe_busca'=>'d-block',
                 'event'=>'',
-                'tam'=>'6',
+                'tam'=>'9',
                 'exibe_busca'=>true,
                 'option_select'=>true,
                 'cp_busca'=>'config][responsavel2',
@@ -867,6 +869,10 @@ class PostController extends Controller
                 $title = __('Cadastro de processos');
             }elseif($sec=='processos-campo'){
                 $title = __('Cadastro de processos em campo');
+            }elseif($sec=='processos-prefeitura'){
+                $title = __('Cadastro de processos na prefeitura');
+            }elseif($sec=='processos-cartorio'){
+                $title = __('Cadastro de processos na cartório');
             }elseif($sec=='menus'){
                 $title = __('Cadastro de menus');
             }elseif($sec=='pacotes_lances'){
@@ -1056,8 +1062,10 @@ class PostController extends Controller
         $dados = Post::findOrFail($id);
         $this->authorize('ler', $this->routa);
         if(!empty($dados)){
-            $title = 'Visualização da decretos';
+            $selTypes = $this->selectType($this->sec);
+            $title = $selTypes['title'];
             $titulo = $title;
+
             //dd($dados);
             $dados['ac'] = 'alt';
             if(isset($dados['config'])){
@@ -1151,8 +1159,10 @@ class PostController extends Controller
         $routa = 'posts';
         $this->authorize('ler', $this->routa);
         if(!empty($dados)){
-            $title = 'Editar Cadastro de posts';
+            $selTypes = $this->selectType($this->sec);
+            $title = $selTypes['title'];
             $titulo = $title;
+
             $dados[0]['ac'] = 'alt';
             if(isset($dados[0]['config'])){
                 $dados[0]['config'] = Qlib::lib_json_array($dados[0]['config']);
