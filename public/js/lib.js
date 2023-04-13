@@ -1728,7 +1728,7 @@ function lib_abrirModalConsultaVinculo(campo,ac){
     }
 }
 function lib_autocomplete(obs){
-    var urlAuto = obs.attr('url');
+    var urlAuto = obs.attr('url_');
     var data_selector = obs.data('selector'),d=decodeArray(data_selector);
     try {
         if(typeof d.janela != 'undefined'){
@@ -2143,7 +2143,7 @@ function checkTodosAnos() {
     $('#preload').show();
 }
 function lib_autocompleteGeral(cl,funCall){
-    var urlAuto = $(cl).attr('url');
+    var urlAuto = $(cl).attr('url_');
     if(typeof funCall=='undefined'){
         $( cl ).autocomplete({
             source: urlAuto,

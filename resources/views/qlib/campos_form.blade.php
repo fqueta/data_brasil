@@ -188,7 +188,7 @@
                         </div>
                         <div class="col-md-12 mb-2" style="display: none;" id="inp-cad-{{$config['data_selector']['campo']}}">
                             <input id="inp-auto-{{$config['data_selector']['campo']}}" type="text"
-                                url="{{$config['data_selector']['route_index']}}"
+                                url_="{{$config['data_selector']['route_index']}}"
                                 class="autocomplete form-control"
                                 data-selector="{{App\Qlib\Qlib::encodeArray(@$config['data_selector'])}}"
                                 placeholder="{{__(@$config['data_selector']['placeholder'])}}"
