@@ -22,7 +22,8 @@
         @if (isset($config['arr_opc']))
         <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}">
             @php
-                //$config['value'] = json_decode($config['value'],true);
+                // dd($config);
+                // $config['value'] = json_decode($config['value'],true);
                 // dd($config);
             @endphp
             @if ($config['label'])

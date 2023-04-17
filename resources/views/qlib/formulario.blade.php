@@ -42,12 +42,17 @@
                         if (isset($v['cp_busca'])&&!empty($v['cp_busca'])){
                             $cf = explode('][',$v['cp_busca']);
                             if(isset($cf[1])){
-                                if(empty($value[$k]))
+                                if(empty($value[$k])){
                                     $value[$k] = @$value[$cf[0]][$cf[1]];
+                                    if(!$value[$k]){
+                                        $value[$k] = $value[$nk];
+                                    }
+                                }
                             }
                         }else{
                             $value[$k] = isset($value[$nk])?$value[$nk]:false;
                         }
+
                     @endphp
                 @endif
 
