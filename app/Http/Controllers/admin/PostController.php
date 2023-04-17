@@ -290,7 +290,8 @@ class PostController extends Controller
         }else{
             $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' ORDER BY nome ASC",'nome','id');
         }
-        $data['post_type'] = isset($data['post_type']) ? $data['post_type'] : $this->post_type;
+        // $data['post_type'] = isset($data['post_type']) ? $data['post_type'] : $this->post_type;
+        $data['post_type'] =  $this->post_type;
         $data['post_title'] = isset($data['post_title']) ? $data['post_title'] : __('Processo em campo');
         if(Qlib::qoption('editor_padrao')=='laraberg'){
             $hidden_editor = 'hidden';
@@ -516,8 +517,10 @@ class PostController extends Controller
             }
         }
 
-        $data['post_type'] = isset($data['post_type']) ? $data['post_type'] : $this->post_type;
+        // $data['post_type'] = isset($data['post_type']) ? $data['post_type'] : $this->post_type;
+        $data['post_type'] = $this->post_type;
         $data['post_title'] = isset($data['post_title']) ? $data['post_title'] : __('Processo em campo');
+
         if(Qlib::qoption('editor_padrao')=='laraberg'){
             $hidden_editor = 'hidden';
         }
@@ -556,7 +559,8 @@ class PostController extends Controller
                 'option_select'=>true,
                 'class'=>'select2',
             ],
-            'post_date_gmt'=>['label'=>'Entrega Prefeitura','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'6','title'=>'Data de entrega à prefeitura'],
+            'post_date_gmt'=>['label'=>'Entrega Prefeitura','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3','title'=>'Data de entrega à prefeitura'],
+            'config[oficio]'=>['label'=>'N.° Ofício','active'=>true,'type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][oficio'],
             'post_modified_gmt'=>['label'=>'Entrega Cartório','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3','title'=>'Data de entrega ao cartório'],
             'post_title'=>['label'=>'Título','active'=>false,'placeholder'=>'Ex.: Título do processo','type'=>'hidden','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'7','value'=>$data['post_title']],
             'post_name'=>['label'=>'Slug','active'=>false,'placeholder'=>'Ex.: nome-do-post','type'=>'hidden','exibe_busca'=>'d-block','event'=>'type_slug=true','tam'=>'12'],
@@ -731,7 +735,9 @@ class PostController extends Controller
         }else{
             $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' ORDER BY nome ASC",'nome','id');
         }
-        $data['post_type'] = isset($data['post_type']) ? $data['post_type'] : $this->post_type;
+        // $data['post_type'] = isset($data['post_type']) ? $data['post_type'] : $this->post_type;
+        $data['post_type'] =  $this->post_type;
+
         if(Qlib::qoption('editor_padrao')=='laraberg'){
             $hidden_editor = 'hidden';
         }

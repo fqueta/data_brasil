@@ -658,7 +658,7 @@ class FamiliaController extends Controller
                     ],
                     'salvar_primeiro' =>false,//exigir cadastro do vinculo antes de cadastrar este
                 ],
-                // 'script' =>'familias.loteamento',
+                'script' =>'familias.loteamento',
             ],
             'id_beneficiario'=>[
                 'label'=>'Proprietário',
