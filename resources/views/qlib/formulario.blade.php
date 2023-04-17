@@ -45,7 +45,7 @@
                                 if(empty($value[$k])){
                                     $value[$k] = @$value[$cf[0]][$cf[1]];
                                     if(!$value[$k]){
-                                        $value[$k] = $value[$nk];
+                                        $value[$k] = isset($value[$nk])?$value[$nk]:false;
                                     }
                                 }
                             }
