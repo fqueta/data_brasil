@@ -1052,7 +1052,7 @@ function lib_vinculoCad(obj){
             if(pr=d.janela.param){
                 for (let i = 0; i < pr.length; i++) {
                     const el = pr[i];
-                    url += '&'+el+'='+$('[data-selector="'+el+'"]').val();
+                    url += '&'+el+'='+$('[data-select-f="'+el+'"]').val();
                 }
             }
         } catch (e) {
@@ -1737,9 +1737,9 @@ function lib_autocomplete(obs){
                 for (let i = 0; i < pr.length; i++) {
                     const el = pr[i];
                     if(i==0){
-                        urlAuto += '?'+el+'='+$('[data-selector="'+el+'"]').val();
+                        urlAuto += '?'+el+'='+$('[data-select-f="'+el+'"]').val();
                     }else{
-                        urlAuto += '&'+el+'='+$('[data-selector="'+el+'"]').val();
+                        urlAuto += '&'+el+'='+$('[data-select-f="'+el+'"]').val();
                     }
                 }
             }

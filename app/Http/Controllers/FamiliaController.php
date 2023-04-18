@@ -588,7 +588,7 @@ class FamiliaController extends Controller
                     'label'=>'Etapa',
                 ],'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 //'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
-                'event'=>'onchange=carregaQuadras($(this).val()) data-selector=bairro required',
+                'event'=>'onchange=carregaQuadras($(this).val()) data-select-f=bairro required',
                 'tam'=>'6',
                 'value'=>@$_GET['bairro'],
             ],
@@ -608,7 +608,7 @@ class FamiliaController extends Controller
                 ],
                 'arr_opc'=>$arr_opc_quadras,
                 'exibe_busca'=>'d-block',
-                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\'); data-selector=quadra required',
+                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\'); data-select-f=quadra required',
                 'tam'=>'3',
                 //'class'=>'select2'
                 'value'=>@$_GET['quadra'],
