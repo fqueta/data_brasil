@@ -77,6 +77,7 @@
                     'script'=>@$v['script'],
                     'valor_padrao'=>@$v['valor_padrao'],
                     'dados'=>@$v['dados'],
+                    'active'=>@$v['active'],
             ])}}
             @endforeach
         @endif

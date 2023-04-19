@@ -122,6 +122,13 @@
                 @if (isset($campos_tabela) && is_array($campos_tabela))
                     @foreach ($campos_tabela as $kd=>$vd)
                         @if (isset($vd['label']) && $vd['active'])
+                            @php
+                            if($vd['type']=='textarea'){
+
+                               // dd($vd);
+                            }
+                            @endphp
+
                             @if (isset($vd['type']) && ($vd['type']=='select' || $vd['type']=='selector'))
                                 @php
                                     if(isset($vd['cp_busca']) && !empty($vd['cp_busca'])){

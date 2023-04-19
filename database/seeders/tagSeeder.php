@@ -69,7 +69,7 @@ class tagSeeder extends Seeder
                 'nome'=>'Processo entregue',
                 'pai'=>10,
                 'value'=>'processo_entregue',
-                'ordem'=>1,
+                'ordem'=>2,
                 'obs'=>'são aqueles processos que são entregues à Secretaria de Meio Ambiente para serem encaminhados ao Cartório de Registro de Imóveis. É a penúltima etapa do processo de regularização fundiária.',
                 'config'=>['color'=>'warning','icon'=>'fa fa-check']
             ],
@@ -77,7 +77,7 @@ class tagSeeder extends Seeder
                 'nome'=>'Certidão',
                 'pai'=>10,
                 'value'=>'certidao',
-                'ordem'=>2,
+                'ordem'=>3,
                 'obs'=>'Trata-se do atendimento final. É quando o beneficiário recebe sua Certidão que todo o processo se consolida e atinge seu objetivo.',
                 'config'=>['color'=>'success','icon'=>'fa fa-check']
             ],
@@ -113,6 +113,15 @@ class tagSeeder extends Seeder
                 'obs'=>'Processos em cartório. 3 etapa',
                 'config'=>[]
             ],
+            [
+                'nome'=>'Em andamento',
+                'pai'=>10,
+                'value'=>'em andamento',
+                'ordem'=>1,
+                'obs'=>'são aqueles processos que são entregues à Secretaria de Meio Ambiente para serem encaminhados ao Cartório de Registro de Imóveis. É a penúltima etapa do processo de regularização fundiária.',
+                'config'=>['color'=>'warning','icon'=>'fa fa-check']
+            ],
+
         ];
 
         foreach ($arr as $key => $value) {

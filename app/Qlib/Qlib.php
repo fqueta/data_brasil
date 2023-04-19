@@ -198,6 +198,7 @@ class Qlib
         if(isset($config['type'])){
             $config['campo'] = isset($config['campo'])?$config['campo']:'teste';
             $config['label'] = isset($config['label'])?$config['label']:false;
+            $config['active'] = isset($config['active'])?$config['active']:true;
             $config['placeholder'] = isset($config['placeholder'])?$config['placeholder']:false;
             $config['selected'] = isset($config['selected']) ? $config['selected']:false;
             $config['tam'] = isset($config['tam']) ? $config['tam']:'12';
@@ -267,6 +268,7 @@ class Qlib
         if(isset($config['type'])){
             $config['campo'] = isset($config['campo'])?$config['campo']:'teste';
             $config['label'] = isset($config['label'])?$config['label']:false;
+            $config['active'] = isset($config['active'])?$config['active']:true;
             $config['placeholder'] = isset($config['placeholder'])?$config['placeholder']:false;
             $config['selected'] = isset($config['selected']) ? $config['selected']:false;
             $config['tam'] = isset($config['tam']) ? $config['tam']:'12';

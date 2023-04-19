@@ -442,7 +442,7 @@ class RelatoriosController extends Controller
             'nome_conjuge'=>['label'=>'NOME DO CÔNJUGE','active'=>true,'type'=>'array','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_conjuge','select'=>'nome'],
             'cpf_conjuge'=>['label'=>'CPF','active'=>true,'type'=>'text','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_conjuge','select'=>'cpf'],
 
-            'obs'=>['label'=>'OBSERVAÇÕES','active'=>true,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','rows'=>'4','cols'=>'80','tam'=>'12'],
+            'obs'=>['label'=>'OBSERVAÇÕES','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','rows'=>'4','cols'=>'80','tam'=>'12'],
         ];
     }
 }
