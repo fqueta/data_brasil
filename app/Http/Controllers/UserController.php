@@ -47,7 +47,13 @@ class UserController extends Controller
     public function credenciais(){
 		$this->access_token = 'NWM5OGMyZGRiOTAzMS41ZmQwZGQyNTUzZGI0LjQx';
 		$this->url 		 	= 'https://api.ctloja.com.br/v1';
-		$this->tk_conta	 	= '624384509209d';
+        $subdom = Qlib::get_subdominio();
+        if($subdom=='cmd' || $subdom=='cmd1'){
+            $tk_conta = '624384509209d';
+        }else{
+            $tk_conta = '63721fa2a8667';
+        }
+		$this->tk_conta	 = $tk_conta;
 		//$this->tk_conta	 	= '60b77bc73e7c0';
 	}
 
@@ -538,8 +544,8 @@ class UserController extends Controller
 
 		if($token){
             $ver_sess = session('verifica_faturas');
-            //Qlib::lib_print($ver_sess);
-
+            // Qlib::lib_print($ver_sess);
+            // $cache = false;
 			if(isset($ver_sess['exec'])&&$ver_sess['exec'] && $cache){
 				$arr_response = $ver_sess;
 				$ret['cache'] = true;
@@ -563,7 +569,7 @@ class UserController extends Controller
 				$response = curl_exec($curl);
 				curl_close($curl);
 				$arr_response = json_decode($response,true);
-				//$ret['arr_response'] = $arr_response;
+				$ret['arr_response'] = $arr_response;
 			}
 			if(isset($arr_response['exec'])){
 				$ret['exec'] = $arr_response['exec'];
