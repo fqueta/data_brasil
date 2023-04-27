@@ -547,10 +547,9 @@ class UserController extends Controller
             // Qlib::lib_print($ver_sess);
             // $cache = false;
 			if(isset($ver_sess['exec'])&&$ver_sess['exec'] && $cache){
-				$arr_response = $ver_sess;
+                $arr_response = $ver_sess;
 				$ret['cache'] = true;
 			}else{
-
 				$curl = curl_init();
 
 				curl_setopt_array($curl, array(

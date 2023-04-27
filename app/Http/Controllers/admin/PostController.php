@@ -717,6 +717,7 @@ class PostController extends Controller
                 'option_select'=>false,
                 'cp_busca'=>'config][processo',
             ],
+            'config[data_dv]'=>['label'=>'Data devolutiva','active'=>true,'type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][data_dv'],
             //'post_excerpt'=>['label'=>'Resumo (Opcional)','active'=>true,'placeholder'=>'Uma síntese do um post','type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             //'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             'post_content'=>['label'=>'Ocorrências','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
@@ -816,9 +817,7 @@ class PostController extends Controller
                 'cp_busca'=>'config][responsável',
                 'class'=>'select2',
             ],
-
-            //'post_excerpt'=>['label'=>'Resumo (Opcional)','active'=>true,'placeholder'=>'Uma síntese do um post','type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
-            //'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+            'config[data_dv]'=>['label'=>'Data devolutiva','active'=>true,'type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][data_dv'],
             'post_status'=>['label'=>'Status','active'=>true,'type'=>'chave_checkbox','value'=>'publish','valor_padrao'=>'publish','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['publish'=>'Em vigor','pending'=>'Cancelado']],
             'post_content'=>['label'=>'Ocorrências','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
         ];
@@ -992,9 +991,10 @@ class PostController extends Controller
         $dados['post_author'] = $userLogadon;
         $dados['token'] = !empty($dados['token'])?$dados['token']:uniqid();
         // $dados['post_date_gmt'] = !empty($dados['post_date_gmt'])?$dados['post_date_gmt']:'STR_TO_DATE(0000-00-00 00:00:00)';
-        if(!$dados['post_date_gmt'])
+        if(isset($dados['post_date_gmt']) && !$dados['post_date_gmt'])
             unset($dados['post_date_gmt']);
-        // dd($dados);
+        if(isset($dados['post_modified_gmt']) && !$dados['post_modified_gmt'])
+            unset($dados['post_modified_gmt']);
         if($this->i_wp=='s' && isset($dados['post_type'])){
             //$endPoint = isset($dados['endPoint'])?$dados['endPoint']:$dados['post_type'].'s';
             $endPoint = 'post';
@@ -1023,6 +1023,7 @@ class PostController extends Controller
                 $mens = 'Parametros invalidos!';
             }
         }else{
+            // dd($dados);
             $salvar = Post::create($dados);
             if(isset($salvar->id) && $salvar->id){
                 $mens = $this->label.' cadastrado com sucesso!';

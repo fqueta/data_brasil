@@ -65,7 +65,21 @@ ela é usada na difição dos gates
                                     @endforeach
                                 </table>
                                 @else
-
+                                    <div align="right">
+                                        <table class="table">
+                                            <tr>
+                                                @if (!empty($v->roles))
+                                                <div class="col-6 px-0 text-right">
+                                                    @foreach ($v->roles as$kr=>$vr)
+                                                    <label for="{{$v->url}}-{{$kr}}">
+                                                        <input type="checkbox" class="check-permission" name="id_menu[{{$kr}}][{{$v->url}}]" value="s" id="{{$v->url}}-{{$kr}}"  @if (isset($value[$kr][$v->url] ) && $value[$kr][$v->url]=='s') checked @endif > {{$vr}}
+                                                    </label>
+                                                    @endforeach
+                                                </div>
+                                                @endif
+                                            </tr>
+                                        </table>
+                                    </div>
                                 @endif
                             </td>
                         </tr>
