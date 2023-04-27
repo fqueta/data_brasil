@@ -57,7 +57,7 @@ class HomeController extends Controller
         }
         //REGISTRAR EVENTOS
         (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
-        $totalDecretos = Post::where('post_type','=','decreto')->count();
+        $totalDecretos = Post::where('post_type','=','decretos')->count();
         $config = [
             'c_familias'=>$dadosFamilias,
             'mapa'=>$dadosMp,
