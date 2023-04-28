@@ -21,7 +21,7 @@
                         <div class="input-group col-md-8" style="height: 38px;margin-top: 31px;">
                             <div class="form-outline" style="width: 90%">
                                 {{-- <label class="form-label" for="form1">Search</label> --}}
-                            <input type="search" id="auto-form1" name="" placeholder="informe o nome ou documento" class="form-control autocomplete-pesq" url="{{ route('beneficiarios.index') }}?a-campo=nome" />
+                            <input type="search" id="auto-form1" name="" placeholder="informe o nome ou documento" class="form-control autocomplete-pesq" url_="{{ route('beneficiarios.index') }}?a-campo=nome" />
                             </div>
                             <button type="button" class="btn btn-primary">
                             <i class="fas fa-search"></i>
@@ -43,7 +43,7 @@
         if(obj.value){
             var url = '{{ route('beneficiarios.index')}}'+'?a-campo='+obj.value;
             var inp = document.querySelector(id);
-            inp.setAttribute('url',url);
+            inp.setAttribute('url_',url);
             if(obj.value=='cpf'){
                 $(classe).inputmask('999.999.999-99');
             }else{
