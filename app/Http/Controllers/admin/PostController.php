@@ -340,7 +340,7 @@ class PostController extends Controller
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 //'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
                 'event'=>'onchange=carregaQuadras($(this).val(),\'config[quadras][]\'); data-selector=bairro required',
-                'tam'=>'6',
+                'tam'=>'9',
                 //'value'=>@$_GET['config']['area'],
                 'cp_busca'=>'config][area',
                 // 'class'=>'select2'
@@ -352,7 +352,7 @@ class PostController extends Controller
                 'arr_opc'=>$arr_opc_quadras,
                 'exibe_busca'=>'d-block',
                 'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\'); data-selector=quadra required',
-                'tam'=>'3',
+                'tam'=>'12',
                 'cp_busca'=>'config][quadras',
                 'class'=>'select2',
                 'value'=>@$_GET['config']['quadras'],
