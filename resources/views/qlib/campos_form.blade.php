@@ -9,9 +9,11 @@
                 @if ($config['option_select'])
                     <option value="" class="option_select"> {{$config['label_option_select']}} </option>
                 @endif
-                @foreach ($config['arr_opc'] as $k=>$v)
+                @if (is_array($config['arr_opc']))
+                    @foreach ($config['arr_opc'] as $k=>$v)
                     <option value="{{$k}}" class="opcs" @if(isset($config['value']) && $config['value'] == $k) selected @endif>{{$v}}</option>
-                @endforeach
+                    @endforeach
+                @endif
             </select>
             @error($config['campo'])
             <div class="alert alert-danger">{{ $message }}</div>
