@@ -10,6 +10,7 @@ use App\Models\Quadra;
 use App\Qlib\Qlib;
 use App\Models\User;
 use App\Models\_upload;
+use App\Models\Lote;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -433,6 +434,53 @@ class QuadrasController extends Controller
             $ret = response()->json(['mens'=>__('Registro '.$id.' deletado com sucesso!'),'color'=>'success','return'=>route($this->routa.'.index')]);
         }else{
             $ret = redirect()->route($routa.'.index',['mens'=>'Registro deletado com sucesso!','color'=>'success']);
+        }
+        return $ret;
+    }
+    /**
+     * exibe lotes de uma quadra ou de várias quadras.
+     * @ param string ou array
+     */
+    public function lotes($quadras=false){
+        //uso com parametro array $lotes = (new QuadrasController($user))->lotes([3,2,4]);
+        //uso com parametro string $lotes = (new QuadrasController($user))->lotes(4);
+        $ret['exec'] = false;
+        $ret['data_lotes'] = [];
+        $ret['total_lotes_quadras'] = [];
+        $ret['total_lotes'] = 0;
+        $ret['nome_quadra'] = [];
+        if($quadras){
+            if(is_array($quadras)){
+                foreach ($quadras as $v) {
+                    $lotes = Lote::where('quadra','=', $v)->get();
+                    $ret['nome_quadra'][$v] = Qlib::buscaValorDb(['tab'=>'quadras','campo_bus'=>'id','valor'=>$v,'select'=>'nome']);
+                    if($lotes->count() > 0){
+                        $ret['exec'] = true;
+                        $ret['total_lotes'] += $lotes->count();
+                        foreach ($lotes as $kl => $vl) {
+                            $ret['data_lotes'][$v][$kl] = $vl;
+                            $ret['total_lotes_quadras'][$v] = $lotes->count();
+                        }
+                    }else{
+                        $ret['total_lotes_quadras'][$v] = 0;
+
+                    }
+                }
+            }else{
+                $lotes = Lote::where('quadra','=', $quadras)->get();
+                if($lotes->count() > 0){
+                    $ret['exec'] = true;
+                    $ret['total_lotes'] += $lotes->count();
+                    foreach ($lotes as $kl => $vl) {
+                        $ret['data_lotes'][$quadras][$kl] = $vl;
+                        $ret['total_lotes_quadras'][$quadras] = $lotes->count();
+                        $ret['nome_quadra'][$quadras] = Qlib::buscaValorDb(['tab'=>'quadras','campo_bus'=>'id','valor'=>$quadras,'select'=>'nome']);
+
+                    }
+                }else{
+                    $ret['total_lotes_quadras'][$quadras] = 0;
+                }
+            }
         }
         return $ret;
     }

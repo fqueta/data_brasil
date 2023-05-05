@@ -284,6 +284,13 @@ class PostController extends Controller
         $data = false;
         if($post_id){
             $data = Post::Find($post_id);
+            if(isset($data['config'])){
+                $data['config'] = Qlib::lib_json_array($data['config']);
+            }
+        }
+        $arr_lotes = false;
+        if(isset($data['config']['quadras'])){
+            $arr_lotes = (new QuadrasController($user))->lotes($data['config']['quadras']);
         }
         if(isset($data['bairro'])){
             $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$data['bairro']."' AND ".Qlib::compleDelete()." ORDER BY nome ASC",'nome','id');
@@ -339,7 +346,7 @@ class PostController extends Controller
                 'campo'=>'bairro',
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 //'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
-                'event'=>'onchange=carregaQuadras($(this).val(),\'config[quadras][]\'); data-selector=bairro required',
+                'event'=>'onchange=carregaQuadras($(this).val(),\'config[quadras][]\'); data-select-f=bairro required',
                 'tam'=>'9',
                 //'value'=>@$_GET['config']['area'],
                 'cp_busca'=>'config][area',
@@ -351,7 +358,7 @@ class PostController extends Controller
                 'type'=>'select_multiple',
                 'arr_opc'=>$arr_opc_quadras,
                 'exibe_busca'=>'d-block',
-                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\'); data-selector=quadra required',
+                'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\'); data-select-f=quadra required',
                 'tam'=>'12',
                 'cp_busca'=>'config][quadras',
                 'class'=>'select2',
@@ -395,47 +402,55 @@ class PostController extends Controller
                 // 'class'=>'select2',
             ],
             'config[data_realizado]'=>['label'=>'Data realizado','cp_busca'=>'config][data_realizado','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
-             'config[lotes]'=>[
-                'label'=>'Informações do lote',
+            'lotes'=>[
+                'label'=>__('Listagem de lotes'),
+                'type'=>'html',
                 'active'=>false,
-                'type'=>'html_vinculo',
-                'cp_busca'=>'config][lotes',
-                'exibe_busca'=>'d-none',
-                'event'=>'', //dampo para selecionar esse input
-                'tam'=>'12',
-                'script'=>'',
-                'data_selector'=>[
-                    'campos'=>$lote->campos(),
-                    'route_index'=>route('lotes.index'),
-                    'id_form'=>'frm-loteamento',
-                    'tipo'=>'array', // int para somente um ou array para vários
-                    'action'=>route('lotes.store'),
-                    'campo_id'=>'id',
-                    'campo_bus'=>'nome',
-                    'campo'=>'config[lotes]',
-                    'value'=>[],
-                    'label'=>'Informações do lote',
-                    'table'=>[
-                        'quadra'=>['label'=>'Quadra','type'=>'arr_tab',
-                        'conf_sql'=>[
-                            'tab'=>'quadras',
-                            'campo_bus'=>'id',
-                            'select'=>'nome',
-                            'param'=>['bairro'],
-                            ]
-                        ],
-                        'nome'=>['label'=>'Lote','type'=>'text'],
-                    ],
-                    'tab' =>'lotes',
-                    'placeholder' =>'Digite somente o número do Lote...',
-                    'janela'=>[
-                        'url'=>route('lotes.create').'',
-                        'param'=>['bairro','quadra'],
-                        'form-param'=>'',
-                    ],
-                    'salvar_primeiro' =>false,//exigir cadastro do vinculo antes de cadastrar este
-                ],
+                'script'=>'admin.processos.lotes',
+                'script_show'=>'admin.processos.lotes',
+                'dados'=>$arr_lotes,
             ],
+            // 'config[lotes]'=>[
+            //     'label'=>'Informações do lote',
+            //     'active'=>false,
+            //     'type'=>'html_vinculo',
+            //     'cp_busca'=>'config][lotes',
+            //     'exibe_busca'=>'d-none',
+            //     'event'=>'', //dampo para selecionar esse input
+            //     'tam'=>'12',
+            //     'script'=>'',
+            //     'data_selector'=>[
+            //         'campos'=>$lote->campos(),
+            //         'route_index'=>route('lotes.index'),
+            //         'id_form'=>'frm-loteamento',
+            //         'tipo'=>'array', // int para somente um ou array para vários
+            //         'action'=>route('lotes.store'),
+            //         'campo_id'=>'id',
+            //         'campo_bus'=>'nome',
+            //         'campo'=>'config[lotes]',
+            //         'value'=>[],
+            //         'label'=>'Informações do lote',
+            //         'table'=>[
+            //             'quadra'=>['label'=>'Quadra','type'=>'arr_tab',
+            //             'conf_sql'=>[
+            //                 'tab'=>'quadras',
+            //                 'campo_bus'=>'id',
+            //                 'select'=>'nome',
+            //                 'param'=>['bairro'],
+            //                 ]
+            //             ],
+            //             'nome'=>['label'=>'Lote','type'=>'text'],
+            //         ],
+            //         'tab' =>'lotes',
+            //         'placeholder' =>'Digite somente o número do Lote...',
+            //         'janela'=>[
+            //             'url'=>route('lotes.create').'',
+            //             'param'=>['bairro','quadra'],
+            //             'form-param'=>'',
+            //         ],
+            //         'salvar_primeiro' =>false,//exigir cadastro do vinculo antes de cadastrar este
+            //     ],
+            // ],
             'config[cadastro]'=>[
                 'label'=>'Cadastro',
                 'active'=>true,
@@ -572,11 +587,12 @@ class PostController extends Controller
                 'arr_opc'=>Qlib::sql_array("SELECT id,nome FROM bairros WHERE ativo='s'",'nome','id'),'exibe_busca'=>'d-block',
                 //'event'=>'onchange=carregaMatricula($(this).val(),\'familias\')',
                 'event'=>'onchange=carregaQuadras($(this).val(),\'config[quadras][]\'); data-selector=bairro',
-                'tam'=>'6',
+                'tam'=>'9',
                 //'value'=>@$_GET['config']['area'],
                 'cp_busca'=>'config][area',
                 // 'class'=>'select2'
             ],
+            'config[matricula]'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][matricula'],
             'config[quadras][]'=>[
                 'label'=>'Quadras',
                 'active'=>true,
@@ -584,12 +600,11 @@ class PostController extends Controller
                 'arr_opc'=>$arr_opc_quadras,
                 'exibe_busca'=>'d-block',
                 'event'=>'onchange=lib_abrirModalConsultaVinculo(\'loteamento\',\'fechar\'); data-selector=quadra',
-                'tam'=>'3',
+                'tam'=>'12',
                 'cp_busca'=>'config][quadras',
                 'class'=>'select2',
                 'value'=>@$_GET['config']['quadras'],
             ],
-            'config[matricula]'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][matricula'],
             'config[ocupantes]'=>['label'=>'Ocupantes','active'=>true,'type'=>'text_disabled','exibe_busca'=>'d-block','event'=>'','tam'=>'3','value'=>$ocupantes,'placeholder'=>'','cp_busca'=>'config][ocupantes'],
             'config[responsavel]'=>[
                 'label'=>'Responsável',
@@ -720,7 +735,7 @@ class PostController extends Controller
             //     'option_select'=>false,
             //     'cp_busca'=>'config][processo',
             // ],
-            'config[data_dv]'=>['label'=>'Data devolutiva','active'=>true,'type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][data_dv'],
+            'config[data_dv]'=>['label'=>'Data devolutiva','active'=>true,'type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>'','cp_busca'=>'config][data_dv'],
             //'post_excerpt'=>['label'=>'Resumo (Opcional)','active'=>true,'placeholder'=>'Uma síntese do um post','type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             //'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             'post_content'=>['label'=>'Ocorrências','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
@@ -994,9 +1009,11 @@ class PostController extends Controller
         $dados['post_author'] = $userLogadon;
         $dados['token'] = !empty($dados['token'])?$dados['token']:uniqid();
         // $dados['post_date_gmt'] = !empty($dados['post_date_gmt'])?$dados['post_date_gmt']:'STR_TO_DATE(0000-00-00 00:00:00)';
-        if(isset($dados['post_date_gmt']) && !$dados['post_date_gmt'])
+        if(is_null(@$dados['post_date_gmt'])){
+            // dd($dados);
             unset($dados['post_date_gmt']);
-        if(isset($dados['post_modified_gmt']) && !$dados['post_modified_gmt'])
+        }
+        if(is_null(@$dados['post_modified_gmt']))
             unset($dados['post_modified_gmt']);
         if($this->i_wp=='s' && isset($dados['post_type'])){
             //$endPoint = isset($dados['endPoint'])?$dados['endPoint']:$dados['post_type'].'s';

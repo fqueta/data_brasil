@@ -23,6 +23,17 @@
         </div>
         @if (isset($campos) && is_array($campos))
             @foreach ($campos as $k=>$v)
+                @if ($v['type']=='date')
+                    @php
+                        if(isset($value[$k])){
+                            $arr_v = explode(' ',$value[$k]);
+                            if(isset($arr_v[1])&&!empty($arr_v[1])){
+                                $value[$k] = $arr_v[0];
+                            }
+                        }
+                    @endphp
+                    {{-- {{App\Qlib\Qlib::lib_print($value)}} --}}
+                @endif
                 @if (isset($v['cp_busca'])&&!empty($v['cp_busca']))
 
                     @php

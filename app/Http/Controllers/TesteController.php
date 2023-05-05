@@ -27,9 +27,10 @@ class TesteController extends Controller
         // $dados = (new FamiliaController($user))->rendaFamiliar(3145);
         // dd($dados);
         // $d = (new processosController)->register_change_process(['process_id' => 19,'save_status' => 'processos-prefeitura']);
-        $oc = (new processosController)->ocupantes(21);
-
-        dd($oc);
+        // $oc = (new processosController)->ocupantes(21);
+        // $lotes = (new QuadrasController($user))->lotes([3,2,4]);
+        $lotes = (new QuadrasController($user))->lotes(4);
+        dd($lotes);
         // $host = request()->getHttpHost();
         // echo $host ."<br/>";
         // $getHost = request()->getHost();
