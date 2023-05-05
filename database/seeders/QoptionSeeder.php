@@ -67,6 +67,11 @@ class QoptionSeeder extends Seeder
                 'url'=>'json_nao_sim',
                 'valor'=>'{"n":"Não","s":"Sim"}',
             ],
+            [
+                'nome'=>'Domininio padrão para visualiação de arquivos ',
+                'url'=>'dominio_arquivos',
+                'valor'=>'/storage',
+            ],
         ]);
     }
 }
