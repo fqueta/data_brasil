@@ -748,7 +748,11 @@ class PostController extends Controller
         $user = $this->user;
         $bairro = new BairroController($user);
         $quadra = new QuadrasController($user);
-        $data = $dados?$dados:false;
+        $data = false;
+        if($post_id){
+            $data = Post::Find($post_id);
+        }
+
         if(isset($data['bairro'])){
             $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$data['bairro']."' AND ".Qlib::compleDelete()." ORDER BY nome ASC",'nome','id');
         }else{
@@ -1126,7 +1130,8 @@ class PostController extends Controller
                 }
             }
             $subdomain = Qlib::get_subdominio();
-            if(Gate::allows('is_admin2', [$this->routa]) && $subdomain !='cmd'){
+            // if(Gate::allows('is_admin2', [$this->routa]) && $subdomain !='cmd'){
+            if(Gate::allows('is_admin2', [$this->routa])){
                 if($this->routa =='processos' || $this->routa =='processos-campo' || $this->routa =='processos-prefeitura' || $this->routa =='processos-cartorio'){
                     $config['eventos'] = (new EventController)->listEventsPost(['post_id'=>$id,'tab'=>'change_process']);
                 }else{
