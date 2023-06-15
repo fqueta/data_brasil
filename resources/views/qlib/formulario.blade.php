@@ -25,7 +25,7 @@
             @foreach ($campos as $k=>$v)
                 @if ($v['type']=='date')
                     @php
-                        if(isset($value[$k])){
+                        if(isset($value[$k]) && !empty($value[$k])){
                             $arr_v = explode(' ',$value[$k]);
                             if(isset($arr_v[1])&&!empty($arr_v[1])){
                                 $value[$k] = $arr_v[0];
