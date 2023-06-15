@@ -25,10 +25,16 @@
             @foreach ($campos as $k=>$v)
                 @if ($v['type']=='date')
                     @php
-                        if(isset($value[$k]) && !empty($value[$k])){
-                            $arr_v = explode(' ',$value[$k]);
-                            if(isset($arr_v[1])&&!empty($arr_v[1])){
-                                $value[$k] = $arr_v[0];
+                        if(is_array($value[$k])){
+                            if(isset($value[$k][0])&&!empty($value[$k][0])){
+                                $value[$k] = $value[$k][0];
+                            }
+                        }else{
+                            if(isset($value[$k])){
+                                $arr_v = explode(' ',$value[$k]);
+                                if(isset($arr_v[1])&&!empty($arr_v[1])){
+                                    $value[$k] = $arr_v[0];
+                                }
                             }
                         }
                     @endphp
