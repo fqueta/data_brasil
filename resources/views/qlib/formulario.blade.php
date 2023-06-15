@@ -25,18 +25,19 @@
             @foreach ($campos as $k=>$v)
                 @if ($v['type']=='date')
                     @php
-                        if(is_array($value[$k])){
-                            if(isset($value[$k][0])&&!empty($value[$k][0])){
-                                $value[$k] = $value[$k][0];
-                            }
-                        }else{
-                            if(isset($value[$k])){
+                        if(isset($value[$k])){
+                            if(is_array($value[$k])){
+                                if(isset($value[$k][0])&&!empty($value[$k][0])){
+                                    $value[$k] = $value[$k][0];
+                                }
+                            }else{
                                 $arr_v = explode(' ',$value[$k]);
                                 if(isset($arr_v[1])&&!empty($arr_v[1])){
                                     $value[$k] = $arr_v[0];
                                 }
                             }
                         }
+
                     @endphp
                     {{-- {{App\Qlib\Qlib::lib_print($value)}} --}}
                 @endif
