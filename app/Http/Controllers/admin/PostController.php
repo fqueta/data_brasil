@@ -689,7 +689,7 @@ class PostController extends Controller
             $arr_ano_base[$value] = $value;
         }
         $ret = [
-            'ID'=>['label'=>'Id','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'ID'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             // 'post_type'=>['label'=>'tipo de post','active'=>false,'type'=>'hidden','exibe_busca'=>'d-none','event'=>'','tam'=>'2','value'=>$this->post_type],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'post_type'=>[
@@ -847,7 +847,7 @@ class PostController extends Controller
             }elseif($sec=='processos-prefeitura'){
                 $title = __('Cadastro de processos na prefeitura');
             }elseif($sec=='processos-cartorio'){
-                $title = __('Cadastro de processos na cartório');
+                $title = __('Andamento processual no Cartório de Registro de Imóveis');
             }elseif($sec=='menus'){
                 $title = __('Cadastro de menus');
             }elseif($sec=='pacotes_lances'){
