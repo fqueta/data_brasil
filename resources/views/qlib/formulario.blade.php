@@ -88,6 +88,7 @@
                     'script'=>@$v['script'],
                     'valor_padrao'=>@$v['valor_padrao'],
                     'dados'=>@$v['dados'],
+                    'title'=>@$v['title'],
                     'active'=>@$v['active'],
             ])}}
             @endforeach

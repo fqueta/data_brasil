@@ -852,4 +852,108 @@ class Qlib
         $ret = (new EventController)->regEvent($config);
         return $ret;
     }
+    /**
+     * Retorna a diferença entre duas datas
+     */
+    static function diffDate($d1, $d2, $type='', $sep='-')
+	{
+		$d1 = explode($sep, $d1);
+		$d2 = explode($sep, $d2);
+		switch ($type)
+		{
+            case 'A':
+            $X = 31536000;
+            break;
+            case 'M':
+            $X = 2592000;
+            break;
+            case 'D':
+            $X = 86400;
+            break;
+            case 'H':
+            $X = 3600;
+            break;
+            case 'MI':
+            $X = 60;
+            break;
+            default:
+            $X = 1;
+		}
+
+		 return floor( ( ( mktime(0, 0, 0, $d2[1], $d2[2], $d2[0]) - mktime(0, 0, 0, $d1[1], $d1[2], $d1[0] ) ) / $X ) );
+	}
+    /**
+     * Metodo para salvar ou atualizar os meta posts
+     */
+    static function update_postmeta($post_id,$meta_key=null,$meta_value=null)
+    {
+        // $post_id = isset($config['post_id'])?$config['post_id']:false;
+        // $meta_key = isset($config['meta_key'])?$config['meta_key']:false;
+        // $meta_value = isset($config['meta_value'])?$config['meta_value']:false;
+        $ret = false;
+        $tab = 'postmeta';
+        if($post_id&&$meta_key&&$meta_value){
+            $verf = Qlib::totalReg($tab,"WHERE post_id='$post_id' AND meta_key='$meta_key'");
+            if($verf){
+                $ret=DB::table($tab)->where('post_id',$post_id)->where('meta_key',$meta_key)->update([
+                    'meta_value'=>$meta_value,
+                    'updated_at'=>self::dataBanco(),
+                ]);
+            }else{
+                $ret=DB::table($tab)->insert([
+                    'post_id'=>$post_id,
+                    'meta_value'=>$meta_value,
+                    'meta_key'=>$meta_key,
+                    'created_at'=>self::dataBanco(),
+                ]);
+            }
+            //$ret = DB::table($tab)->storeOrUpdate();
+        }
+        return $ret;
+    }
+    /**
+     * Metodo para pegar os meta posts
+     */
+    static function get_postmeta($post_id,$meta_key=null,$string=null)
+    {
+        $ret = false;
+        $tab = 'postmeta';
+        if($post_id){
+            if($meta_key){
+                $d = DB::table($tab)->where('post_id',$post_id)->where('meta_key',$meta_key)->get();
+                if($d->count()){
+                    if($string){
+                        $ret = $d[0]->meta_value;
+                    }else{
+                        $ret = [$d[0]->meta_value];
+                    }
+                }
+            }
+        }
+        return $ret;
+    }
+    /**
+     * Metodo para formatar os dados das bando de dados Post
+     */
+    static function dataPost($dados=false){
+        if($dados){
+            foreach ($dados->getOriginal() as $kda => $vda) {
+                if($kda=='config'){
+                    $dados['config'] = Qlib::lib_json_array($vda);
+                }elseif($kda=='post_date'){
+                    if($vda=='1970-01-01 00:00:00'){
+                        $dados[$kda] = '0000-00-00 00:00:00';
+                    }
+                }elseif($kda=='post_date_gmt'){
+                    $dExec = explode(' ',$dados['post_date_gmt']);
+                    if(isset($dExec)){
+                        $dados['post_date_gmt'] = $dExec;
+                    }
+                }else{
+                    $dados[$kda] = $vda;
+                }
+            }
+        }
+        return $dados;
+    }
 }

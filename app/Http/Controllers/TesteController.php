@@ -29,8 +29,8 @@ class TesteController extends Controller
         // $d = (new processosController)->register_change_process(['process_id' => 19,'save_status' => 'processos-prefeitura']);
         // $oc = (new processosController)->ocupantes(21);
         // $lotes = (new QuadrasController($user))->lotes([3,2,4]);
-        $lotes = (new QuadrasController($user))->lotes(4);
-        dd($lotes);
+        // $lotes = (new QuadrasController($user))->lotes(4);
+        // dd($lotes);
         // $host = request()->getHttpHost();
         // echo $host ."<br/>";
         // $getHost = request()->getHost();
@@ -40,6 +40,9 @@ class TesteController extends Controller
         // $subdomain = $route->getParameter('subdomain');
         //dd($route);
         // return view('teste',$config);
+        // dd(Qlib::update_postmeta(9,'test_data','data de hoje atualizado'));
+        $ret = Qlib::get_postmeta(9,'test_data',true);
+        dd($ret);
     }
     public function ajax(){
         $limit = isset($_GET['limit']) ?$_GET['limit'] : 50;

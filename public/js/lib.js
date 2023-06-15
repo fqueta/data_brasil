@@ -2179,3 +2179,34 @@ function exibeTpc(val){
         $('.tpc-a').show();
     }
 }
+function add_historico_devolucao(obj){
+   var tm = obj.getAttribute('data-tm'),id=$('#dv_historico tbody tr').length,h_at = $('#dv_historico tbody').html(),campo_his_dev=obj.getAttribute('data-campo'),btn_acao='<button type="button" onclick="remove_hist_devolucao(\'{id}\')" class="btn btn-outline-danger"><i class="fa fa-times"></i></button>';
+   id++;
+   var vm = atob(tm);
+   vm = vm.replaceAll('TalÃ£o','Talão');
+   vm = vm.replaceAll('Ãrea','Área');
+   vm = vm.replaceAll('JurÃ­dico','Jurídica');
+   vm = vm.replaceAll('{campo}',campo_his_dev);
+   vm = vm.replaceAll('{cal_dias}','');
+   vm = vm.replaceAll('{protocolo}','');
+   vm = vm.replaceAll('{data}','');
+   vm = vm.replaceAll('{talao}','');
+   vm = vm.replaceAll('{motivo}','');
+   vm = vm.replaceAll('{acao}',btn_acao);
+   vm = vm.replaceAll('{sel_juri}','selected');
+   vm = vm.replaceAll('{sel_topo}','');
+   vm = vm.replaceAll('{sel_admi}','');
+   vm = vm.replaceAll('{id}',id);
+   $('#dv_historico tbody').html(h_at+vm);
+//    $('.select2'+id).select2();
+}
+function remove_hist_devolucao(id){
+    $('#tr-'+id).remove();
+}
+function exibeNotaDevolutiva(vl){
+    if(vl=='s'){
+        $('#card-historico-dev').removeClass('d-none').removeClass('d-print-none');
+    }else{
+        $('#card-historico-dev').addClass('d-none').addClass('d-print-none');
+    }
+}

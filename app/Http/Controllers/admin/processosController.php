@@ -100,4 +100,88 @@ class processosController extends Controller
         }
         return $ret;
     }
+    public function calcula_dias( $id = null,$data=false,$campos='post_date_gmt@post_modified_gmt')
+    {
+        $ret =false;
+        if($id && !$data){
+            $data = Post::find($id);
+        }
+        if($campos){
+            $arr_campos = explode('@', $campos);
+        }
+        if(isset($data[$arr_campos[0]]) && !empty($data[$arr_campos[0]]) && isset($data[$arr_campos[1]]) && !empty($data[$arr_campos[1]])){
+            $di = explode(' ', $data[$arr_campos[0]]);    //Data inicial
+            $df = explode(' ', $data[$arr_campos[1]]); //Data Final
+            if($di[0] && $df[0]){
+                $ret = Qlib::diffDate($di[0],$df[0],'D');
+            }
+        }
+        return $ret;
+    }
+    public function list_historico_devolutivas($dados,$tm=false){
+        $tr = false;
+        $dconf = isset($dados['config'])?$dados['config']:false;
+        $campo_his_dev = 'config[hist_dev][{id}]';
+        $r_n = explode('.',request()->route()->getName());
+        $route_name = isset($r_n[1]) ? $r_n[1] : false;
+        if(isset($dconf['nota_devolutiva']) && $dconf['nota_devolutiva']=='s'){
+            $class_display = '';
+        }else{
+            $class_display = 'd-none d-print-none';
+        }
+        if(isset($dconf['hist_dev']) && is_array($dconf['hist_dev']) && $tm){
+            foreach ($dconf['hist_dev'] as $k => $v) {
+                $di = explode(' ', $dados['post_modified_gmt']);
+                if($di[0] && $v['data']){
+                    $cal_dias = Qlib::diffDate($di[0],$v['data'],'D');
+                }else{
+                    $cal_dias = false;
+                }
+                if($v['data'] && $v['data_cumprimento']){
+                    $cal_dias2 = Qlib::diffDate($v['data'],$v['data_cumprimento'],'D');
+                }else{
+                    $cal_dias2 = false;
+                }
+                $acao = '<button type="button" onclick="remove_hist_devolucao(\'{id}\')" class="btn btn-outline-danger"><i class="fa fa-times"></i></button>';
+                $sel_juri = false;
+                $sel_topo = false;
+                $sel_admi = false;
+                if(@$v['area']=='Jurídico'){
+                    $sel_juri = 'selected';
+                }
+                if(@$v['area']=='Administrativo'){
+                    $sel_admi = 'selected';
+                }
+                if(@$v['area']=='Topografia'){
+                    $sel_topo = 'selected';
+                }
+                $title_calc_dias = __('Contagem de dias entre o Envio ao cartório e a data da Nota Devolutiva.');
+                $title_calc_dias2 = __('Contagem de dias entre o recebimento da Nota Devolutiva e o efetivo cumprimento da mesma.');
+                if($route_name=='show'){
+                    $data = Qlib::dataExibe($v['data']);
+                    $data_cumprimento = Qlib::dataExibe($v['data_cumprimento']);
+                }else{
+                    $data = $v['data'];
+                    $data_cumprimento = $v['data_cumprimento'];
+                }
+                $tr .= str_replace('{campo}',$campo_his_dev,$tm);
+                $tr = str_replace('{protocolo}',$v['protocolo'],$tr);
+                $tr = str_replace('{motivo}',$v['motivo'],$tr);
+                $tr = str_replace('{talao}',$v['talao'],$tr);
+                $tr = str_replace('{data}',$data,$tr);
+                $tr = str_replace('{data_cumprimento}',$data_cumprimento,$tr);
+                $tr = str_replace('{cal_dias}',$cal_dias,$tr);
+                $tr = str_replace('{cal_dias2}',$cal_dias2,$tr);
+                $tr = str_replace('{acao}',$acao,$tr);
+                $tr = str_replace('{title_calc_dias}',$title_calc_dias,$tr);
+                $tr = str_replace('{title_calc_dias2}',$title_calc_dias2,$tr);
+                $tr = str_replace('{sel_juri}',$sel_juri,$tr);
+                $tr = str_replace('{sel_admi}',$sel_admi,$tr);
+                $tr = str_replace('{sel_topo}',$sel_topo,$tr);
+                $tr = str_replace('{area}',@$v['area'],$tr);
+                $tr = str_replace('{id}',$k,$tr);
+            }
+        }
+        return $tr;
+    }
 }

@@ -9,8 +9,8 @@ use Illuminate\Notifications\Notifiable;
 class Post extends Model
 {
     use HasFactory,Notifiable;
-    const CREATED_AT = 'post_date';
-    const UPDATED_AT = 'post_modified';
+    // const CREATED_AT = 'post_date';
+    // const UPDATED_AT = 'post_modified';
     protected $casts = [
         'config' => 'array',
     ];

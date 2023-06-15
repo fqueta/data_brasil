@@ -8,6 +8,7 @@
     if(isset($_GET['page'])){
         $sb = '?page='.$_GET['page'].'&';
     }
+    $processosController = new App\Http\Controllers\admin\processosController;
     if(isset($_GET['filter'])){
         $urlAtual = App\Qlib\Qlib::urlAtual();
         $urlAtual = rawurldecode($urlAtual);
@@ -59,7 +60,7 @@
                     $val->id = $val->ID;
                 }
                 $rlink = 'edit';
-                if($routa=='familias'||$routa=='decretos'||$routa=='processos-campo'||$routa=='processos-prefeitura'||$routa=='processos'||$routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros'){
+                if($routa=='familias'||$routa=='decretos'||$routa=='processos-campo'||$routa=='processos-prefeitura'||$routa=='processos-cartorio'||$routa=='processos'||$routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros'){
                     $rlink = 'show';
                 }
                 $linkShow = route($routa.'.'.$rlink,['id'=>$val->id]). '?redirect='.$redirect.'idCad='.$val->id;
@@ -77,7 +78,7 @@
                                     <i class="fa fa-map-marker" aria-hidden="true"></i>
                                 </a>
                             @endif
-                            @if ($routa=='familias' || $routa=='decretos' || $routa=='processos-campo' || $routa=='processos' || $routa=='processos-prefeitura' || $routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros')
+                            @if ($routa=='familias' || $routa=='decretos' || $routa=='processos-campo' || $routa=='processos' || $routa=='processos-prefeitura' || $routa=='processos-cartorio' || $routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros')
                                 <a href="{{ $linkShow }}" title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
                                     <i class="fas fa-eye"></i>
                                 </a>
@@ -172,9 +173,20 @@
                             @elseif(isset($vd['cp_busca']) && !empty($vd['cp_busca']))
                                 @php
                                     $cp = explode('][',$vd['cp_busca']);
+                                    $td=false;
+                                    if($vd['type'] == 'text_disabled'){
+                                        if($cp[1]=='ocupantes'){
+                                            $td = $processosController->ocupantes($val->ID);
+                                        }
+                                        if($cp[1]=='calculadora_dias'){
+                                            $td = $processosController->calcula_dias(false,$val);
+                                        }
+                                    }else{
+                                        $td =@$val[$cp[0]][$cp[1]];
+                                    }
                                 @endphp
                                 @if (isset($cp[1]))
-                                    <td class="{{$cp[1]}}" title="{{ @$val[$cp[0]][$cp[1]] }}">{{ @$val[$cp[0]][$cp[1]] }}</td>
+                                    <td class="{{$cp[1]}}" title="{{ @$val[$cp[0]][$cp[1]] }}">{{ $td }}</td>
                                 @endif
                             @else
                                 @php
