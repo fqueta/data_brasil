@@ -114,6 +114,9 @@ class processosController extends Controller
             $df = explode(' ', $data[$arr_campos[1]]); //Data Final
             if($di[0] && $df[0]){
                 $ret = Qlib::diffDate($di[0],$df[0],'D');
+                if($ret<0){
+                    $ret = 0;
+                }
             }
         }
         return $ret;
@@ -130,6 +133,11 @@ class processosController extends Controller
             $class_display = 'd-none d-print-none';
         }
         if(isset($dconf['hist_dev']) && is_array($dconf['hist_dev']) && $tm){
+            $title_calc_dias = __('Contagem de dias entre o Envio ao cartório e a data da Nota Devolutiva.');
+            $title_calc_dias2 = __('Contagem de dias entre o recebimento da Nota Devolutiva e o efetivo cumprimento da mesma.');
+            // $tr .= '<input type="hidden" id="title_calc_dias" value="{title_calc_dias}">';
+            // $tr .= '<input type="hidden" id="title_calc_dias" value="{title_calc_dias}">';
+
             foreach ($dconf['hist_dev'] as $k => $v) {
                 $di = explode(' ', $dados['post_modified_gmt']);
                 if($di[0] && $v['data']){
@@ -155,8 +163,6 @@ class processosController extends Controller
                 if(@$v['area']=='Topografia'){
                     $sel_topo = 'selected';
                 }
-                $title_calc_dias = __('Contagem de dias entre o Envio ao cartório e a data da Nota Devolutiva.');
-                $title_calc_dias2 = __('Contagem de dias entre o recebimento da Nota Devolutiva e o efetivo cumprimento da mesma.');
                 if($route_name=='show'){
                     $data = Qlib::dataExibe($v['data']);
                     $data_cumprimento = Qlib::dataExibe($v['data_cumprimento']);

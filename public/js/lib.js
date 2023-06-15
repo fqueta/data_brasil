@@ -2180,7 +2180,8 @@ function exibeTpc(val){
     }
 }
 function add_historico_devolucao(obj){
-   var tm = obj.getAttribute('data-tm'),id=$('#dv_historico tbody tr').length,h_at = $('#dv_historico tbody').html(),campo_his_dev=obj.getAttribute('data-campo'),btn_acao='<button type="button" onclick="remove_hist_devolucao(\'{id}\')" class="btn btn-outline-danger"><i class="fa fa-times"></i></button>';
+   var tm = obj.getAttribute('data-tm'),id=$('#dv_historico tbody tr').length,h_at = $('#dv_historico tbody').html(),campo_his_dev=obj.getAttribute('data-campo'),btn_acao='<button type="button" onclick="remove_hist_devolucao(\'{id}\')" class="btn btn-outline-danger"><i class="fa fa-times"></i></button>',title_calc_dias = 'Contagem de dias entre o Envio ao cartório e a data da Nota Devolutiva.',title_calc_dias2 = 'Contagem de dias entre o recebimento da Nota Devolutiva e o efetivo cumprimento da mesma.';
+
    id++;
    var vm = atob(tm);
    vm = vm.replaceAll('TalÃ£o','Talão');
@@ -2196,6 +2197,9 @@ function add_historico_devolucao(obj){
    vm = vm.replaceAll('{sel_juri}','selected');
    vm = vm.replaceAll('{sel_topo}','');
    vm = vm.replaceAll('{sel_admi}','');
+   vm = vm.replaceAll('{cal_dias2}','');
+   vm = vm.replaceAll('{title_calc_dias}',title_calc_dias);
+   vm = vm.replaceAll('{title_calc_dias2}',title_calc_dias2);
    vm = vm.replaceAll('{id}',id);
    $('#dv_historico tbody').html(h_at+vm);
 //    $('.select2'+id).select2();
