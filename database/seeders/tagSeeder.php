@@ -138,7 +138,7 @@ class tagSeeder extends Seeder
                 'config'=>['color'=>'warning','icon'=>'fa fa-times']
             ],
             [
-                'nome'=>'Lei do Bem',
+                'nome'=>'Lei Ordinária N° 2.240/2019',
                 'pai'=>3,
                 'value'=>'Lei_do_Bem',
                 'ordem'=>6,
