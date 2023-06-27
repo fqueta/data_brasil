@@ -266,7 +266,7 @@ class QoptionsController extends Controller
         }
         $userLogadon = Auth::id();
         $data['ativo'] = isset($data['ativo'])?$data['ativo']:'n';
-        $data['autor'] = $userLogadon;
+        // $data['autor'] = $userLogadon;
         if(isset($dados['config'])){
             $dados['config'] = Qlib::lib_array_json($dados['config']);
         }

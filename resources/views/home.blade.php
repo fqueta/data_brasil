@@ -115,6 +115,28 @@
             </div>
         </div>
         @endif --}}
+        @if (isset($config['card_lotes']) && is_array($config['card_lotes']))
+
+            <div class="col-md-12 text-center mb-3">
+                <h4 class="tit-sep">{{__('Lotes cadastrados')}}</h4>
+            </div>
+            @foreach ($config['card_lotes'] as $klotes=>$vlotes)
+
+
+            <div class="col-lg-4 col-6">
+                <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box {{$vlotes['color']}}" title="">
+                <div class="inner">
+                    <h3>{{$vlotes['valor']}}</h3>
+                    <p> {{$vlotes['label']}} </p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-check"></i>
+                </div>
+                <a href="{{$vlotes['link_view']}}" title="Ver detalhes dos decretos" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            @endforeach
+        @endif
         <div class="col-md-12 text-center mb-3">
             <h4 class="tit-sep">{{__('Cadastros topográficos')}}</h4>
         </div>

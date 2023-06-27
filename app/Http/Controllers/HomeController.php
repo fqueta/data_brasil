@@ -6,6 +6,7 @@ use App\Http\Controllers\admin\EventController;
 use App\Models\User;
 use App\Models\relatorio;
 use App\Models\Assistencia;
+use App\Models\Lote;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,8 @@ class HomeController extends Controller
      */
     protected $user;
     public $tab;
+    public $title;
+    public $routa;
     public function __construct(User $user)
     {
         $this->middleware('auth');
@@ -58,15 +61,18 @@ class HomeController extends Controller
         //REGISTRAR EVENTOS
         (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
         $totalDecretos = Post::where('post_type','=','decretos')->count();
+        $card_lotes = (new LotesController())->total_lotes();
         $config = [
             'c_familias'=>$dadosFamilias,
             'mapa'=>$dadosMp,
             'totalDecretos'=>$totalDecretos,
+            'card_lotes'=>$card_lotes,
         ];
         return view('home',[
             'config'=>$config,
         ]);
     }
+
     public function transparencia()
     {
         $this->authorize('ler', 'transparencia');

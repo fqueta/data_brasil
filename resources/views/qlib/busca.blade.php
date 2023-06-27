@@ -26,12 +26,13 @@
                                     $value1[$kbu] = isset($_GET['filter'][$kbu])?$_GET['filter'][$kbu]:false;
                                     if($vbu['type']!='text' && $kbu=='id'){
                                         $vbu['type'] = 'text';
+                                    }elseif($vbu['type']=='checkbox'){
+                                        $value1[$kbu] = @$vbu['value'];
+                                        // App\Qlib\Qlib::lib_print($vbu);
                                     }elseif($vbu['type']=='chave_checkbox'){
                                         if(!isset($_GET['filter'][$kbu]) && isset($vbu['valor_padrao'])){
                                             $value1[$kbu] = $vbu['valor_padrao'];
-                                            // $_GET['filter'][$kbu] = $vbu['valor_padrao'];
                                         }
-
                                     }
                                     if($kbu!='obs')
                                         $vbu['tam'] = 3;

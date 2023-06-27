@@ -24,7 +24,7 @@ class LotesController extends Controller
     public $label;
     public $view;
     public $tab;
-    public function __construct(User $user)
+    public function __construct()
     {
         $this->middleware('auth');
         $this->routa = 'lotes';
@@ -94,6 +94,7 @@ class LotesController extends Controller
         if(isset($get['filter'])){
                 $titulo_tab = false;
                 $i = 0;
+                $get['filter']['config']['nome_municipio'] = isset($get['filter']['config']['nome_municipio']) ? $get['filter']['config']['nome_municipio'] : 'n';
                 foreach ($get['filter'] as $key => $value) {
                     if(!empty($value)){
                         if($key=='id' || $key=='quadra'){
@@ -102,7 +103,20 @@ class LotesController extends Controller
                             $arr_titulo[$campos[$key]['label']] = $value;
                         }else{
                             if(is_array($value)){
-                                // dd($value);
+                                foreach ($value as $kb => $vb) {
+                                    if(!empty($vb)){
+                                        $like = 'LIKE';
+                                        if($vb=='n'){
+                                            $like = 'NOT LIKE';
+                                            $vb = 's';
+                                        }
+                                        if($key=='tags'){
+                                            $lote->where($key,$like, '%"'.$vb.'"%' );
+                                        }else{
+                                            $lote->where($key,$like, '%"'.$kb.'":"'.$vb.'"%' );
+                                        }
+                                    }
+                                }
                             }else{
                                 $lote->where($key,'LIKE','%'. $value. '%');
                                 if($campos[$key]['type']=='select'){
@@ -150,6 +164,17 @@ class LotesController extends Controller
             'todos_ativos'=>['label'=>'Cadastros ativos','value'=>$lote_totais->ativos,'icon'=>'fas fa-check'],
             'todos_inativos'=>['label'=>'Cadastros inativos','value'=>$lote_totais->inativos,'icon'=>'fas fa-archive'],
         ];
+        return $ret;
+    }
+    public function total_lotes(){
+        $total = Lote::where('excluido','=','n')->where('deletado','=','n')->count();
+        $municipio = Lote::where('config','LIKE', '%"nome_municipio":"s"%' )->where('excluido','=','n')->where('deletado','=','n')->count();
+        $beneficiario = Lote::where('config','NOT LIKE', '%"nome_municipio":"s"%' )->where('excluido','=','n')->where('deletado','=','n')->count();
+
+        $ret['municipio'] = ['valor'=>$municipio,'link_view'=>'/lotes?limit=50&order=desc&filter%5Bconfig%5D%5Bnome_municipio%5D=s&filter%5Bativo%5D=s','exibe_painel'=>'s','color'=>'bg-warning','label'=>'EM NOME DO MUNICÍPIO'];
+        $ret['beneficiario'] = ['valor'=>$beneficiario,'link_view'=>'/lotes?limit=50&order=desc&filter%5Bconfig%5D%5Bnome_municipio%5D=n&filter%5Bativo%5D=s','exibe_painel'=>'s','color'=>'bg-success','label'=>'EM NOME DO BENEFICIÁRIO'];
+        $ret['total'] = ['valor'=>$total,'link_view'=>'/lotes','exibe_painel'=>'s','color'=>'bg-info','label'=>'TOTAL'];
+        // dd($ret);
         return $ret;
     }
     public function campos(){

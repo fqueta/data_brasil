@@ -549,7 +549,7 @@ class FamiliaController extends Controller
                 'label'=>'Tipo de pendências',
                 'active'=>true,
                 'type'=>'select',
-                'arr_opc'=>Qlib::sql_array("SELECT value,nome FROM tags WHERE ativo='s' AND pai='3'",'nome','value'),
+                'arr_opc'=>Qlib::sql_array("SELECT value,nome FROM tags WHERE ativo='s' AND pai='3' ORDER BY ordem ASC",'nome','value'),
                 'exibe_busca'=>'d-block',
                 'event'=>'',
                 'tam'=>'6',

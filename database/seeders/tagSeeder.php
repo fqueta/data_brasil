@@ -61,7 +61,7 @@ class tagSeeder extends Seeder
                 'nome'=>'Outros',
                 'pai'=>3,
                 'value'=>'outros',
-                'ordem'=>3,
+                'ordem'=>17,
                 'obs'=>'Quando faltam documentos como uma Certidão de Casamento, por exemplo',
                 'config'=>['color'=>'warning','icon'=>'fa fa-times']
             ],
@@ -121,7 +121,38 @@ class tagSeeder extends Seeder
                 'obs'=>'são aqueles processos que são entregues à Secretaria de Meio Ambiente para serem encaminhados ao Cartório de Registro de Imóveis. É a penúltima etapa do processo de regularização fundiária.',
                 'config'=>['color'=>'warning','icon'=>'fa fa-check']
             ],
-
+            [
+                'nome'=>'Imóvel Abandonado',
+                'pai'=>3,
+                'value'=>'Imovel_Abandonado',
+                'ordem'=>3,
+                'obs'=>'',
+                'config'=>['color'=>'warning','icon'=>'fa fa-times']
+            ],
+            [
+                'nome'=>'Do Município',
+                'pai'=>4,
+                'value'=>'Do_Municipio',
+                'ordem'=>5,
+                'obs'=>'',
+                'config'=>['color'=>'warning','icon'=>'fa fa-times']
+            ],
+            [
+                'nome'=>'Lei do Bem',
+                'pai'=>3,
+                'value'=>'Lei_do_Bem',
+                'ordem'=>6,
+                'obs'=>'Temos de substituir pela número da Lei, pois essa Lei do Bem não existe formalmente',
+                'config'=>['color'=>'warning','icon'=>'fa fa-times']
+            ],
+            [
+                'nome'=>'Do Município',
+                'pai'=>3,
+                'value'=>'Do_Municipio',
+                'ordem'=>7,
+                'obs'=>'',
+                'config'=>['color'=>'warning','icon'=>'fa fa-times']
+            ],
         ];
 
         foreach ($arr as $key => $value) {
