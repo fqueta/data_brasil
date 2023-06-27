@@ -1135,8 +1135,7 @@ function qFormCampos(config){
                         var type = v.type;
                         var checked = '';
                         if(type == 'chave_checkbox' || type == 'checkbox'){
-                                console.log(v);
-                            if(v.valor_padrao==v.value){
+                            if(v.valor_padrao==v.value || v.checked=='checked'){
                                 checked = 'checked';
                             }
                         }
@@ -1386,7 +1385,6 @@ function lib_htmlVinculo(ac,campos,lin){
                                 }
                             }
                         }
-                        console.log(c);
                     } catch (error) {
                         console.log(error);
                     }
@@ -1496,13 +1494,25 @@ function lib_htmlVinculo2(ac,campos,id,lin){
                     var l = '';
                     try {
                         if(l = dl[k]){
-                            c.campos[k].value = l;
+                            if(c.campos[k].type=='checkbox'){
+                            }else{
+                                c.campos[k].value = l;
+                            }
                         }else{
                             if(cp=c.campos[k].cp_busca){
                                 let ar = cp.split('][');
                                 if(ar[1]){
                                     try {
-                                        c.campos[k].value = dl[ar[0]][ar[1]];
+                                        if(c.campos[k].type=='checkbox'){
+                                            if(!c.campos[k].value){
+                                                c.campos[k].value = dl[ar[0]][ar[1]];
+                                            }
+                                            if(dl[ar[0]][ar[1]] == c.campos[k].value){
+                                                c.campos[k].checked = 'checked';
+                                            }
+                                        }else{
+                                            c.campos[k].value = dl[ar[0]][ar[1]];
+                                        }
                                     } catch (error) {
                                         console.log(error);
                                     }
