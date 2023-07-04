@@ -1233,7 +1233,7 @@ class FamiliaController extends Controller
                 $link = '/familias?filter[config][qualificacao]=' . $ke ;
                 if($ano){
                     $total = Familia::where('excluido','=','n')->where('deletado','=','n')->where('config','LIKE','%"qualificacao":"'.$ke.'"%')->whereYear('data_exec',$ano)->count();
-                    $link .= '&campo_data=data_exec&ano' . $ano ;
+                    $link .= '&ano=' . trim($ano) ;
                 }else{
                     $total = Familia::where('excluido','=','n')->where('deletado','=','n')->where('config','LIKE','%"qualificacao":"'.$ke.'"%')->count();
                 }
