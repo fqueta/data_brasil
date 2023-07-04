@@ -62,11 +62,13 @@ class HomeController extends Controller
         (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
         $totalDecretos = Post::where('post_type','=','decretos')->count();
         $card_lotes = (new LotesController())->total_lotes();
+        $card_qualification = $controlerFamilias->total_qualification($_GET);
         $config = [
             'c_familias'=>$dadosFamilias,
             'mapa'=>$dadosMp,
             'totalDecretos'=>$totalDecretos,
             'card_lotes'=>$card_lotes,
+            'card_qualification'=>$card_qualification,
         ];
         return view('home',[
             'config'=>$config,

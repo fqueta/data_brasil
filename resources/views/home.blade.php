@@ -50,6 +50,23 @@
                 </div>
         @endforeach
     @endif
+    @if (isset($config['card_qualification']) && is_array($config['card_qualification']))
+        @foreach ($config['card_qualification'] as $kcf=>$vcf)
+        <div class="col-lg-{{$vcf['tam']}} col-6">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box {{$vcf['color']}}" title="">
+            <div class="inner">
+                <h3>{{$vcf['total']}}</h3>
+                <p>{{$vcf['label']}}</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <a href="{{$vcf['link']}}" title="{{$vcf['title']}}" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+
+        @endforeach
+    @endif
  </div>
  <div class="row mb-5">
     <div class="col-md-12 text-center  mb-3">

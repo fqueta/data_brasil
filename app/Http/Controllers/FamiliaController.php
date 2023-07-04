@@ -1220,4 +1220,31 @@ class FamiliaController extends Controller
 
         return $ret;
     }
+    public function total_qualification($config=false){
+        $ret = false;
+        $arr = $this->arrQualificacao();
+        // $ret['arr'] = $arr;
+        $ano = isset($config['ano']) ? $config['ano'] : false;
+        $tam = 3;
+        // $compo =
+        $color = 'bg-info';
+        if(is_array($arr)){
+            foreach($arr as $ke=>$val){
+                $link = '/familias?filter[config][qualificacao]=' . $ke ;
+                if($ano){
+                    $total = Familia::where('excluido','=','n')->where('deletado','=','n')->where('config','LIKE','%"qualificacao":"'.$ke.'"%')->whereYear('data_exec',$ano)->count();
+                    $link .= '&campo_data=data_exec&ano' . $ano ;
+                }else{
+                    $total = Familia::where('excluido','=','n')->where('deletado','=','n')->where('config','LIKE','%"qualificacao":"'.$ke.'"%')->count();
+                }
+                $ret[$ke]['total'] = $total;
+                $ret[$ke]['label'] = $val;
+                $ret[$ke]['link'] = $link;
+                $ret[$ke]['title'] = 'Visualizar de cadastro no programa '. $val;
+                $ret[$ke]['color'] = $color;
+                $ret[$ke]['tam'] = $tam;
+            }
+        }
+        return $ret;
+    }
 }

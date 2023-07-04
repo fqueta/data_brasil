@@ -18,7 +18,7 @@ class tagSeeder extends Seeder
             ['nome'=>'Tags situação dos cadastros','obs'=>'Informar os cadastros que estão faltando alguma informação ou documentos.','ordem'=>1],
             ['nome'=>'Tags Tipo do imóvel','obs'=>'Informar os cadastros que estão faltando alguma informação ou documentos.','ordem'=>2],
             [
-                'nome'=>'CADASTROS COM PENDÊNCIAS',
+                'nome'=>'PENDÊNCIAS',
                 'pai'=>1,
                 'ordem'=>2,
                 'obs'=>'São cadastros incompletos devido a três fatores: Recusas (quando o beneficiário não quer, ao menos naquele momento, cadastra-se e fazer parte do Programa); Ocupantes não localizados (quando o ocupante de determinado lote não é encontrado), e Outros (quando faltam documentos como uma Certidão de Casamento, por exemplo).',
@@ -51,7 +51,7 @@ class tagSeeder extends Seeder
             ['nome'=>'Comercial','pai'=>2,'ordem'=>2,'obs'=>''],
             ['nome'=>'Lote vago','pai'=>2,'ordem'=>3,'obs'=>''],
             [
-                'nome'=>'CADASTROS COMPLETOS',
+                'nome'=>'COMPLETOS',
                 'pai'=>1,
                 'ordem'=>1,
                 'obs'=>'São cadastros socioeconômicos preenchidos e com toda a documentação necessária para serem encaminhados à Assistência Social para a elaboração do Relatório Social, documento que irá compor o processo jurídico de regularização fundiária. Sem o cadastro completo não há condições de avançar no processo.',
