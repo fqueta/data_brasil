@@ -23,11 +23,6 @@
     @elseif ($config['type']=='select_multiple')
         @if (isset($config['arr_opc']))
         <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}">
-            @php
-                // dd($config);
-                // $config['value'] = json_decode($config['value'],true);
-                // dd($config);
-            @endphp
             @if ($config['label'])
                 <label for="{{$config['campo']}}">{{$config['label']}}</label>
             @endif

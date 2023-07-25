@@ -108,14 +108,19 @@ class QuadrasController extends Controller
         ];
         return $ret;
     }
-    public function campos(){
+    public function campos($id=false,$data=false){
         $user = Auth::user();
         $bairro = new BairroController($user);
+        $arr_lotes = false;
+        $data=false;
+        if($id){
+            // $data = Quadra::Find($id);
+            $arr_lotes = (new QuadrasController($user))->lotes($id);
+        }
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'matricula'=>['label'=>'Matricula','value'=>'','active'=>false,'type'=>'hidden_text','exibe_busca'=>'d-none','event'=>'','tam'=>'12'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
-            'nome'=>['label'=>'Numero da Quadra','active'=>true,'placeholder'=>'Ex.: 14','type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             'bairro'=>[
                 'label'=>'Área*',
                 'active'=>true,
@@ -133,8 +138,17 @@ class QuadrasController extends Controller
                 'tam'=>'12',
                 'class'=>'select2'
             ],
+            'nome'=>['label'=>'Numero da Quadra','active'=>true,'placeholder'=>'Ex.: 14','type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             'obs'=>['label'=>'Observação','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
             'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'12','arr_opc'=>['s'=>'Sim','n'=>'Não']],
+            'lotes'=>[
+                'label'=>__('Listagem de lotes'),
+                'type'=>'html',
+                'active'=>false,
+                'script'=>'admin.processos.lotes',
+                'script_show'=>'admin.processos.lotes',
+                'dados'=>$arr_lotes,
+            ]
         ];
     }
 
@@ -229,7 +243,7 @@ class QuadrasController extends Controller
                 $dados['config'] = Qlib::lib_json_array($dados['config']);
             }
             $listFiles = false;
-            $campos = $this->campos();
+            $campos = $this->campos($id);
             if(isset($dados['token'])){
                 $listFiles = _upload::where('token_produto','=',$dados['token'])->get();
             }
@@ -259,6 +273,7 @@ class QuadrasController extends Controller
                 $config['class_card1'] = 'col-md-12';
                 $config['class_card2'] = 'd-none';
             }
+            $config['mapas']=(new MapasController(Auth::user()))->queryQuadras($id,'n');
             $ret = [
                 'value'=>$dados,
                 'config'=>$config,
@@ -272,7 +287,7 @@ class QuadrasController extends Controller
             ];
             //REGISTRAR EVENTOS
             (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
-            return view($this->view.'.show',$ret);
+            return view('quadras.show',$ret);
         }else{
             $ret = [
                 'exec'=>false,
@@ -308,7 +323,7 @@ class QuadrasController extends Controller
                 ]);
             }
             $listFiles = false;
-            $campos = $this->campos();
+            $campos = $this->campos($id);
             if(isset($dados[0]['token'])){
                 $listFiles = _upload::where('token_produto','=',$dados[0]['token'])->get();
             }

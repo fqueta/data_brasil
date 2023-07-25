@@ -41,7 +41,7 @@ class TesteController extends Controller
         //dd($route);
         // return view('teste',$config);
         // dd(Qlib::update_postmeta(9,'test_data','data de hoje atualizado'));
-        $ret = Qlib::get_postmeta(9,'test_data',true);
+        $ret = (new MapasController)->verificaMapa(14);
         dd($ret);
     }
     public function ajax(){

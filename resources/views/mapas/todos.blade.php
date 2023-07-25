@@ -54,9 +54,16 @@
         height: 100%;
     }
 </style>
+@if (isset($config['exibeMenu']) && $config['exibeMenu']=='n')
+    <style>
+        .exibeMenu {
+            display: none !important;
+        }
+    </style>
+@endif
 
 <div class="card">
-    <div class="card-header d-flex justify-content-between d-print-none">
+    <div class="card-header d-flex justify-content-between d-print-none exibeMenu">
         <div class="input-group input-group-sm input-group-mapa">
             <div class="input-group-prepend">
                 <label class="input-group-text" for="select_bairro">{{__('Bairro')}}</label>
@@ -99,7 +106,7 @@
             <!--include('mapas.'.$config['local'].'.'.$config['dados']['id'])-->
             @php
                 $p = $_SERVER['DOCUMENT_ROOT'].$config['svg_file'];
-                include $p;
+                @include $p;
             @endphp
         <div class="painel-zoom d-print-none" style="position: absolute;left:10px;bottom:50%;width: 40px;">
             <button type="button" onclick="zoom('p')" title="{{__('Aumentar mapa')}}" id="zoom-p" class="btn btn-outline-primary mb-1"><i class="fas fa-plus"></i></button>

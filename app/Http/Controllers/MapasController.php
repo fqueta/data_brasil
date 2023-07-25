@@ -13,7 +13,7 @@ class MapasController extends Controller
     protected $user;
     public $routa;
     public $view;
-    public function __construct(User $user)
+    public function __construct()
     {
         $this->middleware('auth');
         $this->routa = 'quadras';
@@ -26,7 +26,7 @@ class MapasController extends Controller
         return view('mapas.quadras',$ret);
     }
 
-    public function queryQuadras($id_quadra = null)
+    public function queryQuadras($id_quadra = null,$exibeMenu='s')
     {
         $ret = false;
         if($id_quadra){
@@ -70,6 +70,7 @@ class MapasController extends Controller
                 $config['ac']='alt';
                 $config['route']=$this->routa;
                 $config['id']=$dados['id'];
+                $config['exibeMenu'] = $exibeMenu;
                 $ret = [
                     'config'=>$config,
                     'exec'=>true,
@@ -90,5 +91,23 @@ class MapasController extends Controller
         }else{
             return Qlib::formatMensagemInfo('Dados insuficientes','danger');
         }
+    }
+    public function verificaMapa($id=false){
+        $ret = false;
+        $d = Quadra::Find($id);
+        if(isset($d['token'])){
+            $file = _upload::where('token_produto','=',$d['token'])->get();
+            if($file->count()){
+                foreach ($file as $k => $v) {
+                    if(isset($v['config']) && !empty($v['config']) && isset($v['pasta']) && !empty($v['pasta'])){
+                        $arr = Qlib::lib_json_array($v['config']);
+                        if(isset($arr['extenssao']) && $arr['extenssao']=='svg'){
+                            $ret = $v['pasta'];
+                        }
+                    }
+                }
+            }
+        }
+        return $ret;
     }
 }
