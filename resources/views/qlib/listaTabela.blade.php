@@ -73,14 +73,16 @@
 
                     <td class="text-right d-flex d-print-none">
                         @can('update',$routa)
-                            @if ($routa=='quadras' && (new App\Http\Controllers\MapasController)->verificaMapa($val->id))
-                                <a title="Mapa" href=" {{ route('mapas.'.$routa,['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
-                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                </a>
-                            @else
-                                <a title="Sem Mapa" href="javascript:void(0)" title="visualizar" class="btn btn-sm btn-outline-warning mr-2" disabled>
-                                    <i class="fa fa-map-marker " aria-hidden="true"></i>
-                                </a>
+                            @if ($routa=='quadras')
+                                @if ((new App\Http\Controllers\MapasController)->verificaMapa($val->id))
+                                    <a title="Mapa" href=" {{ route('mapas.'.$routa,['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
+                                        <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a title="Sem Mapa" href="javascript:void(0)" title="visualizar" class="btn btn-sm btn-outline-warning mr-2" disabled>
+                                        <i class="fa fa-map-marker " aria-hidden="true"></i>
+                                    </a>
+                                @endif
                             @endif
                             @if ($routa=='familias' || $routa=='decretos' || $routa=='processos-campo' || $routa=='processos' || $routa=='processos-prefeitura' || $routa=='processos-cartorio' || $routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros')
                                 <a href="{{ $linkShow }}" title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
