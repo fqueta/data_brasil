@@ -6,7 +6,7 @@
 <link rel="manifest" href="https://acesso.databrasil.app.br/manifest.json" />
 <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
-        navigator.serviceWorker.register('data_brasil-sw.js')
+        navigator.serviceWorker.register('https://acesso.databrasil.app.br/data_brasil-sw.js')
     }
 </script>
 <style>
