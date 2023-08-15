@@ -3,10 +3,10 @@
 <link rel="stylesheet" href="{{url('/')}}/vendor/venobox/venobox.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/jquery-ui.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/lib.css">
-<link rel="manifest" href="https://acesso.databrasil.app.br/manifest.json" />
+<link rel="manifest" href="/manifest.json" />
 <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
-        navigator.serviceWorker.register('https://acesso.databrasil.app.br/data_brasil-sw.js')
+        navigator.serviceWorker.register('/data_brasil-sw.js')
     }
 </script>
 <style>
