@@ -394,7 +394,6 @@ function submitRelatorio(id,ac){
 }
 */
 function alerta(msg,id,title,tam,fechar,time,fecha){
-
 	if(typeof(fechar) == 'undefined')
         fechar = true;
     if(typeof(title) == 'undefined')

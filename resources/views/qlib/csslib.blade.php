@@ -3,6 +3,12 @@
 <link rel="stylesheet" href="{{url('/')}}/vendor/venobox/venobox.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/jquery-ui.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/lib.css">
+<link rel="manifest" href="https://acesso.databrasil.app.br/manifest.json" />
+<script>
+    if (typeof navigator.serviceWorker !== 'undefined') {
+        navigator.serviceWorker.register('data_brasil-sw.js')
+    }
+</script>
 <style>
     .note-view,.note-insert,.note-table,.note-color{
         display: none;
