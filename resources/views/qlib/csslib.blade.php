@@ -6,7 +6,7 @@
 <link rel="manifest" href="/app/manifest.json" />
 <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
-        navigator.serviceWorker.register('/app/pwabuilder-sw.js')
+        navigator.serviceWorker.register('/app/sw.js')
     }
 </script>
 <style>
