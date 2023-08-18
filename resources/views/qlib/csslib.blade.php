@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="{{url('/')}}/css/jquery-ui.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/lib.css">
 <link rel="manifest" href="/app/manifest.json" />
+<script src="/app/js.js"></script>
 <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
         navigator.serviceWorker.register('/app/sw.js')
