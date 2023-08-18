@@ -3,10 +3,10 @@
 <link rel="stylesheet" href="{{url('/')}}/vendor/venobox/venobox.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/jquery-ui.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/lib.css">
-<link rel="manifest" href="/manifest.json" />
+<link rel="manifest" href="/app/manifest.json" />
 <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
-        navigator.serviceWorker.register('pwabuilder-sw.js')
+        navigator.serviceWorker.register('/app/pwabuilder-sw.js')
     }
 </script>
 <style>
