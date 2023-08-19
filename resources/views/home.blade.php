@@ -1,7 +1,8 @@
 @extends('adminlte::page')
 
-@section('title', 'Data Brasil - Painel')
-
+@section('title')
+{{config('app.name')}} - Painel
+@stop
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">

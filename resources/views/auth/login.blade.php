@@ -125,3 +125,6 @@
     </script>
 
 @stop
+@section('js')
+    @include('qlib.jslib')
+@stop

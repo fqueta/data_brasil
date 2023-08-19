@@ -3,14 +3,27 @@
 <link rel="stylesheet" href="{{url('/')}}/vendor/venobox/venobox.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/jquery-ui.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/lib.css">
+<!--Inicio PWA-->
 <link rel="manifest" href="/app/manifest.json" />
-<script src="/app/js.js"></script>
+<script src="/app/js.js?v=1.0.0"></script>
 <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
         navigator.serviceWorker.register('/app/sw.js')
     }
 </script>
+<!--FIM PWA-->
 <style>
+    #setup_button,.r-btn-install {
+        display: none;
+    }
+    .r-btn-install{
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        background-color: #FFF;
+        width: 100%;
+        padding: 10px;
+    }
     .note-view,.note-insert,.note-table,.note-color{
         display: none;
     }

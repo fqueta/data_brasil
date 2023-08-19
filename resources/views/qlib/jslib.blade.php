@@ -7,6 +7,7 @@
     'tam'=>'modal-lg',
 ]])
 @include('qlib.modal_pesquisa')
+@include('admin.partes.footer')
 <script src="{{url('/')}}/js/jquery.maskMoney.min.js"></script>
 <script src="{{url('/')}}/js/jquery-ui.min.js"></script>
 <script src="{{url('/')}}/js/jquery.inputmask.bundle.min.js"></script>
