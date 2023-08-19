@@ -23,6 +23,7 @@
         background-color: #FFF;
         width: 100%;
         padding: 10px;
+        z-index: 3;
     }
     .note-view,.note-insert,.note-table,.note-color{
         display: none;
