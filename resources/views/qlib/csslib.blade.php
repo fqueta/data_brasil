@@ -8,7 +8,7 @@
 <script src="/app/js.js?v=1.0.0"></script>
 <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
-        navigator.serviceWorker.register('/app/sw.js')
+        navigator.serviceWorker.register('/app/pwabuilder-sw.js')
     }
 </script>
 <!--FIM PWA-->

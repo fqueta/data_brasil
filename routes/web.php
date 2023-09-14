@@ -206,8 +206,8 @@ Route::get('/transparencia', [App\Http\Controllers\HomeController::class, 'trans
 Route::get('envio-mails',function(){
     $user = new stdClass();
     $user->name = 'Fernando Queta';
-    $user->email = 'ferqueta@yahoo.com.br';
-    //return new \App\Mail\dataBrasil($user);
+    $user->email = 'ger.maisaqui3@gmail.com';
+    // return new \App\Mail\dataBrasil($user);
     $enviar = Mail::send(new \App\Mail\dataBrasil($user));
     return $enviar;
 });
@@ -215,3 +215,21 @@ Route::get('/suspenso',[UserController::class,'suspenso'])->name('cobranca.suspe
 Route::prefix('cobranca')->group(function(){
     Route::get('/fechar',[UserController::class,'pararAlertaFaturaVencida'])->name('alerta.cobranca.fechar');
 });
+
+//inicio Rotas de verificação
+Route::get('/email/verify', function () {
+    // return view('auth.verify');
+    return view('site.index');
+})->middleware('auth')->name('verification.notice');
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('/');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message-very', 'enviado');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.resend');
