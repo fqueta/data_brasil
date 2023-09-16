@@ -218,10 +218,11 @@ Route::prefix('cobranca')->group(function(){
 
 //inicio Rotas de verificação
 Route::get('/email/verify', function () {
-    // return view('auth.verify');
-    return view('site.index');
+    return view('auth.verify');
+    // return view('site.index');
 })->middleware('auth')->name('verification.notice');
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();

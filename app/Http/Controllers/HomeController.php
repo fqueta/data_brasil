@@ -70,6 +70,9 @@ class HomeController extends Controller
             'card_lotes'=>$card_lotes,
             'card_qualification'=>$card_qualification,
         ];
+        if(!(new UserController)->is_verified()){
+            return redirect()->route('verification.notice');
+        }
         return view('home',[
             'config'=>$config,
         ]);

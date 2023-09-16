@@ -597,4 +597,15 @@ class UserController extends Controller
     {
         return view('admin.suspenso');
     }
+    /**
+     * Metodo para checar se o usuario verificou seu email
+     */
+    public function is_verified(){
+        //uso (new UserController)->is_verified();
+        // if(!(new UserController)->is_verified()){
+        //     return redirect()->route('verification.notice');
+        // }
+        $user = Auth::user();
+        return $user->email_verified_at;
+    }
 }
