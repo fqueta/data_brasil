@@ -6,19 +6,19 @@
     <h3>{{$titulo}}</h3>
 @stop
 @section('content')
-  <!--<p>Selecione os publicadores do seu familia para enviar o relatorio para o secretário</p>-->
 
-  <div class="row">
-    @include('qlib.config_exibe')
-    <div class="col-md-12 mens">
+@include('admin.partes.header')
+    <div class="row">
+      @include('qlib.config_exibe')
+      <div class="col-md-12 mens">
     </div>
     @can('is_admin')
-        @include('qlib.partes_html',[
-            'config'=>[
-                'parte'=>'resumo_index',
-                'resumo'=>$config['resumo'],
+    @include('qlib.partes_html',[
+        'config'=>[
+            'parte'=>'resumo_index',
+            'resumo'=>$config['resumo'],
             ]
-        ])
+    ])
     @endcan
     <div class="col-md-12" id="lista">
       <div class="card">
@@ -34,12 +34,10 @@
                     {{ $titulo_tabela }}
                 @endif
             </h4>
-            @can('is_admin')
+            @can('is_admin_logado')
             <div class="card-tools d-flex d-print-none">
-                    @include($routa.'.dropdow_actions')
-                    <a href="{{ route($routa.'.create') }}" class="btn btn-success">
-                        <i class="fa fa-plus" aria-hidden="true"></i> Cadastrar
-                    </a>
+                @include('qlib.dropdow_actions')
+                @include('qlib.dropdow_acaomassa')
             </div>
             @endcan
         </div>
@@ -67,19 +65,14 @@
   @stop
 
   @section('css')
-      <link rel="stylesheet" href="{{url('/')}}/css/lib.css">
+    @include('qlib.csslib')
   @stop
 
   @section('js')
-    <script src="{{url('/')}}/js/jquery.inputmask.bundle.min.js"></script>
-    <script src=" {{url('/')}}/js/lib.js"></script>
+    @include('qlib.jslib')
 
     <script>
         $(function(){
-            $('.dataTable').DataTable({
-                "paging":   false,
-                stateSave: true
-            });
             $('[exportar-filter]').on('click',function(e){
                 e.preventDefault();
                 var urlAtual = window.location.href;
