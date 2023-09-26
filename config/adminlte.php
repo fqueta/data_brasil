@@ -14,9 +14,10 @@ $config = [
     |
     */
 
-    'title' => 'Data Brasil 2.1.0',
+    'title' => 'Data Brasil 2.4.2',
     'title_prefix' => '',
     'title_postfix' => '',
+    'date_update' => '26/09/2023',
 
     /*
     |--------------------------------------------------------------------------

@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Data Brasil'),
+    'name' => config('adminlte.title'),//env('APP_NAME', 'Data Brasil'),
 
     /*
     |--------------------------------------------------------------------------
