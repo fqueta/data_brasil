@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     |
     */
-
+    'version' => '2.4.3',
     'name' => config('adminlte.title'),//env('APP_NAME', 'Data Brasil'),
 
     /*

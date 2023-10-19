@@ -1,6 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', 'Relatorios de realidade social')
+@section('title')
+{{config('app.name')}} {{config('app.version')}} - {{$titulo}}
+@stop
+
+@section('footer')
+    @include('footer')
+@stop
 
 @section('content_header')
     <h3>{{$titulo}}</h3>

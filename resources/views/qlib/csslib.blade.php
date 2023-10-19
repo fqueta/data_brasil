@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="{{url('/')}}/vendor/summernote/summernote.min.css">
 <link rel="stylesheet" href="{{url('/')}}/vendor/venobox/venobox.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/jquery-ui.min.css">
-<link rel="stylesheet" href="{{url('/')}}/css/lib.css">
+<link rel="stylesheet" href="{{url('/')}}/css/lib.css?ver={{config('app.version')}}">
 <!--Inicio PWA-->
 <link rel="manifest" href="/app/manifest.json" />
 <script src="/app/js.js?v=1.0.0"></script>

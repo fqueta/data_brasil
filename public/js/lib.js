@@ -1006,7 +1006,12 @@ function renderForm(config,alvo,funCall){
                         }
                     }
                 }
-                submitFormularioCSRF($('#'+d.id_form),funCall);
+                $('#'+d.id_form).validate({
+                    submitHandler:function(f){
+                        submitFormularioCSRF($('#'+d.id_form),funCall);
+                    }
+                });
+                $('#'+d.id_form).submit();
             });
         }
         //$('.mens').html(campo_nome);

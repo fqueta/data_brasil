@@ -1181,6 +1181,7 @@ class FamiliaController extends Controller
         ->Join('beneficiarios','familias.id_beneficiario','=','beneficiarios.id')
         ->select('familias.renda_familiar','familias.membros','familias.id_conjuge','beneficiarios.config')->get();
         if($d->count()){
+            // dd($d->toArray());
             $confProp = Qlib::lib_json_array($d[0]['config']);
             $rdp = 0;
             $rdc = 0;

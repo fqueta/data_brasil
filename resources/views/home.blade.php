@@ -1,8 +1,12 @@
 @extends('adminlte::page')
 
 @section('title')
-{{config('app.name')}} - Painel
+{{config('app.name')}} {{config('app.version')}} - Painel
 @stop
+@section('footer')
+    @include('footer')
+@stop
+
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
@@ -175,7 +179,6 @@
 
   </div>
 @stop
-
 @section('css')
     @include('qlib.csslib')
     <style>
