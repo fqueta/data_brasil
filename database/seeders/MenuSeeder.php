@@ -215,6 +215,33 @@ class MenuSeeder extends Seeder
             ],*/
             [
                 'categoria'=>'SISTEMA',
+                'description'=>'Mídias',
+                'icon'=>'fas fa-photo-video',
+                'actived'=>true,
+                'url'=>'midias',
+                'route'=>'sistema.midias',
+                'pai'=>''
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Adicionar Arquivo',
+                'icon'=>'fas fa-folder-plus',
+                'actived'=>true,
+                'url'=>'biblioteca',
+                'route'=>'biblioteca.create',
+                'pai'=>'midias'
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Biblioteca',
+                'icon'=>'fas fa-book',
+                'actived'=>true,
+                'url'=>'biblioteca',
+                'route'=>'biblioteca.index',
+                'pai'=>'midias'
+            ],
+            [
+                'categoria'=>'',
                 'description'=>'Configurações',
                 'icon'=>'fas fa-cogs',
                 'actived'=>true,

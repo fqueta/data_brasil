@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\EventController;
+use App\Http\Controllers\admin\mediaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\admin\UserPermissions;
@@ -115,6 +116,7 @@ Route::prefix('relatorios')->group(function(){
     Route::get('/social',[RelatoriosController::class,'realidadeSocial'])->name('relatorios.social');
     Route::get('/acessos',[EventController::class,'listAcessos'])->name('relatorios.acessos');
     Route::get('export/filter', [RelatoriosController::class, 'exportFilter'])->name('relatorios.export_filter');
+    Route::get('export/all', [RelatoriosController::class, 'exportAll'])->name('relatorios.export_all');
     //Route::post('/',[RelatoriosController::class,'store'])->name('relatorios.store');
     //Route::get('/{id}/show',[RelatoriosController::class,'show'])->name('relatorios.show');
     //Route::get('/{id}/edit',[RelatoriosController::class,'edit'])->name('relatorios.edit');
@@ -127,6 +129,7 @@ Route::prefix('sistema')->group(function(){
     Route::get('/perfil/edit',[UserController::class,'perfilEdit'])->name('sistema.perfil.edit');
     Route::post('/perfil/store',[UserController::class,'perfilStore'])->name('sistema.perfil.store');
     Route::get('/config',[EtapaController::class,'config'])->name('sistema.config');
+    Route::get('/midias',[mediaController::class,'midias'])->name('sistema.midias');
     Route::post('/{id}',[EtapaController::class,'update'])->where('id', '[0-9]+')->name('sistema.update-ajax');
 });
 Route::prefix('mapas')->group(function(){
@@ -160,6 +163,9 @@ Route::resource('beneficiarios','\App\Http\Controllers\BeneficiariosController',
 ]]);
 Route::resource('lotes','\App\Http\Controllers\LotesController',['parameters' => [
 'lotes' => 'id'
+]]);
+Route::resource('biblioteca','\App\Http\Controllers\admin\mediaController',['parameters' => [
+'biblioteca' => 'id'
 ]]);
 Route::get('/lotes/lista-ocupantes/{lotes}',[LotesController::class,'listagemOcupantes'])->name('lotes.ocupantes');
 Route::get('/lotes/ficha-ocupantes/{lote}/{familia}',[LotesController::class,'FichaOcupantes'])->name('lotes.ficha_ocupantes');

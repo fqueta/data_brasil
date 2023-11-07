@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="{{url('/')}}/css/lib.css?ver={{config('app.version')}}">
 <!--Inicio PWA-->
 <link rel="manifest" href="/app/manifest.json" />
-<script src="/app/js.js?v=1.0.0"></script>
+<script src="/app/js.js?ver={{config('app.version')}}"></script>
 <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
         navigator.serviceWorker.register('/app/pwabuilder-sw.js')

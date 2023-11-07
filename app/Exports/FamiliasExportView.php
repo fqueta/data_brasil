@@ -17,6 +17,7 @@ class FamiliasExportView implements FromView
         $user = Auth::user();
         $dados = new FamiliaController($user);
         $queryFamilias = $dados->queryFamilias($_GET);
+        // dd($_GET,$queryFamilias);
         $queryFamilias['config']['exibe'] = 'excel';
         return view('familias.export.tabela',[
             'familias'=>$queryFamilias['familia'],

@@ -355,12 +355,14 @@ class RelatoriosController extends Controller
     public function exportAll(User $user)
     {
         $this->authorize('is_admin_logado', $user);
-        return Excel::download(new FamiliasExport, 'Familias_'.date('d_m_Y').'.xlsx');
+        // return Excel::download(new FamiliasExport, 'Familias_'.date('d_m_Y').'.xlsx');
+        $_GET['limit'] = 'todos'; //para exibir todos os registros
+        return Excel::download(new SocialExportView, 'Realidade_social_all_'.date('d_m_Y').'.xlsx');
     }
     public function exportFilter(User $user)
     {
         $this->authorize('is_admin_logado', $user);
-        $dados = new SocialExportView;
+        // $dados = new SocialExportView;
         //return $dados->view();
         return Excel::download(new SocialExportView, 'Realidade_social_'.date('d_m_Y').'.xlsx');
     }

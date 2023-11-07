@@ -451,11 +451,11 @@ class FamiliaController extends Controller
     public function exportAll(User $user)
     {
         $this->authorize('is_admin', $user);
-        $regev = Qlib::regEvent(['action'=>'exportAll','tab'=>$this->tab,'config'=>[
-            'obs'=>'Exportou',
-            'link'=>$this->routa,
-            ]
-        ]);
+        // $regev = Qlib::regEvent(['action'=>'exportAll','tab'=>$this->tab,'config'=>[
+        //     'obs'=>'Exportou',
+        //     'link'=>$this->routa,
+        //     ]
+        // ]);
 
         return Excel::download(new FamiliasExport, 'Familias_'.date('d_m_Y').'.xlsx');
     }
@@ -464,7 +464,8 @@ class FamiliaController extends Controller
         $this->authorize('is_admin', $user);
         $dados = new FamiliasExportView;
         //return $dados->view();
-        return Excel::download(new FamiliasExportView, 'Familias_'.date('d_m_Y').'.xlsx');
+        // dd($dados);
+        return Excel::download($dados, 'Familias_'.date('d_m_Y').'.xlsx');
     }
     public function arrQualificacao($var = null)
     {
