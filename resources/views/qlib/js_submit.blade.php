@@ -1,6 +1,8 @@
+@php
+    $compleSerialize = isset($compleSerialize)?$compleSerialize:false;
+@endphp
 <script>
     $(function(){
-
         $('[type="submit"]').on('click',function(e){
             e.preventDefault();
             let btn_press = $(this).attr('btn');
@@ -46,7 +48,9 @@
                     alert('erros');
                     console.log(res.errors);
                 }
-            });
+            },function(res){
+                lib_funError(res);
+            },{!! $compleSerialize !!});
         });
     });
 </script>

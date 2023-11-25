@@ -155,6 +155,12 @@ Route::prefix('teste')->group(function(){
     Route::get('/',[App\Http\Controllers\TesteController::class,'index'])->name('teste');
     Route::get('/ajax',[App\Http\Controllers\TesteController::class,'ajax'])->name('teste.ajax');
 });
+// Route::prefix('arquivamento')->group(function(){
+//     Route::get('/index',[App\Http\Controllers\admin\PostController::class,'index'])->name('arquivamento.index');
+//     Route::get('/text',[App\Http\Controllers\admin\PostController::class,'index'])->name('arquivamento-text');
+//     Route::get('/video',[App\Http\Controllers\admin\PostController::class,'index'])->name('arquivamento-video');
+// });
+    Route::get('/arquivamento-text',[App\Http\Controllers\admin\PostController::class,'index'])->name('arquivamento-text');
 
 //Route::post('/upload',[App\Http\Controllers\UploadFile::class,'upload'])->name('teste.upload');
 
@@ -186,6 +192,12 @@ Route::resource('permissions','\App\Http\Controllers\admin\UserPermissions',['pa
 ]]);
 Route::resource('decretos','\App\Http\Controllers\admin\PostController',['parameters' => [
     'decretos' => 'id'
+]]);
+Route::resource('arquivamento-text','\App\Http\Controllers\admin\PostController',['parameters' => [
+    'arquivamento-text' => 'id'
+]]);
+Route::resource('arquivamento-video','\App\Http\Controllers\admin\PostController',['parameters' => [
+    'arquivamento-video' => 'id'
 ]]);
 Route::resource('processos','\App\Http\Controllers\admin\PostController',['parameters' => [
     'processos' => 'id'

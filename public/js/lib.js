@@ -805,7 +805,7 @@ function excluirArquivo(id,ajaxurl){
 function carregaDropZone(seletor){
     $(seletor).dropzone({ url: "/file/post" });
 }
-function submitFormulario(objForm,funCall,funError){
+function submitFormulario(objForm,funCall,funError,compleSerialize){
     if(typeof funCall == 'undefined'){
         funCall = function(res){
             console.log(res);
@@ -816,14 +816,18 @@ function submitFormulario(objForm,funCall,funError){
             lib_funError(res);
         }
     }
-    var route = objForm.attr('action');
-    //console.log(route);
+    if(typeof compleSerialize == 'undefined'){
+        compleSerialize='';
+    }
+
+    var route = objForm.attr('action'),ser=objForm.serialize()+compleSerialize+'&ajax=s';
+    console.log(ser);
     objForm.validate({
         submitHandler: function(form) {
             $.ajax({
                 type: 'POST',
                 url: route,
-                data: objForm.serialize()+'&ajax=s',
+                data: ser,
                 dataType: 'json',
                 beforeSend: function(){
                     $('#preload').fadeIn();

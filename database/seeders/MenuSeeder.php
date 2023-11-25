@@ -24,15 +24,6 @@ class MenuSeeder extends Seeder
                 'route'=>'home',
                 'pai'=>''
             ],
-            // [
-            //     'categoria'=>'',
-            //     'description'=>'Transparencia',
-            //     'icon'=>'fas fa-search-location',
-            //     'actived'=>true,
-            //     'url'=>'transparencia',
-            //     'route'=>'transparencia',
-            //     'pai'=>''
-            // ],
             [
                 'categoria'=>'CADASTROS',
                 'description'=>'Socioeconômicos',
@@ -204,15 +195,33 @@ class MenuSeeder extends Seeder
                 'route'=>'relatorios.acessos',
                 'pai'=>'relatorios'
             ],
-            /*[
+            [
                 'categoria'=>'',
-                'description'=>'Listagem de Ocupantes',
-                'icon'=>'fa fa-chart-bar',
+                'description'=>'Arquivamento',
+                'icon'=>'fas fa-server',
                 'actived'=>true,
-                'url'=>'relatorios_evolucao',
-                'route'=>'relatorios.evolucao',
-                'pai'=>'relatorios'
-            ],*/
+                'url'=>'arquivamento',
+                'route'=>'',
+                'pai'=>''
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Documentos',
+                'icon'=>'fas fa-file-alt',
+                'actived'=>true,
+                'url'=>'arquivamento-text',
+                'route'=>'arquivamento-text.index',
+                'pai'=>'arquivamento'
+            ],
+            [
+                'categoria'=>'',
+                'description'=>'Videos',
+                'icon'=>'fas fa-file-video',
+                'actived'=>true,
+                'url'=>'arquivamento-video',
+                'route'=>'arquivamento-video.index',
+                'pai'=>'arquivamento'
+            ],
             [
                 'categoria'=>'SISTEMA',
                 'description'=>'Mídias',

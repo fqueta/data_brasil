@@ -28,6 +28,7 @@ class PostController extends Controller
     public $view;
     public $post_type;
     public $sec;
+    public $tab;
     public $i_wp;//integração com wp
     public $wp_api;//integração com wp
     public function __construct(User $user)
@@ -48,6 +49,9 @@ class PostController extends Controller
         $this->view = 'admin.posts';
         $this->i_wp = Qlib::qoption('i_wp');//indegração com Wp s para sim
         //$this->wp_api = new ApiWpController();
+        if($this->routa=='arquivamento-text' || $this->routa=='arquivamento-video'){
+            $this->view = 'arquivamento';
+        }
         $this->wp_api = false;
 
     }
@@ -653,6 +657,27 @@ class PostController extends Controller
         ];
         return $ret;
     }
+    public function campos_text($post_id=false){
+        $hidden_editor = '';
+        if($post_id){
+            $data = Post::Find($post_id);
+            if(isset($data['config'])){
+                $data['config'] = Qlib::lib_json_array($data['config']);
+            }
+        }
+        $ret = [
+            'ID'=>['label'=>'Id','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            'post_type'=>['label'=>'tipo de post','active'=>false,'type'=>'hidden','exibe_busca'=>'d-none','event'=>'','tam'=>'2','value'=>$this->post_type],
+            'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
+            // 'config[numero]'=>['label'=>'Numero','active'=>true,'placeholder'=>'','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'2','cp_busca'=>'config][numero'],
+            'post_title'=>['label'=>'Nome da pasta','active'=>true,'placeholder'=>'Pasta','type'=>'text','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'12'],
+            // 'post_date_gmt'=>['label'=>'Data','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
+            'post_name'=>['label'=>'Slug','active'=>false,'placeholder'=>'Ex.: nome-do-post','type'=>'hidden','exibe_busca'=>'d-block','event'=>'type_slug=true','tam'=>'12'],
+            'post_content'=>['label'=>'Descrição','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
+            'post_status'=>['label'=>'Publicar','active'=>true,'type'=>'chave_checkbox','value'=>'publish','valor_padrao'=>'publish','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['publish'=>'Publicado','pending'=>'Despublicado']],
+        ];
+        return $ret;
+    }
     public function campos_pca($post_id=false){
         $hidden_editor = '';
         $user = $this->user;
@@ -807,6 +832,10 @@ class PostController extends Controller
             $ret = $this->campos_pp($post_id);
         }elseif($this->post_type=='processos-cartorio'){
             $ret = $this->campos_pca($post_id);
+        }elseif($this->post_type=='arquivamento-text'){
+            $ret = $this->campos_text($post_id);
+        }elseif($this->post_type=='arquivamento-video'){
+            $ret = $this->campos_video($post_id);
         }elseif($this->post_type=='menu'){
             $ret = $this->campos_menus($post_id);
         }else{
@@ -840,6 +869,10 @@ class PostController extends Controller
                 if($name=='decretos.edit'){
                     $title = __('Editar Cadastro de Decretos');
                 }
+            }elseif($sec=='arquivamento-text'){
+                $title = __('Arquivo de documentos');
+            }elseif($sec=='arquivamento-video'){
+                $title = __('Arquivo de videos');
             }elseif($sec=='processos'){
                 $title = __('Cadastro de processos');
             }elseif($sec=='processos-campo'){
@@ -852,6 +885,8 @@ class PostController extends Controller
                 $title = __('Cadastro de menus');
             }elseif($sec=='pacotes_lances'){
                 $title = __('Cadastro de pacotes');
+            }elseif($sec=='arquivamento'){
+                $title = __('Cadastro de arquivos');
             }else{
                 $title = __('Sem titulo');
             }
@@ -888,7 +923,6 @@ class PostController extends Controller
         (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
         if($this->routa=='processos' || $this->routa=='processos-campo' || $this->routa=='processos-prefeitura' || $this->routa=='processos-cartorio'){
            $this->view = 'admin.processos';
-
         }
         return view($this->view.'.index',$ret);
     }
@@ -1261,6 +1295,7 @@ class PostController extends Controller
             $salv = (new processosController)->register_change_process(['process_id' => $id,'save_status' => @$data['post_type']]);
 
             $atualizar=Post::where('id',$id)->update($data);
+            // dd($atualizar,$data);
             if($atualizar){
                 $mens = $this->label.' cadastrado com sucesso!';
                 $color = 'success';
@@ -1286,6 +1321,9 @@ class PostController extends Controller
             if($atualizar && $meta && $id){
                 if(is_array($meta)){
                     foreach ($meta as $kme => $vme) {
+                        if(is_array($vme)){
+                            $vme = Qlib::lib_array_json($vme);
+                        }
                         $ret['update_postmeta'][$kme] = Qlib::update_postmeta($id,$kme,$vme);
                     }
                 }

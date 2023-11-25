@@ -60,7 +60,7 @@
                     $val->id = $val->ID;
                 }
                 $rlink = 'edit';
-                if($routa=='familias'||$routa=='decretos'||$routa=='processos-campo'||$routa=='processos-prefeitura'||$routa=='processos-cartorio'||$routa=='processos'||$routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros'){
+                if($routa=='familias'||$routa=='arquivamento-text'||$routa=='arquivamento-videos'||$routa=='decretos'||$routa=='processos-campo'||$routa=='processos-prefeitura'||$routa=='processos-cartorio'||$routa=='processos'||$routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros'){
                     $rlink = 'show';
                 }
                 $linkShow = route($routa.'.'.$rlink,['id'=>$val->id]). '?redirect='.$redirect.'idCad='.$val->id;
@@ -84,7 +84,7 @@
                                     </a>
                                 @endif
                             @endif
-                            @if ($routa=='familias' || $routa=='decretos' || $routa=='processos-campo' || $routa=='processos' || $routa=='processos-prefeitura' || $routa=='processos-cartorio' || $routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros')
+                            @if ($routa=='familias' || $routa=='arquivamento-text' || $routa=='arquivamento-videos' || $routa=='decretos' || $routa=='processos-campo' || $routa=='processos' || $routa=='processos-prefeitura' || $routa=='processos-cartorio' || $routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros')
                                 <a href="{{ $linkShow }}" title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
                                     <i class="fas fa-eye"></i>
                                 </a>

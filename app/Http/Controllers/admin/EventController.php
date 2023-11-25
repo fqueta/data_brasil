@@ -123,6 +123,8 @@ class EventController extends Controller
             }elseif($action=='update'){
                 $acaoObs = __('Atualizou cadastro de ').$label;
                 $link = route($pRoute[0].'.show',['id'=>$id]);
+            }else{
+                $action = 'index';
             }
             //dd($request->route()->parameter('id'));
             //REGISTRAR EVENTO DE LISTA
@@ -137,7 +139,7 @@ class EventController extends Controller
                     'link'=>$link,
                 ],
             ];
-            // dd($cfe);
+
             $regev = $this->regEvent($cfe);
         }
         return $regev;
