@@ -30,7 +30,7 @@ class mediaController extends Controller
             $arquivos = Post::where('post_type','=','attachment')->where('post_status','=','publish')->get();
             if($arquivos->count()){
                 $ret['exec'] = true;
-                $ret['arquivos'] = $arquivos;
+                $ret['arquivos'] = $arquivos->toArray();
             }
         }
         if($request->has('ajax')){
@@ -109,7 +109,6 @@ class mediaController extends Controller
         // Get just filename
         $mimeType = $file->getClientMimeType();
         // Get mimetype
-        // dd($mimeType);
         $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
         // Get just ext
         $extension = $file->getClientOriginalExtension();
@@ -153,6 +152,7 @@ class mediaController extends Controller
                 ];
                 $salvar = Post::create($dataSalv);
             }
+            // dd($salvar);
             //$lista = _upload::where('token_produto','=',$token_produto)->get();
             if($salvar){
                 return response()->json(['Arquivo enviado com sucesso'=>200]);

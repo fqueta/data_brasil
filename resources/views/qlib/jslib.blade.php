@@ -6,6 +6,9 @@
     'botao_fechar'=>true,
     'tam'=>'modal-lg',
 ]])
+@if (isset($config['media']))
+    @include('admin.media.painel_select_media')
+@endif
 @include('qlib.modal_pesquisa')
 @include('admin.partes.footer')
 <script src="{{url('/')}}/js/jquery.maskMoney.min.js"></script>

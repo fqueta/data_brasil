@@ -233,7 +233,14 @@ Route::get('/suspenso',[UserController::class,'suspenso'])->name('cobranca.suspe
 Route::prefix('cobranca')->group(function(){
     Route::get('/fechar',[UserController::class,'pararAlertaFaturaVencida'])->name('alerta.cobranca.fechar');
 });
-
+Route::resource('media','\App\Http\Controllers\admin\mediaController',['parameters' => [
+    'media' => 'id'
+]]);
+Route::prefix('media')->group(function(){
+    Route::post('/store-parent',['\App\Http\Controllers\admin\mediaController','storeParent'])->name('store.parent.media');
+    Route::post('/trash',['\App\Http\Controllers\admin\mediaController','trash'])->name('trash.media');
+    // Route::get('/ajax',[App\Http\Controllers\TesteController::class,'ajax'])->name('teste.ajax');
+});
 //inicio Rotas de verificação
 Route::get('/email/verify', function () {
     return view('auth.verify');

@@ -19,7 +19,7 @@
                 }
             }
         @endphp
-        @if(isset($arquivos) && is_object($arquivos))
+        @if(isset($arquivos) && is_array($arquivos))
         {{-- {{dd($arquivos)}} --}}
             <div class="row media-files">
                 @foreach ($arquivos as $k=>$v )

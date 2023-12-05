@@ -72,6 +72,11 @@ class QoptionSeeder extends Seeder
                 'url'=>'dominio_arquivos',
                 'valor'=>'/storage',
             ],
+            [
+                'nome'=>'Diretorio dos arquivos',
+                'url'=>'storage_path',
+                'valor'=>'/storage',
+            ],
         ]);
     }
 }

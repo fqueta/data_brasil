@@ -138,6 +138,11 @@ class BeneficiariosController extends Controller
         $user = Auth::user();
         $estadocivil = new EstadocivilController($user);
         $escolaridade = new EscolaridadeController($user);
+        $obrigaRenda = 'required';
+        if(Qlib::get_subdominio()=='itatiaiucu'){
+            $obrigaRenda = '';
+        }
+        // $obrigaRenda = '';
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
@@ -159,7 +164,7 @@ class BeneficiariosController extends Controller
             'config[telefone2]'=>['label'=>'Telefone2','active'=>true,'type'=>'tel','tam'=>'3','exibe_busca'=>'d-block','event'=>'onblur=mask(this,clientes_mascaraTelefone); onkeypress=mask(this,clientes_mascaraTelefone);','cp_busca'=>'config][telefone2'],
             'config[nascimento]'=>['label'=>'Nascimento','cp_busca'=>'config][nascimento','active'=>true,'type'=>'date','tam'=>'3','exibe_busca'=>'d-block','event'=>'mask-data'],
             'config[profissao]'=>['label'=>'Profissão','active'=>true,'type'=>'text','tam'=>'3','exibe_busca'=>'d-block','event'=>'','cp_busca'=>'config][profissao'],
-            'config[renda]'=>['label'=>'Renda','active'=>true,'type'=>'moeda','tam'=>'4','exibe_busca'=>'d-block','event'=>'moeda required','cp_busca'=>'config][renda'],
+            'config[renda]'=>['label'=>'Renda','active'=>true,'type'=>'moeda','tam'=>'4','exibe_busca'=>'d-block','event'=>'moeda '.$obrigaRenda,'cp_busca'=>'config][renda'],
             'sexo'=>[
                 'label'=>'Sexo',
                 'active'=>true,
@@ -250,6 +255,7 @@ class BeneficiariosController extends Controller
         $user = Auth::user();
         $estadocivil = new EstadocivilController($user);
         $escolaridade = new EscolaridadeController($user);
+        $obrigaRenda = false;
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],

@@ -46,8 +46,8 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                     </div>
-                    <link rel="stylesheet" href="{{url('/')}}/css/dropzone.min.css" type="text/css" />
-                    <script src="{{url('/')}}/js/dropzone.min.js"></script>
+                    {{-- <link rel="stylesheet" href="{{url('/')}}/css/dropzone.min.css" type="text/css" /> --}}
+                    {{-- <script src="{{url('/')}}/js/dropzone.min.js"></script> --}}
                     <style>
 
                     </style>

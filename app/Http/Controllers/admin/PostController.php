@@ -1002,65 +1002,39 @@ class PostController extends Controller
             unset($dados['post_modified_gmt']);
         if(is_null(@$dados['post_date']))
             unset($dados['post_date']);
-        // if($this->i_wp=='s' && isset($dados['post_type'])){
-        //     //$endPoint = isset($dados['endPoint'])?$dados['endPoint']:$dados['post_type'].'s';
-        //     $endPoint = 'post';
-        //     $params = $this->geraParmsWp($dados);
-
-        //     if($params){
-        //         $salvar = $this->wp_api->exec2([
-        //             'endPoint'=>$endPoint,
-        //             'method'=>'POST',
-        //             'params'=>$params
-        //         ]);
-        //         if(isset($salvar['arr']['id']) && $salvar['arr']['id']){
-        //             $mens = $this->label.' cadastrado com sucesso!';
-        //             $color = 'success';
-        //             $idCad = $salvar['arr']['id'];
-        //         }else{
-        //             $mens = 'Erro ao salvar '.$this->label.'';
-        //             $color = 'danger';
-        //             $idCad = 0;
-        //             if(isset($salvar['arr']['status'])&&$salvar['arr']['status']==400 && isset($salvar['arr']['message']) && !empty($salvar['arr']['message'])){
-        //                 $mens = $salvar['arr']['message'];
-        //             }
-        //         }
-        //     }else{
-        //         $color = 'danger';
-        //         $mens = 'Parametros invalidos!';
-        //     }
-        // }else{
-            // dd($dados);
-            $meta = false;
-            if(isset($dados['meta'])){
-                $meta = $dados['meta'];
-                unset($dados['meta']);
-            }
-            $salvar = Post::create($dados);
-            if(isset($salvar->id) && $salvar->id){
-                $mens = $this->label.' cadastrado com sucesso!';
-                $color = 'success';
-                $idCad = $salvar->id;
-                //REGISTRAR EVENTO STORE
-                if($idCad){
-                    if($meta && $idCad){
-                        if(is_array($meta)){
-                            foreach ($meta as $kme => $vme) {
-                                $ret['update_postmeta'][$kme] = Qlib::update_postmeta($idCad,$kme,$vme);
+        $meta = false;
+        if(isset($dados['meta'])){
+            $meta = $dados['meta'];
+            unset($dados['meta']);
+        }
+        $salvar = Post::create($dados);
+        if(isset($salvar->id) && $salvar->id){
+            $mens = $this->label.' cadastrado com sucesso!';
+            $color = 'success';
+            $idCad = $salvar->id;
+            //REGISTRAR EVENTO STORE
+            if($idCad){
+                if($meta && $idCad){
+                    if(is_array($meta)){
+                        foreach ($meta as $kme => $vme) {
+                            if(is_array($vme)){
+                                $vme = Qlib::lib_array_json($vme);
                             }
+                            $ret['update_postmeta'][$kme] = Qlib::update_postmeta($idCad,$kme,$vme);
                         }
                     }
-                    $regev = Qlib::regEvent(['action'=>'store','tab'=>$this->tab,'config'=>[
-                        'obs'=>'Cadastro guia Id '.$salvar->id,
-                        'link'=>$this->routa,
-                        ]
-                    ]);
                 }
-            }else{
-                $mens = 'Erro ao salvar '.$this->label.'';
-                $color = 'danger';
-                $idCad = 0;
+                $regev = Qlib::regEvent(['action'=>'store','tab'=>$this->tab,'config'=>[
+                    'obs'=>'Cadastro guia Id '.$salvar->id,
+                    'link'=>$this->routa,
+                    ]
+                ]);
             }
+        }else{
+            $mens = 'Erro ao salvar '.$this->label.'';
+            $color = 'danger';
+            $idCad = 0;
+        }
         // }
         //REGISTRAR EVENTOS
         (new EventController)->listarEvent(['tab'=>$this->tab,'id'=>@$salvar->id,'this'=>$this]);
@@ -1218,6 +1192,14 @@ class PostController extends Controller
                 'id'=>$id,
                 'arquivos'=>'jpeg,jpg,png,pdf,PDF',
             ];
+            $config['media'] = [
+                'files'=>'jpeg,jpg,png,pdf,PDF',
+                'select_files'=>'unique',
+                'field_media'=>'post_parent',
+                'post_parent'=>$id,
+            ];
+            //IMAGEM DESTACADA
+
             if(isset($dados[0]['ID']) && $this->i_wp=='s'){
                 $imagem_destacada = DB::table('wp_postmeta')->
                 where('post_id',$dados[0]['ID'])->
@@ -1225,10 +1207,38 @@ class PostController extends Controller
                 if(isset($imagem_destacada[0])){
                     $dados[0]['imagem_destacada'] = $imagem_destacada[0];
                 }
+            }elseif(isset($dados[0]['post_parent'])){
+                $imgd = Post::where('ID', '=', $dados[0]['post_parent'])->where('post_status','=','publish')->get();
+                if( $imgd->count() > 0 ){
+                    // dd($imgd[0]['guid']);
+                    $dados[0]['imagem_destacada'] = Qlib::qoption('storage_path'). '/'.$imgd[0]['guid'];
+                }
             }
             //REGISTRAR EVENTOS
             (new EventController)->listarEvent(['tab'=>$this->view,'this'=>$this]);
             $dados[0]['id'] = isset($dados[0]['ID'])?$dados[0]['ID']:0;
+            $dados[0]['videos'] = Qlib::get_postmeta($dados[0]['id'],'videos',true);
+            $vmod = [];
+            if($dados[0]['videos']){
+                $dados[0]['videos'] = Qlib::lib_json_array($dados[0]['videos']);
+                if(is_array($dados[0]['videos'])){
+                    $link = 'https://www.youtube.com/embed/';
+                    foreach ($dados[0]['videos'] as $kv1 => $vv) {
+                        if(empty($vv)){
+                            $vmod['videos_alt'][$kv1]['value'] = false;
+                            $vmod['videos_alt'][$kv1]['src'] = false;
+                        }else{
+                            $arr = explode('v=', $vv);
+                            if(isset($arr[1]) && ($id_yt=$arr[1])){
+                                $vmod['videos_alt'][$kv1]['value'] = $vv;
+                                $vmod['videos_alt'][$kv1]['src'] = $link.$id_yt;
+                            }
+                        }
+                    }
+                }
+            }
+            $dados[0]['videos'] = $vmod;
+            // dd($dados[0]);
             $ret = [
                 'value'=>$dados[0],
                 'config'=>$config,

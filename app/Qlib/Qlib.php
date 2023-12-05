@@ -29,6 +29,10 @@ class Qlib
         $dataLocal = date('d/m/Y H:i:s', time());
         return $dataLocal;
     }
+    static function dataLocalDb(){
+        $dtBanco = date('Y-m-d H:i:s', time());
+        return $dtBanco;
+    }
     static function dataBanco(){
         global $dtBanco;
         $dtBanco = date('Y-m-d H:i:s', time());
