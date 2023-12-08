@@ -3,5 +3,5 @@
     Todos Direitos reservados.
 </span>
 <div class="float-right d-none d-sm-inline-block d-print-none">
-<b>Versão</b> {{config('app.version')}} <b>Ultima Atualização: </b> 19/10/2023
+<b>Versão</b> {{config('app.version')}} <b>Ultima Atualização: </b> {{config('app.last_update')}}
 </div>
