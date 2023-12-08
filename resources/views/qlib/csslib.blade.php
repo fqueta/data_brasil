@@ -19,11 +19,11 @@
     .r-btn-install{
         position: fixed;
         right: 0;
-        bottom: 0;
+        top: 0;
         background-color: #FFF;
         width: 100%;
         padding: 10px;
-        z-index: 3;
+        z-index: 9999;
         height: 58px;
     }
     .r-btn-install img{
