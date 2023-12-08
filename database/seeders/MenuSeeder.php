@@ -206,20 +206,20 @@ class MenuSeeder extends Seeder
             ],
             [
                 'categoria'=>'',
+                'description'=>'Adicionar Arquivo',
+                'icon'=>'fas fa-folder-plus',
+                'actived'=>true,
+                'url'=>'arquivamento-text',
+                'route'=>'arquivamento-text.create',
+                'pai'=>'arquivamento'
+            ],
+            [
+                'categoria'=>'',
                 'description'=>'Documentos',
                 'icon'=>'fas fa-file-alt',
                 'actived'=>true,
                 'url'=>'arquivamento-text',
                 'route'=>'arquivamento-text.index',
-                'pai'=>'arquivamento'
-            ],
-            [
-                'categoria'=>'',
-                'description'=>'Videos',
-                'icon'=>'fas fa-file-video',
-                'actived'=>true,
-                'url'=>'arquivamento-video',
-                'route'=>'arquivamento-video.index',
                 'pai'=>'arquivamento'
             ],
             [

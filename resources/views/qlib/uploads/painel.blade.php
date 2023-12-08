@@ -1,13 +1,13 @@
 @if ($config['parte']=='painel')
         <link rel="stylesheet" href="{{url('/')}}/css/dropzone.min.css" type="text/css" />
         <script src="{{url('/')}}/js/dropzone.min.js"></script>
-        <style>
+        {{-- <style>
             .grade-img img{
                 object-fit: cover;
                 height: 50px;
                 border-radius: 50%;
             }
-        </style>
+        </style> --}}
         <!-- Button trigger modal -->
         <div class="row">
             <div class="col-md-12 mb-2">

@@ -49,13 +49,14 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                {{
+                {{-- {{
                     App\Qlib\Qlib::listaTabela([
                     'campos_tabela'=>$campos_tabela,
                     'config'=>$config,
                     'dados'=>$dados,
                     'routa'=>$routa,
-                ])}}
+                ])}} --}}
+                @include('arquivamento.list_grid')
             </div>
         </div>
         <div class="card-footer d-print-none">

@@ -158,7 +158,12 @@ class PostController extends Controller
         $post_totais->esteMes = $fm->whereYear('post_date', '=', $ano)->whereMonth('post_date','=',$mes)->count();
         $post_totais->ativos = $fm->where('post_status','=','publish')->count();
         $post_totais->inativos = $fm->where('post_status','!=','publish')->count();
-
+        if($post_totais->todos>0){
+            foreach ($post as $kp => $vp) {
+                $post[$kp]['link_thumbnail'] = Qlib::get_thumbnail_link($vp['ID']);
+                // $post[$kp]['link_thumbnail'] = Qlib::get_thumbnail_link($vp['ID']);
+            }
+        }
         $ret['post'] = $post;
         $ret['post_totais'] = $post_totais;
         $ret['arr_titulo'] = $arr_titulo;

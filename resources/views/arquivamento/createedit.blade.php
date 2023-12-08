@@ -3,7 +3,9 @@
 @section('title')
 {{config('app.name')}} {{config('app.version')}} - {{$titulo}}
 @stop
-
+@php
+    $seg2 = request()->segment(2);
+@endphp
 @section('footer')
     @include('footer')
 @stop
@@ -38,104 +40,107 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Arquivos</h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                              <i class="fas fa-minus"></i>
-                            </button>
+        @if($seg2 !='create')
+            <div class="row card-arquivos">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Arquivos</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        {{App\Qlib\Qlib::gerUploadAquivos([
-                            'pasta'=>$config['route'].'/'.date('Y').'/'.date('m'),
-                            'token_produto'=>$value['token'],
-                            'tab'=>$config['route'],
-                            'listFiles'=>@$listFiles,
-                            'routa'=>@$config['route'],
-                            'arquivos'=>@$config['arquivos'],
-                            'typeN'=>@$config['typeN'],
-                        ])}}
+                        <div class="card-body">
+                            {{App\Qlib\Qlib::gerUploadAquivos([
+                                'pasta'=>$config['route'].'/'.date('Y').'/'.date('m'),
+                                'token_produto'=>$value['token'],
+                                'tab'=>$config['route'],
+                                'listFiles'=>@$listFiles,
+                                'routa'=>@$config['route'],
+                                'arquivos'=>@$config['arquivos'],
+                                'typeN'=>@$config['typeN'],
+                            ])}}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Videos</h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                              <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <form id="frm-videos" method="post">
-                            <div class="row sortable-videos">
-                                {{-- <div class="col-md-12 "> --}}
-                                    @if (isset($value['videos']['videos_alt']) && is_array($value['videos']['videos_alt']))
-                                        @foreach ($value['videos']['videos_alt'] as $kv=>$vv)
-                                        <div class="card mb-2 card-{{$kv}} col-md-6">
-                                            <div class="card-header">
-                                                <i class="fas fa-arrows-alt-v"></i>
-                                                <div class="card-tools">
-                                                    <button onclick="removeVideoYT('{{$kv}}')" type="button" class="btn btn-default"><i class="fas fa-times"></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-12 mb-1">
-                                                        <input type="text" placeholder="{{__('Cole aqui o link do video do YouTube')}}" data-id="{{$kv}}" class="form-control" name="meta[videos][]" value="{{$vv['value']}}" />
-                                                    </div>
-                                                    <div class="col-12 iframe">
-                                                        <iframe width="100%" height="215" data-iframe="{{$kv}}" src="{{$vv['src']}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @endforeach
-                                    @else
-                                        <div class="card mb-2 card-0 col-md-6">
-                                            <div class="card-header">
-                                                <i class="fas fa-arrows-alt-v"></i>
-                                                <div class="card-tools">
-                                                    <button onclick="removeVideoYT('0')" type="button" class="btn btn-default"><i class="fas fa-times"></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-12 mb-1">
-                                                        <input type="text" placeholder="{{__('Cole aqui o link do video do YouTube')}}" class="form-control" data-id="0" name="meta[videos][]" value="" />
-                                                    </div>
-                                                    <div class="col-12 iframe">
-                                                        <iframe width="100%" height="215" data-iframe="0" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                {{-- </div> --}}
+            <div class="row card-video">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Videos</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                                </button>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12 ">
-                                    <button type="buttom" class="btn btn-primary" id="btn-add-videos"> <i class="fas fa-plus"></i> {{__('Adicionar vídeos')}} </button>
-                                    <a href="http://youtube.com" class="btn btn-danger" title="{{__('Acesso ao youtube')}}" target="_blank">
-                                        <i class="fab fa-youtube    "></i>
-                                    </a>
+                        </div>
+                        <div class="card-body">
+                            <form id="frm-videos" method="post">
+                                <div class="row sortable-videos">
+                                    {{-- <div class="col-md-12 "> --}}
+                                        @if (isset($value['videos']['videos_alt']) && is_array($value['videos']['videos_alt']))
+                                            @foreach ($value['videos']['videos_alt'] as $kv=>$vv)
+                                            <div class="card mb-2 card-{{$kv}} col-md-6">
+                                                <div class="card-header">
+                                                    <i class="fas fa-arrows-alt-v"></i>
+                                                    <div class="card-tools">
+                                                        <button onclick="removeVideoYT('{{$kv}}')" type="button" class="btn btn-default"><i class="fas fa-times"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-12 mb-1">
+                                                            <input type="text" placeholder="{{__('Cole aqui o link do video do YouTube')}}" data-id="{{$kv}}" class="form-control" name="meta[videos][]" value="{{$vv['value']}}" />
+                                                        </div>
+                                                        <div class="col-12 iframe">
+                                                            <iframe width="100%" height="215" data-iframe="{{$kv}}" src="{{$vv['src']}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        @else
+                                            <div class="card mb-2 card-0 col-md-6">
+                                                <div class="card-header">
+                                                    <i class="fas fa-arrows-alt-v"></i>
+                                                    <div class="card-tools">
+                                                        <button onclick="removeVideoYT('0')" type="button" class="btn btn-default"><i class="fas fa-times"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-12 mb-1">
+                                                            <input type="text" placeholder="{{__('Cole aqui o link do video do YouTube')}}" class="form-control" data-id="0" name="meta[videos][]" value="" />
+                                                        </div>
+                                                        <div class="col-12 iframe">
+                                                            <iframe width="100%" height="215" data-iframe="0" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    {{-- </div> --}}
                                 </div>
-                            </div>
-                        </form>
+                                <div class="row">
+                                    <div class="col-md-12 ">
+                                        <button type="buttom" class="btn btn-primary" id="btn-add-videos"> <i class="fas fa-plus"></i> {{__('Adicionar vídeos')}} </button>
+                                        <a href="http://youtube.com" class="btn btn-danger" title="{{__('Acesso ao youtube')}}" target="_blank">
+                                            <i class="fab fa-youtube    "></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
-    <div class="col-md-4">
+    @if($seg2 !='create')
+    <div class="col-md-4 card-capa">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">{{__('Imagem de Capa')}}</h3>
@@ -150,12 +155,24 @@
             </div>
         </div>
     </div>
+    @endif
 </div>
 
 @stop
 
 @section('css')
     @include('qlib.csslib')
+    <style>
+        .grade-img img{
+            object-fit: cover;
+            width: 50px !important;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .grade-img{
+            text-align: center;
+        }
+    </style>
 @stop
 
 @section('js')
@@ -180,6 +197,10 @@
                 e.preventDefault();
                 removeVideoYT();
             });
+            @if($seg2 =='create')
+             $('[btn="permanecer"]').html('Salvar e Continuar <i class="fa fa-chevron-circle-right">');
+             $('[btn="sair"]').hide();
+            @endif
         });
 
     </script>

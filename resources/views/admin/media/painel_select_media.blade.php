@@ -23,7 +23,7 @@
                     $display_btn_remove = '';
                 }
             @endphp
-                <a id="remove-img-destaque" onclick="lib_mediaRemove('{{$value['post_parent']}}','radio');" class="btn btn-outline-danger {{$display_btn_remove}}">
+                <a id="remove-img-destaque" onclick="lib_mediaRemove('{{@$value['post_parent']}}','radio');" class="btn btn-outline-danger {{$display_btn_remove}}">
                     <i class="fas fa-trash" ></i> {{__('Remover')}}
                 </a>
             {{-- <a id="lfm-remove" class="btn btn-outline-danger d-none">

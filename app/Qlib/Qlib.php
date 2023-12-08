@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Permission;
+use App\Models\Post;
 use App\Models\Qoption;
 
 class Qlib
@@ -959,5 +960,45 @@ class Qlib
             }
         }
         return $dados;
+    }
+    /**
+     * Metodo para listar links de imagens de capa
+     */
+    static function get_thumbnail_link($post_id=false){
+        $ret = false;
+        if($post_id){
+            $dados = Post::Find($post_id);
+            $imgd = Post::where('ID', '=', $dados['post_parent'])->where('post_status','=','publish')->get();
+                if( $imgd->count() > 0 ){
+                    // dd($imgd[0]['guid']);
+                    $ret = Qlib::qoption('storage_path'). '/'.$imgd[0]['guid'];
+                }
+        }
+        return $ret;
+    }
+    static function get_the_permalink($post_id=false,$dados=false){
+        $ret = url('/');
+        if(!$dados && $post_id){
+            $dados = Post::Find($post_id);
+            if($dados->count() > 0){
+                $dados = $dados->toArray();
+            }
+        }
+        if($dados){
+            $seg1 = request()->segment(1);
+            if($seg1){
+                if($dados['post_type'] == 'leiloes_adm' && $seg1==self::get_slug_post_by_id(37)){
+                    $ret .= '/'.$seg1.'/'.$dados['ID'];
+                }
+            }
+            // dd($dados);
+            // $ret = 'link'
+            // $imgd = Post::where('ID', '=', $dados['post_parent'])->where('post_status','=','publish')->get();
+            //     if( $imgd->count() > 0 ){
+            //         // dd($imgd[0]['guid']);
+            //         $ret = Qlib::qoption('storage_path'). '/'.$imgd[0]['guid'];
+            //     }
+        }
+        return $ret;
     }
 }
