@@ -186,7 +186,7 @@
         document.querySelector('#library-tab').click();
     }
     function btnUpload(){
-        $('[data-dismiss="modal"]').addClass('d-none');
+        // $('[data-dismiss="modal"]').addClass('d-none');
         $('#btn-lib').removeClass('d-none');
     }
     function getLibTab(){
