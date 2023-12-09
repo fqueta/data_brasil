@@ -30,7 +30,7 @@
             <div class="col-md-2 col-6 grade-img mb-2 text-center">
                 @if ($tipo=='image')
                     <a href="{{$dominio_arquivo.$file->pasta}}" data-maxwidth="80%" title="{{$file->nome}}" data-gall="gall1" class="venobox">
-                        <img src="{{$dominio_arquivo.$file->pasta}}" class="shadow w-100" alt="{{$file->nome}}" srcset="">
+                        <img src="{{$dominio_arquivo.$file->pasta}}" class="shadow" alt="{{$file->nome}}" srcset="">
                     </a>
                 @else
                     <a href="{{$dominio_arquivo.$file->pasta}}" target="_BLANK" data-maxwidth="80%" title="{{$file->nome}}" class="">
