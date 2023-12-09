@@ -1115,6 +1115,10 @@ class PostController extends Controller
                 $config['class_card1'] = 'col-md-12';
                 $config['class_card2'] = 'd-none';
             }
+            $dados['videos'] = $this->convert_string_video_in_array($id);
+            // if(is_string($dados['videos'])){
+            //     $dados['videos'] = Qlib::lib_json_array($dados['videos']);
+            // }
             $ret = [
                 'value'=>$dados,
                 'config'=>$config,
@@ -1126,6 +1130,7 @@ class PostController extends Controller
                 'routa'=>$this->routa,
                 'exec'=>true,
             ];
+            // dd($this->routa);
             //REGISTRAR EVENTOS
             (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
             return view('padrao.show',$ret);
@@ -1222,27 +1227,27 @@ class PostController extends Controller
             //REGISTRAR EVENTOS
             (new EventController)->listarEvent(['tab'=>$this->view,'this'=>$this]);
             $dados[0]['id'] = isset($dados[0]['ID'])?$dados[0]['ID']:0;
-            $dados[0]['videos'] = Qlib::get_postmeta($dados[0]['id'],'videos',true);
-            $vmod = [];
-            if($dados[0]['videos']){
-                $dados[0]['videos'] = Qlib::lib_json_array($dados[0]['videos']);
-                if(is_array($dados[0]['videos'])){
-                    $link = 'https://www.youtube.com/embed/';
-                    foreach ($dados[0]['videos'] as $kv1 => $vv) {
-                        if(empty($vv)){
-                            $vmod['videos_alt'][$kv1]['value'] = false;
-                            $vmod['videos_alt'][$kv1]['src'] = false;
-                        }else{
-                            $arr = explode('v=', $vv);
-                            if(isset($arr[1]) && ($id_yt=$arr[1])){
-                                $vmod['videos_alt'][$kv1]['value'] = $vv;
-                                $vmod['videos_alt'][$kv1]['src'] = $link.$id_yt;
-                            }
-                        }
-                    }
-                }
-            }
-            $dados[0]['videos'] = $vmod;
+            // $dados[0]['videos'] = Qlib::get_postmeta($dados[0]['id'],'videos',true);
+            // $vmod = [];
+            // if($dados[0]['videos']){
+            //     $dados[0]['videos'] = Qlib::lib_json_array($dados[0]['videos']);
+            //     if(is_array($dados[0]['videos'])){
+            //         $link = 'https://www.youtube.com/embed/';
+            //         foreach ($dados[0]['videos'] as $kv1 => $vv) {
+            //             if(empty($vv)){
+            //                 $vmod['videos_alt'][$kv1]['value'] = false;
+            //                 $vmod['videos_alt'][$kv1]['src'] = false;
+            //             }else{
+            //                 $arr = explode('v=', $vv);
+            //                 if(isset($arr[1]) && ($id_yt=$arr[1])){
+            //                     $vmod['videos_alt'][$kv1]['value'] = $vv;
+            //                     $vmod['videos_alt'][$kv1]['src'] = $link.$id_yt;
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
+            $dados[0]['videos'] = $this->convert_string_video_in_array($id);
             // dd($dados[0]);
             $ret = [
                 'value'=>$dados[0],
@@ -1406,6 +1411,35 @@ class PostController extends Controller
             $ret = response()->json(['mens'=>__($mens),'color'=>$color,'return'=>route($this->routa.'.index')]);
         }else{
             $ret = redirect()->route($routa.'.index',['mens'=>$mens,'color'=>$color]);
+        }
+        return $ret;
+    }
+    /**
+     * Metod que convert um video youtube em array com codigo embed com url do youtube
+     * @param int $post_id
+     * @return array $ret | boolean false
+     */
+    public function convert_string_video_in_array($post_id=false){
+        $ret = false;
+        if(!$post_id){
+            return $ret;
+        }
+        $videos = Qlib::get_postmeta($post_id,'videos',true);
+        $videos = Qlib::lib_json_array($videos);
+        if(is_array($videos)){
+            $link = 'https://www.youtube.com/embed/';
+            foreach ($videos as $kv1 => $vv) {
+                if(empty($vv)){
+                    $ret['videos_alt'][$kv1]['value'] = false;
+                    $ret['videos_alt'][$kv1]['src'] = false;
+                }else{
+                    $arr = explode('v=', $vv);
+                    if(isset($arr[1]) && ($id_yt=$arr[1])){
+                        $ret['videos_alt'][$kv1]['value'] = $vv;
+                        $ret['videos_alt'][$kv1]['src'] = $link.$id_yt;
+                    }
+                }
+            }
         }
         return $ret;
     }
