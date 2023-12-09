@@ -2,6 +2,7 @@
     <style>
         .grade-img img{
             object-fit: cover;
+            width: 150px;
             height: 150px;
         }
     </style>
