@@ -161,7 +161,7 @@ class PostController extends Controller
         if($post_totais->todos>0){
             foreach ($post as $kp => $vp) {
                 $post[$kp]['link_thumbnail'] = Qlib::get_thumbnail_link($vp['ID']);
-                // $post[$kp]['link_thumbnail'] = Qlib::get_thumbnail_link($vp['ID']);
+                $post[$kp]['videos'] = $this->convert_string_video_in_array($vp['ID']);
             }
         }
         $ret['post'] = $post;
@@ -675,7 +675,7 @@ class PostController extends Controller
             'post_type'=>['label'=>'tipo de post','active'=>false,'type'=>'hidden','exibe_busca'=>'d-none','event'=>'','tam'=>'2','value'=>$this->post_type],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             // 'config[numero]'=>['label'=>'Numero','active'=>true,'placeholder'=>'','type'=>'number','exibe_busca'=>'d-block','event'=>'','tam'=>'2','cp_busca'=>'config][numero'],
-            'post_title'=>['label'=>'Nome da pasta','active'=>true,'placeholder'=>'Pasta','type'=>'text','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'12'],
+            'post_title'=>['label'=>'Nome do arquivo','active'=>true,'placeholder'=>'Pasta','type'=>'text','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'12'],
             // 'post_date_gmt'=>['label'=>'Data','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
             'post_name'=>['label'=>'Slug','active'=>false,'placeholder'=>'Ex.: nome-do-post','type'=>'hidden','exibe_busca'=>'d-block','event'=>'type_slug=true','tam'=>'12'],
             'post_content'=>['label'=>'Descrição','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
@@ -1227,26 +1227,6 @@ class PostController extends Controller
             //REGISTRAR EVENTOS
             (new EventController)->listarEvent(['tab'=>$this->view,'this'=>$this]);
             $dados[0]['id'] = isset($dados[0]['ID'])?$dados[0]['ID']:0;
-            // $dados[0]['videos'] = Qlib::get_postmeta($dados[0]['id'],'videos',true);
-            // $vmod = [];
-            // if($dados[0]['videos']){
-            //     $dados[0]['videos'] = Qlib::lib_json_array($dados[0]['videos']);
-            //     if(is_array($dados[0]['videos'])){
-            //         $link = 'https://www.youtube.com/embed/';
-            //         foreach ($dados[0]['videos'] as $kv1 => $vv) {
-            //             if(empty($vv)){
-            //                 $vmod['videos_alt'][$kv1]['value'] = false;
-            //                 $vmod['videos_alt'][$kv1]['src'] = false;
-            //             }else{
-            //                 $arr = explode('v=', $vv);
-            //                 if(isset($arr[1]) && ($id_yt=$arr[1])){
-            //                     $vmod['videos_alt'][$kv1]['value'] = $vv;
-            //                     $vmod['videos_alt'][$kv1]['src'] = $link.$id_yt;
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
             $dados[0]['videos'] = $this->convert_string_video_in_array($id);
             // dd($dados[0]);
             $ret = [

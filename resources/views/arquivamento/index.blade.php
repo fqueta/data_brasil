@@ -30,8 +30,10 @@
       <div class="card">
         <div class="card-header">
             <h4 class="card-title">
-                @if (!empty($arr_titulo))
-                    Lista de:
+                <b>BIBLIOTECA</b>
+                {{-- @if (!empty($arr_titulo))
+                    <em>
+                Lista de:
 
                     @foreach ($arr_titulo as $k=>$pTitulo)
                         <label for=""> Todo com {{ $k }}</label> = {{ $pTitulo }}, e
@@ -39,6 +41,7 @@
                 @else
                     {{ $titulo_tabela }}
                 @endif
+                    </em> --}}
             </h4>
             @can('is_admin_logado')
             <div class="card-tools d-flex d-print-none">

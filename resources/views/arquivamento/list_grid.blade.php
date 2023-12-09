@@ -18,11 +18,11 @@
         object-position: center;
     }
 </style>
-<div class="row">
+{{-- <div class="row">
     <div class="col-12 mb-4">
         <h5> {{__('Lista de arquivos')}} </h5>
     </div>
-</div>
+</div> --}}
 <div class="row">
     @if(isset($dados))
         @foreach($dados as $key => $val)
@@ -36,11 +36,9 @@
                     </a>
                     <div class="card-body">
                         <h4 class="card-title"><a href="{{route($routa.'.show',['id'=>$val['ID']])}}">{{$val['post_title']}}</a></h4>
-                        <div class="d-flex btn-acao">
+                        <div class="d-flex btn-acao mb-3">
                         @can('update', $routa)
                             <a href="{{route($routa.'.edit',['id'=>$val['ID']])}}" class="btn btn-outline-light" title="{{__('Editar')}}"> <i class="fas fa-pen"></i> </a>
-
-
                         @endcan
                         @can('delete',$routa)
                                 <form id="frm-{{ $val['ID'] }}" action="{{ route($routa.'.destroy',['id'=>$val['ID']]) }}" method="POST">
@@ -50,9 +48,15 @@
                                         <i class="fas fa-trash    "></i>
                                     </button>
                                 </form>
-                            @endcan
+                        @endcan
                         </div>
+                        @if(isset($val['videos']['videos_alt']) && is_array($val['videos']['videos_alt']))
+                            <div class="w-100 text-right " style="position: absolute;bottom:0px;right:10px">
+                                {{count($val['videos']['videos_alt'])}} <i class="fas fa-video text-primary"></i>
+                            </div>
+                        @endif
                     </div>
+
                 </div>
             </div>
         @endforeach
