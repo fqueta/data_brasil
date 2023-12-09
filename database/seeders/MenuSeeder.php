@@ -209,7 +209,7 @@ class MenuSeeder extends Seeder
                 'description'=>'Adicionar Arquivo',
                 'icon'=>'fas fa-folder-plus',
                 'actived'=>true,
-                'url'=>'arquivamento-text',
+                'url'=>'arquivamento-text_',
                 'route'=>'arquivamento-text.create',
                 'pai'=>'arquivamento'
             ],
