@@ -140,6 +140,14 @@ class FamiliaController extends Controller
             $countFam =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
             $totProcesso['entregue'] = Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"processo_entregue"%')->count();
             $totProcesso['certidao'] = Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"certidao"%')->count();
+            $totProcesso['certidao_c_registro'] = Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order'])
+            ->where('config','LIKE','%"categoria_processo":"certidao"%')
+            ->where('config','LIKE','%"registro_cartorio":"s"%')
+            ->count();
+            $totProcesso['certidao_s_registro'] = Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order'])
+            ->where('config','LIKE','%"categoria_processo":"certidao"%')
+            ->where('config','LIKE','%"registro_cartorio":"n"%')
+            ->count();
 
         }
         //$familia =  DB::table('familias')->where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
@@ -492,10 +500,16 @@ class FamiliaController extends Controller
         $quadra = new QuadrasController($user);
         $lote = new LotesController($user);
         $data = $dados?$dados:false;
+        $json_nao_sim = Qlib::qoption('json_nao_sim');
+        $arr_nao_sim = Qlib::lib_json_array($json_nao_sim);
         if(isset($data['bairro'])){
             $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' AND bairro='".$data['bairro']."' AND ".Qlib::compleDelete()." ORDER BY nome ASC",'nome','id');
         }else{
             $arr_opc_quadras = Qlib::sql_array("SELECT id,nome FROM quadras WHERE ativo='s' ORDER BY nome ASC",'nome','id');
+        }
+        $class_registro_cartorio = 'd-none';
+        if(isset($dados['config']['categoria_processo']) && $dados['config']['categoria_processo'] == 'certidao'){
+            $class_registro_cartorio = 'd-block';
         }
         $ret = [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
@@ -566,11 +580,26 @@ class FamiliaController extends Controller
                 'type'=>'select',
                 'arr_opc'=>Qlib::sql_array("SELECT value,nome FROM tags WHERE ativo='s' AND pai='10' ORDER BY ordem ASC",'nome','value'),
                 'exibe_busca'=>'d-block',
-                'event'=>'',
+                'event'=>'onchange=select_categoria_processo(this.value)',
                 'tam'=>'6',
                 'id'=>'categoria_processo',
                 'cp_busca'=>'categoria_processo][',
                 'class'=>'',
+                'exibe_busca'=>true,
+                'option_select'=>true,
+            ],
+            'config[registro_cartorio]'=>[
+                'label'=>'Registro em cartório',
+                'active'=>true,
+                'type'=>'select',
+                'arr_opc'=>$arr_nao_sim,
+                'exibe_busca'=>'d-block',
+                'event'=>'',
+                'tam'=>'12',
+                'id'=>'registro_cartorio',
+                'cp_busca'=>'registro_cartorio][',
+                'class'=>'',
+                'class_div'=>$class_registro_cartorio,
                 'exibe_busca'=>true,
                 'option_select'=>true,
             ],
@@ -727,6 +756,9 @@ class FamiliaController extends Controller
             'crianca_adolescente'=>['label'=>'Criança e Adolescente','active'=>true,'exibe_busca'=>'d-none','event'=>'','type'=>'chave_checkbox','value'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'6','arr_opc'=>['s'=>'Sim','n'=>'Não']],
             'obs'=>['label'=>'Observação','active'=>true,'type'=>'textarea','exibe_busca'=>'d-block','event'=>'','rows'=>'4','cols'=>'80','tam'=>'12','class'=>'summernote'],
         ];
+        if(Qlib::is_cmd()){
+            unset($ret['config[registro_cartorio]']);
+        }
         // if(isset($dados['tags']) && is_array($dados['tags']) && $local=='show'){
         //     //Cadastros completos tag=10
         //     if(in_array(10,$dados['tags'])){

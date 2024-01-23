@@ -152,6 +152,13 @@ form .gray * { color: gray; }
     height: 50px;
     border-radius: 50%;
 }
+.items-list {
+    display: grid;
+    /* grid-template-columns: repeat(4, 1fr); */
+    grid-column-gap: 30px;
+    grid-row-gap: 30px;
+}
+
 @keyframes lds-dual-ring {
     0% {
       transform: rotate(0deg);

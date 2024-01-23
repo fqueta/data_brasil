@@ -464,6 +464,26 @@ class Qlib
         }
         return $ret;
     }
+    /**
+     * Metodo para identifcar se o cliente o cmd
+     */
+    static function is_cmd(){
+        if(self::get_subdominio()=='cmd' || self::get_subdominio()=='cmd1'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    /**
+     * Metodo para identifcar se o cliente o itatiaiucu
+     */
+    static function is_ita(){
+        if(self::get_subdominio()=='itatiaiucu'){
+            return true;
+        }else{
+            return false;
+        }
+    }
     static function ver_PermAdmin($perm=false,$url=false){
         $ret = false;
         if(!$url){
@@ -1001,4 +1021,5 @@ class Qlib
         }
         return $ret;
     }
+
 }

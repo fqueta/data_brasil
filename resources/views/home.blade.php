@@ -79,42 +79,94 @@
             <h4 class="tit-sep">{{__('Processo Jurídico')}}</h4>
         </div>
     </div>
-    <div class="col-lg-4 col-6">
-        <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-info" title="">
-        <div class="inner">
-            <h3>{{$config['totalDecretos']}}</h3>
-            <p>DECRETOS MUNICIPAIS</p>
+    @if (App\Qlib\Qlib::is_cmd())
+        <div class="col-lg-4 col-6">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-info" title="">
+            <div class="inner">
+                <h3>{{$config['totalDecretos']}}</h3>
+                <p>DECRETOS MUNICIPAIS</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <a href="{{route('decretos.index')}}" title="Ver detalhes dos decretos" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
         </div>
-        <div class="icon">
-            <i class="fa fa-check"></i>
+        <div class="col-lg-4 col-6">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-warning" title="{!! App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'processo_entregue','select'=>'obs']) !!}">
+            <div class="inner">
+                <h3>{{$config['c_familias']['totProcesso']['entregue']}}</h3>
+                <p>PROCESSOS ENTREGUES</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <a href="/familias?filter[config][categoria_processo]=processo_entregue" title="Ver detalhes dos processos entregues" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
         </div>
-        <a href="{{route('decretos.index')}}" title="Ver detalhes dos decretos" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+        <div class="col-lg-4 col-6">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-success" title="{!! App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'certidao','select'=>'obs']) !!}">
+            <div class="inner">
+                <h3>{{$config['c_familias']['totProcesso']['certidao']}}</h3>
+                <p>CERTIDÕES</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <a href="/familias?filter[config][categoria_processo]=certidao" title="Ver detalhes das certidões" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
         </div>
-    </div>
-    <div class="col-lg-4 col-6">
-        <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-warning" title="{!! App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'processo_entregue','select'=>'obs']) !!}">
-        <div class="inner">
-            <h3>{{$config['c_familias']['totProcesso']['entregue']}}</h3>
-            <p>PROCESSOS ENTREGUES</p>
+    @else
+        <div class="col-lg-3 col-6 items-list">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-info" title="">
+            <div class="inner">
+                <h3>{{$config['totalDecretos']}}</h3>
+                <p>DECRETOS MUNICIPAIS</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <a href="{{route('decretos.index')}}" title="Ver detalhes dos decretos" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
         </div>
-        <div class="icon">
-            <i class="fa fa-check"></i>
+        <div class="col-lg-3 col-6 items-list">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-warning" title="{!! App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'processo_entregue','select'=>'obs']) !!}">
+            <div class="inner">
+                <h3>{{$config['c_familias']['totProcesso']['entregue']}}</h3>
+                <p>PROCESSOS ENTREGUES</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <a href="/familias?filter[config][categoria_processo]=processo_entregue" title="Ver detalhes dos processos entregues" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
         </div>
-        <a href="/familias?filter[config][categoria_processo]=processo_entregue" title="Ver detalhes dos processos entregues" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+        <div class="col-lg-3 col-6 items-list">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-danger" title="{!! App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'certidao','select'=>'obs']) !!}">
+            <div class="inner">
+                <h3>{{$config['c_familias']['totProcesso']['certidao_s_registro']}}</h3>
+                <p>CERTIDÕES DE IMÓVEIS SEM REGISTRO</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <a href="/familias?filter[config][categoria_processo]=certidao&filter[config][registro_cartorio]=n" title="Ver detalhes das certidões" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
         </div>
-    </div>
-    <div class="col-lg-4 col-6">
-        <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-success" title="{!! App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'certidao','select'=>'obs']) !!}">
-        <div class="inner">
-            <h3>{{$config['c_familias']['totProcesso']['certidao']}}</h3>
-            <p>CERTIDÕES</p>
+        {{-- {{dd($config['c_familias']['totProcesso'])}} --}}
+        <div class="col-lg-3 col-6 items-list">
+            <div data-toggle="tooltip" data-html="true" data-placement="top" class="small-box bg-success" title="{!! App\Qlib\Qlib::buscaValorDb(['tab'=>'tags','campo_bus'=>'value','valor'=>'certidao','select'=>'obs']) !!}">
+            <div class="inner">
+                <h3>{{$config['c_familias']['totProcesso']['certidao_c_registro']}}</h3>
+                <p>CERTIDÕES DE IMÓVEIS COM REGISTRO</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <a href="/familias?filter[config][categoria_processo]=certidao&filter[config][registro_cartorio]=s" title="Ver detalhes das certidões" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
         </div>
-        <div class="icon">
-            <i class="fa fa-check"></i>
-        </div>
-        <a href="/familias?filter[config][categoria_processo]=certidao" title="Ver detalhes das certidões" class="small-box-footer">Visualizar <i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-    </div>
+    @endif
 </div>
     <div class="row">
         {{-- @if (isset($config['c_familias']['progresso']))

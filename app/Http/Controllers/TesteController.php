@@ -42,8 +42,10 @@ class TesteController extends Controller
         // return view('teste',$config);
         // dd(Qlib::update_postmeta(9,'test_data','data de hoje atualizado'));
         // $ret = (new MapasController)->verificaMapa(14);
-        // dd($ret);
-        dd( config('app.date_update'));
+        $ret = Qlib::is_ita();
+        dd($ret);
+
+        // dd( config('app.date_update'));
     }
     public function ajax(){
         $limit = isset($_GET['limit']) ?$_GET['limit'] : 50;

@@ -2346,3 +2346,10 @@ function removeVideoYT(id){
    }
    console.log(id);
 }
+function select_categoria_processo(val){
+    if(val=='certidao'){
+        $('[div-id="config[registro_cartorio]"]').removeClass('d-none').addClass('d-block').find('select').attr('required',true);
+    }else{
+        $('[div-id="config[registro_cartorio]"]').removeClass('d-block').addClass('d-none').find('select').attr('required',false);
+    }
+}
