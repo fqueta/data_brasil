@@ -13,7 +13,7 @@ return [
     |
     */
     'version' => '2.4.6',
-    'last_update' => '09/12/2023',
+    'last_update' => '23/01/2024',
     'name' => config('adminlte.title'),//env('APP_NAME', 'Data Brasil'),
 
     /*
