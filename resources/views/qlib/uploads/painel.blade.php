@@ -19,14 +19,15 @@
                         'listFiles'=>@$config['listFiles'],
                         'routa'=>@$config['routa'],
                         'arquivos'=>@$config['arquivos'],
-                        ])}}
+                        'categoria'=>@$config['categoria'],
+                    ])}}
 
                 </span>
             </div>
             <div class="col-md-12 text-center">
                 @can('create',$config['routa'])
                     @if (isset($config['arquivos']) && $config['arquivos'])
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modelId"> <i class="fas fa-upload"></i>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modelId{{@$config['categoria']}}"> <i class="fas fa-upload"></i>
                             {{ __('Enviar arquivos') }}
                         </button>
                     @endif
@@ -37,7 +38,7 @@
 
 
         <!-- Modal -->
-        <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal fade" id="modelId{{@$config['categoria']}}" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -54,6 +55,7 @@
                                 <input type="hidden" name="pasta" value="{{$config['pasta']}}" />
                                 <input type="hidden" name="arquivos" value="{{$config['arquivos']}}" />
                                 <input type="hidden" name="typeN" value="{{@$config['typeN']}}" />
+                                <input type="hidden" name="categoria" value="{{@$config['categoria']}}" />
                                 <div class="fallback">
                                     <input name="file" type="file" multiple />
                                 </div>
@@ -61,7 +63,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"  onclick="visualizaArquivos('{{$config['token_produto']}}','{{route('uploads.index')}}')" data-dismiss="modal">{{__('Fechar')}}</button>
+                        <button type="button" class="btn btn-secondary"  onclick="visualizaArquivos('{{$config['token_produto']}}','{{route('uploads.index')}}','{{@$config['categoria']}}')" data-dismiss="modal">{{__('Fechar')}}</button>
                         <!--<button type="button" class="btn btn-primary">{{__('Visualizar')}}</button>-->
                     </div>
                 </div>

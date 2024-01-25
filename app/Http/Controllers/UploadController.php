@@ -19,7 +19,24 @@ class UploadController extends Controller
     {
         $ret['exec'] = false;
         if($request->has('token_produto')){
-            $arquivos = _upload::where('token_produto','=',$request->get('token_produto'))->get();
+            if($request->has('categoria')){
+                $categoria = $request->get('categoria');
+                if(!empty($categoria)){
+                    //Modo de compatibilidade
+                    if($categoria=='arquivos'){
+                        $arquivos = _upload::where('token_produto','=',$request->get('token_produto'))
+                        ->get();
+                    }else{
+                        $arquivos = _upload::where('token_produto','=',$request->get('token_produto'))
+                        ->where('config','LIKE','%"categoria":"'.$categoria.'"%')
+                        ->get();
+                    }
+                }else{
+                    $arquivos = _upload::where('token_produto','=',$request->get('token_produto'))->get();
+                }
+            }else{
+                $arquivos = _upload::where('token_produto','=',$request->get('token_produto'))->get();
+            }
             if($arquivos){
                 $ret['exec'] = true;
                 $ret['arquivos'] = $arquivos;
@@ -48,6 +65,10 @@ class UploadController extends Controller
         $extension = $file->getClientOriginalExtension();
         // Filename to store
         $typeN = isset($request->typeN) ? $request->typeN : 1;
+        $categoria = false;
+        if($request->has('categoria')){
+            $categoria = $request->get('categoria');
+        }
         if($typeN==1){
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
         }else{
@@ -75,7 +96,7 @@ class UploadController extends Controller
                     'pasta'=>$nomeArquivoSavo,
                     'ordem'=>$ordem,
                     'nome'=>$filenameWithExt,
-                    'config'=>json_encode(['extenssao'=>$extension])
+                    'config'=>json_encode(['extenssao'=>$extension,'categoria'=>$categoria])
                 ]);
             }
             //$lista = _upload::where('token_produto','=',$token_produto)->get();

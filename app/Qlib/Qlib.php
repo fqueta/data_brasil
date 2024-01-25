@@ -49,6 +49,17 @@ class Qlib
             return false;
         }
     }
+    /**
+     * Verifica se o usuario logado é um cliente ou seja se o id_permission é = 5
+     */
+    static function isCustomer(){
+        $user = Auth::user();
+        if($user->id_permission>=5){
+            return true;
+        }else{
+            return false;
+        }
+    }
     static public function qoption($valor = false, $type = false){
         //type é o tipo de respsta
 		$ret = false;
@@ -393,6 +404,7 @@ class Qlib
             $config['listFiles'] = isset($config['listFiles']) ? $config['listFiles'] : false; // array com a lista
             $config['time'] = isset($config['time']) ? $config['time'] : 4000;
             $config['arquivos'] = isset($config['arquivos']) ? $config['arquivos'] : false;
+            $config['categoria'] = isset($config['categoria']) ? $config['categoria'] : false;
             if($config['listFiles']){
                 $tipo = false;
                 foreach ($config['listFiles'] as $key => $value) {

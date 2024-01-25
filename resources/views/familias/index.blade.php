@@ -34,39 +34,40 @@
     <div class="col-md-12 mens">
     </div>
     @can('is_admin_logado')
-    <div class="col-md-12 d-print-none">
-      <div class="row pl-2 pr-2">
-          <div class="col-md-3 info-box mb-3">
-              <span class="info-box-icon bg-default elevation-1"><i class="fas fa-users"></i></span>
-              <div class="info-box-content">
-                  <span class="info-box-text">Total de Famílias</span>
-                  <span class="info-box-number">{{ @$familia_totais->todos }}</span>
-              </div>
-          </div>
-          <div class="col-md-3 info-box mb-3">
-              <span class="info-box-icon bg-default elevation-1"><i class="fas fa-calendar"></i></i></span>
-              <div class="info-box-content">
-                  <span class="info-box-text">Cadastros deste Mês</span>
-                  <span class="info-box-number">{{ @$familia_totais->esteMes }}</span>
-              </div>
-          </div>
-          <div class="col-md-3 info-box mb-3">
-              <span class="info-box-icon bg-default elevation-1"><i class="fas fa-male"></i></span>
-              <div class="info-box-content">
-                  <span class="info-box-text">Famílias com Idosos</span>
-                  <span class="info-box-number">{{ @$familia_totais->idoso }}</span>
-              </div>
-          </div>
-          <div class="col-md-3 info-box mb-3">
-              <span class="info-box-icon bg-default elevation-1"><i class="fas fa-child"></i></i></span>
-              <div class="info-box-content">
-                  <span class="info-box-text">Crianças e adolescentes</span>
-                  <span class="info-box-number">{{ @$familia_totais->criancas }}</span>
-              </div>
-          </div>
-      </div>
-    </div>
-@endcan
+        <div class="col-md-12 d-print-none">
+        <div class="row pl-2 pr-2">
+            <div class="col-md-3 info-box mb-3">
+                <span class="info-box-icon bg-default elevation-1"><i class="fas fa-users"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Total de Famílias</span>
+                    <span class="info-box-number">{{ @$familia_totais->todos }}</span>
+                </div>
+            </div>
+            <div class="col-md-3 info-box mb-3">
+                <span class="info-box-icon bg-default elevation-1"><i class="fas fa-calendar"></i></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Cadastros deste Mês</span>
+                    <span class="info-box-number">{{ @$familia_totais->esteMes }}</span>
+                </div>
+            </div>
+            <div class="col-md-3 info-box mb-3">
+                <span class="info-box-icon bg-default elevation-1"><i class="fas fa-male"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Famílias com Idosos</span>
+                    <span class="info-box-number">{{ @$familia_totais->idoso }}</span>
+                </div>
+            </div>
+            <div class="col-md-3 info-box mb-3">
+                <span class="info-box-icon bg-default elevation-1"><i class="fas fa-child"></i></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Crianças e adolescentes</span>
+                    <span class="info-box-number">{{ @$familia_totais->criancas }}</span>
+                </div>
+            </div>
+        </div>
+        </div>
+    @endcan
+
     <div class="col-md-12" id="lista">
       <div class="card">
         <div class="card-header">

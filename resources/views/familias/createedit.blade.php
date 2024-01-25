@@ -1,7 +1,8 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
-
+@section('title')
+    {{$title}}
+@stop
 @section('content_header')
     <h3>{{$titulo}}</h3>
 @stop
@@ -30,24 +31,52 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Arquivos</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                      <i class="fas fa-minus"></i>
-                    </button>
+        <div class="row">
+            <div class="col-md-12 {{@$displayCertidao}}" id="arquivo-certidao">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Certidão</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                              <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {{App\Qlib\Qlib::gerUploadAquivos([
+                            'pasta'=>'familias/'.date('Y').'/'.date('m'),
+                            'token_produto'=>$value['token'],
+                            'tab'=>'familias',
+                            'listFiles'=>@$listCertidao,
+                            'routa'=>@$routa,
+                            'categoria'=>'certidao',
+                            'arquivos'=>@$config['arquivos_certidao'],
+                        ])}}
+                    </div>
                 </div>
             </div>
-            <div class="card-body">
-                {{App\Qlib\Qlib::gerUploadAquivos([
-                    'pasta'=>'familias/'.date('Y').'/'.date('m'),
-                    'token_produto'=>$value['token'],
-                    'tab'=>'familias',
-                    'listFiles'=>@$listFiles,
-                    'routa'=>@$routa,
-                    'arquivos'=>@$config['arquivos'],
-                ])}}
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Arquivos</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                              <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {{App\Qlib\Qlib::gerUploadAquivos([
+                            'pasta'=>'familias/'.date('Y').'/'.date('m'),
+                            'token_produto'=>$value['token'],
+                            'tab'=>'familias',
+                            'listFiles'=>@$listFiles,
+                            'routa'=>@$routa,
+                            'categoria'=>'arquivos',
+                            'arquivos'=>@$config['arquivos'],
+                        ])}}
+                    </div>
+                </div>
             </div>
         </div>
     </div>

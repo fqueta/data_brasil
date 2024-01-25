@@ -117,7 +117,7 @@ class FamiliaController extends Controller
         ];
 
         DB::enableQueryLog();
-
+        // dd($this->is_page_certidao());
         if(isset($get['ano']) && !empty($get['ano'])){
             $familia = Familia::where('excluido','=','n')->where('deletado','=','n')->whereYear('data_exec',$get['ano'])->orderBy('id',$config['order']);
             $countFam = Familia::where('excluido','=','n')->where('deletado','=','n')->whereYear('data_exec',$get['ano'])->orderBy('id',$config['order']);
@@ -136,7 +136,13 @@ class FamiliaController extends Controller
             $totProcesso['entregue'] = Familia::where('excluido','=','n')->where('deletado','=','n')->whereBetween($campo_data,[$dataI,$dataF])->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"processo_entregue"%')->count();
             $totProcesso['certidao'] = Familia::where('excluido','=','n')->where('deletado','=','n')->whereBetween($campo_data,[$dataI,$dataF])->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"certidao"%')->count();
         }else{
-            $familia =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
+            if($this->is_page_certidao()){
+                $familia =  Familia::select('familias.*','beneficiarios.cpf')
+                ->join('beneficiarios','beneficiarios.id','=','familias.id_beneficiario')
+                ->where('familias.excluido','=','n')->where('familias.deletado','=','n')->orderBy('id',$config['order']);
+            }else{
+                $familia =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
+            }
             $countFam =  Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
             $totProcesso['entregue'] = Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"processo_entregue"%')->count();
             $totProcesso['certidao'] = Familia::where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order'])->where('config','LIKE','%"categoria_processo":"certidao"%')->count();
@@ -148,7 +154,6 @@ class FamiliaController extends Controller
             ->where('config','LIKE','%"categoria_processo":"certidao"%')
             ->where('config','LIKE','%"registro_cartorio":"n"%')
             ->count();
-
         }
         //$familia =  DB::table('familias')->where('excluido','=','n')->where('deletado','=','n')->orderBy('id',$config['order']);
 
@@ -158,42 +163,54 @@ class FamiliaController extends Controller
         $campos = $rel->campos();
         $tituloTabela = 'Lista de todos cadastros';
         $arr_titulo = false;
+        if($this->is_page_certidao()){
+            $campoJoin = 'familias.';
+        }else{
+            $campoJoin = false;
+        }
         if(isset($get['filter'])){
                 $titulo_tab = false;
                 $i = 0;
                 foreach ($get['filter'] as $key => $value) {
+                    if($this->is_page_certidao()){
+                        $campoJoin = 'familias.';
+                    }else{
+                        $campoJoin = false;
+                    }
                     if(!empty($value)){
                         if($key=='id'){
-                            $familia->where($key,'LIKE', $value);
+                            $familia->where($campoJoin.$key,'LIKE', $value);
                             $titulo_tab .= 'Todos com *'. $campos[$key]['label'] .'% = '.$value.'& ';
                             $arr_titulo[$campos[$key]['label']] = $value;
                         }elseif(is_array($value)){
                             foreach ($value as $kb => $vb) {
                                 if(!empty($vb)){
                                     if($key=='tags'){
-                                        $familia->where($key,'LIKE', '%"'.$vb.'"%' );
+                                        $familia->where($campoJoin.$key,'LIKE', '%"'.$vb.'"%' );
                                     }else{
-                                        $familia->where($key,'LIKE', '%"'.$kb.'":"'.$vb.'"%' );
+                                        $familia->where($campoJoin.$key,'LIKE', '%"'.$kb.'":"'.$vb.'"%' );
                                     }
                                 }
                             }
                         }else{
                             if($key=='quadra'){
-                                $familia->where($key,'=', $value);
+                                $familia->where($campoJoin.$key,'=', $value);
                                 if(isset($campos[$key]['type']) && $campos[$key]['type']=='select'){
                                     $value = $campos[$key]['arr_opc'][$value];
                                 }
                                 $arr_titulo[$campos[$key]['label']] = Qlib::valorTabDb('quadras','id',$value,'nome');
                             }elseif($key=='id_beneficiario'){
-                                $familia->where($key,'=', $value);
+                                $familia->where($campoJoin.$key,'=', $value);
                                 if(isset($campos[$key]['type']) && $campos[$key]['type']=='select'){
                                     $value = $campos[$key]['arr_opc'][$value];
                                 }
                                 $arr_titulo[$campos[$key]['label']] = Qlib::valorTabDb('beneficiarios','id',$value,'nome');
                             }else{
-                                //dd( $campos);exit;
+                                if($key=='cpf'){
+                                    $campoJoin = 'beneficiarios.';
+                                }
                                 $arr_titulo[$campos[$key]['label']] = $value;
-                                $familia->where($key,'LIKE','%'. $value. '%');
+                                $familia->where($campoJoin.$key,'LIKE','%'. $value. '%');
                                 if(isset($campos[$key]['type']) && $campos[$key]['type']=='select'){
                                     $value = $campos[$key]['arr_opc'][$value];
                                 }
@@ -213,17 +230,20 @@ class FamiliaController extends Controller
                 }else{
                     $familia = $familia->paginate($config['limit']);
                 }
-                //$query = DB::getQueryLog();
-                //$query = end($query);
-                //dd($query);
+
+                if($this->is_page_certidao()){
+                    $campoJoin = 'familias.';
+                }else{
+                    $campoJoin = false;
+                }
 
                 if($idUltimaEtapa)
-                $completos = $familia->where('etapa','=',$idUltimaEtapa)->count();
-                $pendentes = $familia->where('tags','LIKE','%"'.$id_pendencia.'"')->count();
+                  $completos = $familia->where($campoJoin.'etapa','=',$idUltimaEtapa)->count();
+                $pendentes = $familia->where($campoJoin.'tags','LIKE','%"'.$id_pendencia.'"')->count();
                 $familia_totais->todos = $fm->count();
-                $familia_totais->esteMes = $fm->whereYear('created_at', '=', $ano)->whereMonth('created_at','=',$mes)->count();
-                $familia_totais->idoso = $fm->where('idoso','=','s')->count();
-                $familia_totais->criancas = $fm->where('crianca_adolescente','=','s')->count();
+                $familia_totais->esteMes = $fm->whereYear($campoJoin.'created_at', '=', $ano)->whereMonth($campoJoin.'created_at','=',$mes)->count();
+                $familia_totais->idoso = $fm->where($campoJoin.'idoso','=','s')->count();
+                $familia_totais->criancas = $fm->where($campoJoin.'crianca_adolescente','=','s')->count();
         }else{
             $fm = $familia;
             if($idUltimaEtapa){
@@ -257,6 +277,7 @@ class FamiliaController extends Controller
         }
         $familia_totais->completos = $completos;
 
+            // dd($familia->toArray());
         $colTabela = $rel->colTabela($familia);
         //$ret['familia'] = $familia;
         $ret['familia'] = $colTabela;
@@ -423,11 +444,25 @@ class FamiliaController extends Controller
         }
         return $ret;
     }
+    /**
+     * Metodo para verifica se estamos em uma página de certidao
+     */
+    public function is_page_certidao(){
+        if(isset($_GET['filter']['config']['categoria_processo']) && $_GET['filter']['config']['categoria_processo']=='certidao'){
+            return true;
+        }else{
+            return false;
+        }
+    }
     public function index(User $user)
     {
-        //$this->authorize('is_admin', $user);
+        $ajax = isset($_GET['ajax'])?$_GET['ajax']:'n';
         $this->authorize('ler', $this->routa);
         $title = 'Famílias Cadastradas';
+        if($this->is_page_certidao()){
+            //Painel certidão
+            $title = 'Certidões Cadastradas';
+        }
         $titulo = $title;
         $queryFamilias = $this->queryFamilias($_GET);
         $queryFamilias['config']['exibe'] = 'html';
@@ -454,7 +489,12 @@ class FamiliaController extends Controller
             'i'=>0,
         ];
         // dd($routa);
-        return view($routa.'.index',$ret);
+        if($ajax=='s'){
+            return response()->json($ret);
+        }else{
+            // return view($this->view.'.index',$ret);
+            return view($routa.'.index',$ret);
+        }
     }
     public function exportAll(User $user)
     {
@@ -995,11 +1035,13 @@ class FamiliaController extends Controller
             $arr_escolaridade = Qlib::sql_array("SELECT id,nome FROM escolaridades ORDER BY nome ", 'nome', 'id');
             $arr_estadocivil = Qlib::sql_array("SELECT id,nome FROM estadocivils ORDER BY nome ", 'nome', 'id');
             $listFiles = false;
+            $listCertidao = false;
 
             //REGISTRAR EVENTOS
             (new EventController)->listarEvent(['tab'=>$this->tab,'this'=>$this]);
             if(isset($dados[0]['token'])){
                 $listFiles = _upload::where('token_produto','=',$dados[0]['token'])->get();
+                $listCertidao = _upload::where('token_produto','=',$dados[0]['token'])->where('config','LIKE','%"categoria":"certidao"%')->get();
             }
             $config = [
                 'ac'=>'alt',
@@ -1007,6 +1049,7 @@ class FamiliaController extends Controller
                 'route'=>$this->routa,
                 'id'=>$id,
                 'arquivos'=>'docx,PDF,pdf,jpg,xlsx,png,jpeg',
+                'arquivos_certidao'=>'PDF,pdf,jpg,png,jpeg',
             ];
             // if($dados[0]['loteamento']>0){
             //     $bairro = Bairro::find($dados[0]['bairro']);
@@ -1026,6 +1069,10 @@ class FamiliaController extends Controller
             //$dados[0]['tags'] = Qlib::lib_json_array($dados[0]['tags']);
             $_GET['dados'] = $dados[0]; //para ter acesso em todas a views
             $campos = $this->campos($dados[0]);
+            $displayCertidao = 'd-none';
+            if(isset($dados[0]['config']['categoria_processo']) && $dados[0]['config']['categoria_processo']=='certidao'){
+                $displayCertidao = 'd-block';
+            }
             $ret = [
                 'value'=>$dados[0],
                 'config'=>$config,
@@ -1034,6 +1081,8 @@ class FamiliaController extends Controller
                 'arr_escolaridade'=>$arr_escolaridade,
                 'arr_estadocivil'=>$arr_estadocivil,
                 'listFiles'=>$listFiles,
+                'listCertidao'=>$listCertidao,
+                'displayCertidao'=>$displayCertidao,
                 'campos'=>$campos,
                 'routa'=>$this->routa,
                 'exec'=>true,

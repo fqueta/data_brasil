@@ -42,7 +42,8 @@ class TesteController extends Controller
         // return view('teste',$config);
         // dd(Qlib::update_postmeta(9,'test_data','data de hoje atualizado'));
         // $ret = (new MapasController)->verificaMapa(14);
-        $ret = Qlib::is_ita();
+        $ret = Qlib::isCustomer();
+        // $ret = Qlib::is_ita();
         dd($ret);
 
         // dd( config('app.date_update'));

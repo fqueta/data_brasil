@@ -674,13 +674,16 @@ function lib_trataRemoveUrl(campo,valor,urlinic){
 	}
 	return ret;
 }
-function visualizaArquivos(token_produto,ajaxurl){
-
+function visualizaArquivos(token_produto,ajaxurl,categoria){
+    if(typeof categoria =='undefined'){
+        categoria='';
+    }
     $.ajax({
         type: 'GET',
         url: ajaxurl,
         data: {
             token_produto:token_produto,
+            categoria:categoria,
         },
         dataType: 'json',
         success: function (data) {
@@ -2348,8 +2351,8 @@ function removeVideoYT(id){
 }
 function select_categoria_processo(val){
     if(val=='certidao'){
-        $('[div-id="config[registro_cartorio]"]').removeClass('d-none').addClass('d-block').find('select').attr('required',true);
+        $('[div-id="config[registro_cartorio]"],#arquivo-certidao').removeClass('d-none').addClass('d-block').find('select').attr('required',true);
     }else{
-        $('[div-id="config[registro_cartorio]"]').removeClass('d-block').addClass('d-none').find('select').attr('required',false);
+        $('[div-id="config[registro_cartorio]"],#arquivo-certidao').removeClass('d-block').addClass('d-none').find('select').attr('required',false);
     }
 }
