@@ -11,9 +11,10 @@ class RightCpf implements Rule
      *
      * @return void
      */
+    public $valor;
     public function __construct()
     {
-        //
+
     }
 
     /**
@@ -25,7 +26,16 @@ class RightCpf implements Rule
      */
      public function passes($attribute, $value)
      {
-         return $this->validateCpf($value);
+        $this->valor = $value;
+        $value = trim($value);
+        $value = str_replace('.', '', $value);
+        $value = str_replace('-', '', $value);
+        $value = str_replace('/', '', $value);
+        if(strlen($value)>11){
+            return $this->validateCnpj($value);
+        }else{
+            return $this->validateCpf($value);
+        }
      }
 
      /**
@@ -35,7 +45,11 @@ class RightCpf implements Rule
       */
      public function message()
      {
-         return 'Este CPF não é válido';
+        if(strlen($this->valor)>14){
+            return 'Este CNPJ não é válido';
+        }else{
+            return 'Este CPF não é válido';
+        }
      }
 
      public function validateCpf($cpf){
@@ -59,4 +73,28 @@ class RightCpf implements Rule
          }
          return true;
      }
+    public function validateCnpj($cnpj)
+    {
+        $cnpj = preg_replace('/[^0-9]/', '', (string) $cnpj);
+        // Valida tamanho
+        if (strlen($cnpj) != 14)
+            return false;
+        // Valida primeiro dígito verificador
+        for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++)
+        {
+            $soma += $cnpj[$i] * $j;
+            $j = ($j == 2) ? 9 : $j - 1;
+        }
+        $resto = $soma % 11;
+        if ($cnpj[12] != ($resto < 2 ? 0 : 11 - $resto))
+            return false;
+        // Valida segundo dígito verificador
+        for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++)
+        {
+            $soma += $cnpj[$i] * $j;
+            $j = ($j == 2) ? 9 : $j - 1;
+        }
+        $resto = $soma % 11;
+        return $cnpj[13] == ($resto < 2 ? 0 : 11 - $resto);
+    }
 }

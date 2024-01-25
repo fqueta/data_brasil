@@ -74,7 +74,6 @@
             <h4 class="card-title">
                 @if (!empty($arr_titulo))
                     Lista de:
-
                     @foreach ($arr_titulo as $k=>$pTitulo)
                         <label for=""> Todo com {{ $k }}</label> = {{ $pTitulo }}, e
                     @endforeach

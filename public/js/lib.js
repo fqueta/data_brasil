@@ -1042,6 +1042,14 @@ function renderForm(config,alvo,funCall){
             $('[f-submit]').remove();
             $(b).insertAfter(m+' .modal-footer button');
             try {
+                var options = {
+                    onKeyPress: function (cpf, ev, el, op) {
+                        var masks = ['000.000.000-000', '00.000.000/0000-00'];
+                        $('[mask-cpfcnpj]').mask((cpf.length > 14) ? masks[1] : masks[0], op);
+                    }
+                }
+
+                $('[mask-cpfcnpj]').length > 11 ? $('[mask-cpfcnpj]').mask('00.000.000/0000-00', options) : $('[mask-cpfcnpj]').mask('000.000.000-00#', options);
                 $('[mask-cpf]').inputmask('999.999.999-99');
                 $('[mask-data]').inputmask('99/99/9999');
                 $('[mask-cep]').inputmask('99.999-999');
