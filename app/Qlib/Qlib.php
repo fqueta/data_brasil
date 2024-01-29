@@ -2,6 +2,7 @@
 namespace App\Qlib;
 
 use App\Http\Controllers\admin\EventController;
+use App\Http\Controllers\FamiliaController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -1033,5 +1034,20 @@ class Qlib
         }
         return $ret;
     }
+    /**
+     * Exibe um botão abriar a certidão
+     */
+    static function btn_ver_certidao($token_familia){
+        $ret = false;
+        if($token_familia){
+            $link = (new FamiliaController(Auth::user()) )->link_certidao($token_familia);
+            $class_btn = 'btn btn-light';
+            if($link){
+                $class_btn = 'btn btn-primary mr-1';
+                $ret = '<a href="'.$link.'" target="_blank" class="'.$class_btn.'" title="Certidão"><i class="fas fa-file-pdf"></i></a>';
+            }
 
+        }
+        return $ret;
+    }
 }

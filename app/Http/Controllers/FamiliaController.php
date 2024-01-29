@@ -35,6 +35,7 @@ class FamiliaController extends Controller
     public $routa;
     public $view;
     public $tab;
+    public $label;
     public function __construct(User $user)
     {
         $this->middleware('auth');
@@ -1329,5 +1330,27 @@ class FamiliaController extends Controller
             }
         }
         return $ret;
+    }
+    /**
+     * Metodo para retornar o link da certidão do cliente
+     * @param string $token
+     * @return $link
+     */
+    public function link_certidao($token){
+        $categoria = 'certidao';
+        $ar = _upload::where('token_produto','=',$token)
+        ->where('config','LIKE','%"categoria":"'.$categoria.'"%')
+        ->orderBy('id','desc')
+        ->limit(1)
+        ->get();
+        $link=false;
+        if($ar->count() > 0){
+            $ar = $ar->toArray();
+            if(isset($ar[0]['pasta'])){
+                $storage = str_replace('/', '', Qlib::qoption('storage_path'));
+                $link = asset('/') .$storage.'/'.$ar[0]['pasta'];
+            }
+        }
+        return $link;
     }
 }

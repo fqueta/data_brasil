@@ -88,6 +88,7 @@
                                 <a href="{{ $linkShow }}" title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
                                     <i class="fas fa-eye"></i>
                                 </a>
+                                {!!App\Qlib\Qlib::btn_ver_certidao($val->token)!!}
                             @endif
                             @php
                                 $linkEdit = $routa.'.edit';
@@ -106,6 +107,7 @@
                                 <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
                                     <i class="fas fa-eye"></i>
                                 </a>
+                                {!!App\Qlib\Qlib::btn_ver_certidao($val->token)!!}
                             @else
                                 <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " class="btn btn-sm btn-outline-primary mr-2" title="Visualizar">
                                     <i class="fas fa-eye"></i>
