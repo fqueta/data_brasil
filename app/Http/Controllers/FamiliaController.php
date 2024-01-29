@@ -1050,7 +1050,7 @@ class FamiliaController extends Controller
                 'route'=>$this->routa,
                 'id'=>$id,
                 'arquivos'=>'docx,PDF,pdf,jpg,xlsx,png,jpeg',
-                'arquivos_certidao'=>'PDF,pdf,jpg,png,jpeg',
+                'arquivos_certidao'=>'PDF,pdf',
             ];
             // if($dados[0]['loteamento']>0){
             //     $bairro = Bairro::find($dados[0]['bairro']);
