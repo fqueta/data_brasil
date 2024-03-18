@@ -48,11 +48,11 @@ class UserController extends Controller
 		$this->access_token = 'NWM5OGMyZGRiOTAzMS41ZmQwZGQyNTUzZGI0LjQx';
 		$this->url 		 	= 'https://api.ctloja.com.br/v1';
         $subdom = Qlib::get_subdominio();
-        if($subdom=='cmd' || $subdom=='cmd1'){
+        // if($subdom=='cmd' || $subdom=='cmd1'){
             $tk_conta = '624384509209d';
-        }else{
-            $tk_conta = '63721fa2a8667';
-        }
+        // }else{
+        //     $tk_conta = '63721fa2a8667';
+        // }
 		$this->tk_conta	 = $tk_conta;
 		//$this->tk_conta	 	= '60b77bc73e7c0';
 	}
