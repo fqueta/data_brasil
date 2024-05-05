@@ -4,8 +4,8 @@
 <link rel="stylesheet" href="{{url('/')}}/css/jquery-ui.min.css">
 <link rel="stylesheet" href="{{url('/')}}/css/lib.css?ver={{config('app.version')}}">
 <!--Inicio PWA-->
-<link rel="manifest" href="https://cmd.databrasil.app.br/app/manifest.json" />
-<script src="https://cmd.databrasil.app.br/app/js.js?ver={{config('app.version')}}"></script>
+<link rel="manifest" href="{{url('/')}}/app/manifest.json" />
+{{-- <script src="{{url('/')}}/app/js.js?ver={{config('app.version')}}"></script> --}}
 <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
         navigator.serviceWorker.register('/app/pwabuilder-sw.js')
