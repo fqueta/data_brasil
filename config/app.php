@@ -12,8 +12,8 @@ return [
     | any other location as required by the application or its packages.
     |
     */
-    'version' => '2.4.7',
-    'last_update' => '29/01/2024',
+    'version' => '3.0.0',
+    'last_update' => '18/05/2024',
     'name' => config('adminlte.title'),//env('APP_NAME', 'Data Brasil'),
 
     /*
