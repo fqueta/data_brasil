@@ -236,7 +236,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Qlib' => App\Qlib\QlibFacade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-
     ],
 
 ];
