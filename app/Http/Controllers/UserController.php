@@ -122,7 +122,7 @@ class UserController extends Controller
         $ret['tituloTabela'] = $tituloTabela;
 
         $ret['config']['resumo'] = [
-            'todos_registro'=>['label'=>'Todos cadastros','value'=>$users->todos,'icon'=>'fas fa-calendar','href'=>'#'],
+            'todos_registro'=>['label'=>'Total','value'=>$users->todos,'icon'=>'fas fa-calendar','href'=>'#'],
             'todos_mes'=>['label'=>'Cadastros recentes','value'=>$users->esteMes,'icon'=>'fas fa-calendar-times','href'=>'#'],
             'todos_ativos'=>['label'=>'Cadastros ativos','value'=>$users->ativos,'icon'=>'fas fa-check','href'=>'/users?limit='.$config['limit'].'&order='.$config['order'].'&filter[ativo]=s'],
             'todos_inativos'=>['label'=>'Cadastros inativos','value'=>$users->inativos,'icon'=>'fas fa-archive','href'=>'/users?limit='.$config['limit'].'&order='.$config['order'].'&filter[ativo]=n'],
