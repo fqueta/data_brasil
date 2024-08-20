@@ -49,7 +49,11 @@
             @foreach ($config['resumo'] as $k=>$v)
 
                 <div class="col-md-3 info-box mb-3">
-                    <span class="info-box-icon bg-default elevation-1"><i class="{{$v['icon']}}"></i></span>
+                    @if (isset($v['href']) && !empty($v['href']) && $v['href']!='#')
+                        <a href="{{@$v['href']}}" class="info-box-icon bg-default elevation-1"><i class="{{$v['icon']}}"></i></a>
+                    @else
+                        <span class="info-box-icon bg-default elevation-1"><i class="{{$v['icon']}}"></i></span>
+                    @endif
                     <div class="info-box-content">
                         <span class="info-box-text">{{$v['label']}}</span>
                         <span class="info-box-number">{{ $v['value'] }}</span>

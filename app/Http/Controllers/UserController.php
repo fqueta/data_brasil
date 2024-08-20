@@ -72,6 +72,11 @@ class UserController extends Controller
         //$user =  DB::table('users')->where('ativo','s')->orderBy('id',$config['order']);
 
         $users = new stdClass;
+        $ativos = clone $user;
+        $inativos = clone $user;
+        $recentes = clone $user;
+
+        // $ativos = new stdClass;
         $campos = isset($_SESSION['campos_users_exibe']) ? $_SESSION['campos_users_exibe'] : $this->campos();
         $tituloTabela = 'Lista de todos cadastros';
         $arr_titulo = false;
@@ -86,7 +91,7 @@ class UserController extends Controller
                             $arr_titulo[$campos[$key]['label']] = $value;
                         }else{
                             $user->where($key,'LIKE','%'. $value. '%');
-                            if($campos[$key]['type']=='select'){
+                            if($campos[$key]['type']=='select' || isset($campos[$key]['arr_opc'][$value])){
                                 $value = $campos[$key]['arr_opc'][$value];
                             }
                             $arr_titulo[$campos[$key]['label']] = $value;
@@ -98,37 +103,31 @@ class UserController extends Controller
                 if($titulo_tab){
                     $tituloTabela = 'Lista de: &'.$titulo_tab;
                 }
-                $fm = $user;
-                if($config['limit']=='todos'){
-                    $user = $user->get();
-                }else{
-                    $user = $user->paginate($config['limit']);
-                }
-        }else{
-            $fm = $user;
-            if($config['limit']=='todos'){
-                $user = $user->get();
-            }else{
-                $user = $user->paginate($config['limit']);
-            }
+
         }
-        $users->todos = $fm->count();
-        $users->esteMes = $fm->whereYear('created_at', '=', $ano)->whereMonth('created_at','=',$mes)->get()->count();
-        $users->ativos = $fm->where('ativo','=','s')->get()->count();
-        $users->inativos = $fm->where('ativo','=','n')->get()->count();
-        //dd($user);
+        if($config['limit']=='todos'){
+            $user = $user->get();
+        }else{
+            $user = $user->paginate($config['limit']);
+        }
+        $users->ativos = $ativos->where('ativo','=','s')->count();
+        $users->inativos = $inativos->where('ativo','=','n')->count();
+        $users->esteMes = $recentes->whereYear('created_at', '=', $ano)->whereMonth('created_at','=',$mes)->count();
+        $users->todos = $ativos->count();
         $ret['user'] = $user;
         $ret['user_totais'] = $users;
         $ret['arr_titulo'] = $arr_titulo;
         $ret['campos'] = $campos;
         $ret['config'] = $config;
         $ret['tituloTabela'] = $tituloTabela;
+
         $ret['config']['resumo'] = [
-            'todos_registro'=>['label'=>'Todos cadastros','value'=>$users->todos,'icon'=>'fas fa-calendar'],
-            'todos_mes'=>['label'=>'Cadastros recentes','value'=>$users->esteMes,'icon'=>'fas fa-calendar-times'],
-            'todos_ativos'=>['label'=>'Cadastros ativos','value'=>$users->ativos,'icon'=>'fas fa-check'],
-            'todos_inativos'=>['label'=>'Cadastros inativos','value'=>$users->inativos,'icon'=>'fas fa-archive'],
+            'todos_registro'=>['label'=>'Todos cadastros','value'=>$users->todos,'icon'=>'fas fa-calendar','href'=>'#'],
+            'todos_mes'=>['label'=>'Cadastros recentes','value'=>$users->esteMes,'icon'=>'fas fa-calendar-times','href'=>'#'],
+            'todos_ativos'=>['label'=>'Cadastros ativos','value'=>$users->ativos,'icon'=>'fas fa-check','href'=>'/users?limit='.$config['limit'].'&order='.$config['order'].'&filter[ativo]=s'],
+            'todos_inativos'=>['label'=>'Cadastros inativos','value'=>$users->inativos,'icon'=>'fas fa-archive','href'=>'/users?limit='.$config['limit'].'&order='.$config['order'].'&filter[ativo]=n'],
         ];
+        // dump($ret);
         return $ret;
     }
     public function campos($dados=false){
