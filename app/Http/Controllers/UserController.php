@@ -124,8 +124,8 @@ class UserController extends Controller
         $ret['config']['resumo'] = [
             'todos_registro'=>['label'=>'Total','value'=>$users->todos,'icon'=>'fas fa-calendar','href'=>'#'],
             'todos_mes'=>['label'=>'Cadastros recentes','value'=>$users->esteMes,'icon'=>'fas fa-calendar-times','href'=>'#'],
-            'todos_ativos'=>['label'=>'Cadastros ativos','value'=>$users->ativos,'icon'=>'fas fa-check text-success','href'=>'/users?limit='.$config['limit'].'&order='.$config['order'].'&filter[ativo]=s'],
-            'todos_inativos'=>['label'=>'Cadastros inativos','value'=>$users->inativos,'icon'=>'fas fa-archive text-danger','href'=>'/users?limit='.$config['limit'].'&order='.$config['order'].'&filter[ativo]=n'],
+            'todos_ativos'=>['label'=>'Cadastros ativos','value'=>$users->ativos,'icon'=>'fas fa-check text-secondary','href'=>'/users?limit='.$config['limit'].'&order='.$config['order'].'&filter[ativo]=s'],
+            'todos_inativos'=>['label'=>'Cadastros inativos','value'=>$users->inativos,'icon'=>'fas fa-archive text-secondary','href'=>'/users?limit='.$config['limit'].'&order='.$config['order'].'&filter[ativo]=n'],
         ];
         // dump($ret);
         return $ret;
