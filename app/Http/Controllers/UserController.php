@@ -113,7 +113,7 @@ class UserController extends Controller
         $users->ativos = $ativos->where('ativo','=','s')->count();
         $users->inativos = $inativos->where('ativo','=','n')->count();
         $users->esteMes = $recentes->whereYear('created_at', '=', $ano)->whereMonth('created_at','=',$mes)->count();
-        $users->todos = $ativos->count();
+        $users->todos = $user->count();
         $ret['user'] = $user;
         $ret['user_totais'] = $users;
         $ret['arr_titulo'] = $arr_titulo;
