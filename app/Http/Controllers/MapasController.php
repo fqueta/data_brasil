@@ -64,7 +64,7 @@ class MapasController extends Controller
                     $config['mens'] = Qlib::formatMensagemInfo('Erro Arquivo não encontrado!','danger');
                 }
             }else{
-                $config['mens'] = Qlib::formatMensagemInfo('Erro Token inválido!','danger');
+                $config['mens'] = Qlib::formatMensagemInfo('Erro Token inválido ou sem arquivo!','danger');
             }
             if($config){
                 $config['ac']='alt';

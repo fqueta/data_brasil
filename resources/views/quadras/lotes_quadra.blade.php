@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="card-body">
-                {!! App\Http\Controllers\MapasController::exibeMapas(@$config['mapas']['config']) !!}
+                {!! (new App\Http\Controllers\MapasController)->exibeMapas(@$config['mapas']['config']) !!}
             </div>
         </div>
     </div>
