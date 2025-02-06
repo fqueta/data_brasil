@@ -1181,7 +1181,7 @@ class FamiliaController extends Controller
         $user = Auth::user();
         $reg_excluido = ['data'=>date('d-m-Y'),'autor'=>$user->id];
         //Familia::where('id',$id)->delete();
-        $del = Familia::where('id',$id)->update(['excluido'=>'s','reg_excluido'=>Qlib::lib_array_json($reg_excluido)]);;
+        $del = Familia::where('id',$id)->update(['excluido'=>'s','reg_excluido'=>Qlib::lib_array_json($reg_excluido)]);
         if($ajax=='s'){
             $ret = response()->json(['mens'=>__('Registro '.$id.' deletado com sucesso!'),'color'=>'success','return'=>route('familias.index')]);
         }else{
