@@ -327,12 +327,14 @@ class QuadrasController extends Controller
             if(isset($dados[0]['token'])){
                 $listFiles = _upload::where('token_produto','=',$dados[0]['token'])->get();
             }
+            // dump($listFiles);
             $config = [
                 'ac'=>'alt',
                 'frm_id'=>'frm-quadras',
                 'route'=>$this->routa,
                 'id'=>$id,
-                'arquivos'=>'html,svg,pdf,jpeg,jpg',
+                // 'arquivos'=>'html,svg,pdf,jpeg,jpg',
+                'arquivos'=>'html,svg',
                 'typeN'=>'2', //salvar o nome verdadeiro do arquivo
             ];
 

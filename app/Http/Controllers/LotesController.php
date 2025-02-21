@@ -544,6 +544,7 @@ class LotesController extends Controller
                 'frm_id'=>'frm-lotes',
                 'route'=>$this->routa,
                 'id'=>$id,
+                'arquivos'=>'docx,xls,PDF,pdf,jpg,png,jpeg',
             ];
             $_GET['dados'] = $dados[0]; //para ter acesso em todas a views
             $ret = [
@@ -556,7 +557,6 @@ class LotesController extends Controller
                 'id'=>$id,
                 'exec'=>true,
             ];
-
             if($ajax=='s'){
                 return response()->json($ret);
             }else{

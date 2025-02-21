@@ -1049,7 +1049,7 @@ class FamiliaController extends Controller
                 'frm_id'=>'frm-familias',
                 'route'=>$this->routa,
                 'id'=>$id,
-                'arquivos'=>'docx,PDF,pdf,jpg,xlsx,png,jpeg',
+                'arquivos'=>'docx,PDF,pdf,jpg,xlsx,xls,png,jpeg',
                 'arquivos_certidao'=>'PDF,pdf',
             ];
             // if($dados[0]['loteamento']>0){

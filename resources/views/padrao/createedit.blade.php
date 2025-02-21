@@ -48,6 +48,7 @@
                 </div>
             </div>
             <div class="card-body">
+                {{-- {{dd($config)}} --}}
                 {{App\Qlib\Qlib::gerUploadAquivos([
                     'pasta'=>$config['route'].'/'.date('Y').'/'.date('m'),
                     'token_produto'=>$value['token'],
