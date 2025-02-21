@@ -1044,7 +1044,10 @@ class Qlib
             $class_btn = 'btn btn-light';
             if($link){
                 $class_btn = 'btn btn-primary mr-1';
-                $ret = '<a href="'.$link.'" target="_blank" class="'.$class_btn.'" title="Certidão"><i class="fas fa-file-pdf"></i></a>';
+                $class_btn = '';
+                $icon = '<i class="fas fa-file-pdf"></i>';
+                $icon = '<img src="'.url('/images/logo.jpg').'" style="width:33px" />';
+                $ret = '<a href="'.$link.'" target="_blank" class="'.$class_btn.'" title="Certidão">'.$icon.'</a>';
             }
 
         }

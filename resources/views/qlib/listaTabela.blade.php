@@ -32,11 +32,24 @@
         padding: 0%;
     }
 </style>
+@if ($routa=='familias')
+    <style>
+        .btn-acao{
+            width:10%;
+        }
+    </style>
+@else
+    <style>
+        .btn-acao{
+            width:5%;
+        }
+    </style>
+@endif
 <table class="table table-hover table-striped dataTable {{$routa}}" style="{{@$style}}">
     <thead>
         <tr>
             <th class="text-center d-print-none" style="width: 3%"><input onclick="gerSelect($(this));" type="checkbox" name="todos" id=""></th>
-            <th class="text-center d-print-none" style="width: 5%">...</th>
+            <th class="text-center d-print-none btn-acao">...</th>
             @if (isset($campos_tabela) && is_array($campos_tabela))
                 @foreach ($campos_tabela as $kh=>$vh)
                     @if (isset($vh['label']) && $vh['active'])
@@ -71,7 +84,7 @@
                         <input type="checkbox" class="checkbox" onclick="color_select1_0(this.checked,this.value);" value="{{$val->id}}" name="check_{{$val->id}}" id="check_{{$val->id}}">
                     </td>
 
-                    <td class="text-right d-flex d-print-none">
+                    <td class="text-right d-print-none" style="width:10%">
                         @can('update',$routa)
                             @if ($routa=='quadras')
                                 @if ((new App\Http\Controllers\MapasController)->verificaMapa($val->id))
@@ -85,7 +98,7 @@
                                 @endif
                             @endif
                             @if ($routa=='familias' || $routa=='arquivamento-text' || $routa=='arquivamento-videos' || $routa=='decretos' || $routa=='processos-campo' || $routa=='processos' || $routa=='processos-prefeitura' || $routa=='processos-cartorio' || $routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros')
-                                <a href="{{ $linkShow }}" title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
+                                <a href="{{ $linkShow }}" title="visualizar" class="btn btn-sm btn-outline-secondary">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 {!!App\Qlib\Qlib::btn_ver_certidao($val->token)!!}
@@ -96,20 +109,17 @@
                                     $linkEdit = $val->post_type.'.edit';
                                 }
                             @endphp
-                            <a href=" {{ route($linkEdit,['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="Editar" class="btn btn-sm btn-outline-secondary mr-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                                </svg>
+                            <a href=" {{ route($linkEdit,['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="Editar" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-pen    "></i>
                             </a>
                             @else
                             @if ($routa=='familias' || $routa=='decretos' || $routa=='processos-campo')
-                                <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
+                                <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="btn btn-sm btn-outline-secondary">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 {!!App\Qlib\Qlib::btn_ver_certidao($val->token)!!}
                             @else
-                                <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " class="btn btn-sm btn-outline-primary mr-2" title="Visualizar">
+                                <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " class="btn btn-sm btn-outline-primary" title="Visualizar">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             @endif
@@ -120,10 +130,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" data-del="true" data-id="{{$val->id}}" name="button" title="Excluir" class="btn btn-sm btn-outline-danger">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                                    </svg>
+                                <i class="fas fa-trash    "></i>
                                 </button>
                             </form>
                         @endcan
@@ -148,7 +155,9 @@
                                         $td = @$vd['arr_opc'][$val->$kd];
                                     }
                                 @endphp
-                                <td class="{{str_replace('[]','',$kd)}}" title="{{@$vd['arr_opc'][$val->$kd]}}">{{$td}}</td>
+                                <td class="{{str_replace('[]','',$kd)}}" title="{{@$vd['arr_opc'][$val->$kd]}}">{{$td}}
+
+                                </td>
                             @elseif (isset($vd['type']) && ($vd['type']=='select_multiple'))
                                 @php
                                 // echo $kd;
