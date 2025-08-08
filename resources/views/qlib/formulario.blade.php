@@ -1,86 +1,50 @@
 @php
-    $config = $conf['config'];
-    $campos = $conf['campos'];
-    $value = $conf['value'];
+    $config     = $conf['config'];
+    $campos     = $conf['campos'];
+    $value      = $conf['value'];
+    $ambiente   = isset($config['ambiente'])?$config['ambiente']:'back'; //back = bakend  //front =  frontend
+    $route_update = isset($config['route_update']) ? $config['route_update'] : $config['route'];
 @endphp
 
-<form id="{{$config['frm_id']}}" class="" action="@if($config['ac']=='cad'){{ route($config['route'].'.store') }}@elseif($config['ac']=='alt'){{ route($config['route'].'.update',['id'=>$config['id']]) }}@endif" method="post">
+<form id="{{$config['frm_id']}}" class="{{@$config['frm_class']}}" action="@if($config['ac']=='cad'){{ route($config['route'].'.store') }}@elseif($config['ac']=='alt'){{ route($route_update.'.update',['id'=>$config['id']]) }}@endif" method="post" {{@$config['event']}}>
     @if($config['ac']=='alt')
     @method('PUT')
     @endif
-    <div class="row">        <div class="col-md-12 text-right">
+    <div class="row">
+        <div class="col-md-12 text-right">
             @if (isset($value['id']))
                 <label for="">Id:</label> {{ $value['id'] }}
-                @elseif (isset($value['ID']))
-                <label for="">Id:</label> {{ $value['ID'] }}
             @endif
             @if (isset($value['created_at']))
                 <label for="">Cadastro:</label> {{ Carbon\Carbon::parse($value['created_at'])->format('d/m/Y') }}
-                @elseif (isset($value['post_date']))
-                <label for="">Cadastro:</label> {{ Carbon\Carbon::parse($value['post_date'])->format('d/m/Y') }}
             @endif
 
         </div>
         @if (isset($campos) && is_array($campos))
             @foreach ($campos as $k=>$v)
-                @if ($v['type']=='date')
-                    @php
-                        if(isset($value[$k])){
-                            if(is_array($value[$k])){
-                                if(isset($value[$k][0])&&!empty($value[$k][0])){
-                                    $value[$k] = $value[$k][0];
-                                }
-                            }else{
-                                $arr_v = explode(' ',$value[$k]);
-                                if(isset($arr_v[1])&&!empty($arr_v[1])){
-                                    $value[$k] = $arr_v[0];
-                                }
-                            }
-                        }
-
-                    @endphp
-                    {{-- {{App\Qlib\Qlib::lib_print($value)}} --}}
-                @endif
                 @if (isset($v['cp_busca'])&&!empty($v['cp_busca']))
-
                     @php
                         $cf = explode('][',$v['cp_busca']);
                         if(isset($cf[1])){
-                            if(empty($value[$k]))
-                                $value[$k] = @$value[$cf[0]][$cf[1]];
-                        }
-                        if($v['type']=='checkbox'){
-                            // dd($value);
+                            $value[$k] = @$value[$cf[0]][$cf[1]];
                         }
                     @endphp
                 @endif
-                @if ($v['type']=='select_multiple' || $v['type']=='html_vinculo')
+                @if (isset($v['type']) && $v['type']=='select_multiple')
                     @php
                         $nk = str_replace('[]','',$k);
-                        if (isset($v['cp_busca'])&&!empty($v['cp_busca'])){
-                            $cf = explode('][',$v['cp_busca']);
-                            if(isset($cf[1])){
-                                if(empty($value[$k])){
-                                    $value[$k] = @$value[$cf[0]][$cf[1]];
-                                    if(!$value[$k]){
-                                        $value[$k] = isset($value[$nk])?$value[$nk]:false;
-                                    }
-                                }
-                            }
-                        }else{
-                            $value[$k] = isset($value[$nk])?$value[$nk]:false;
-                        }
-
+                        $value[$k] = isset($value[$nk])?$value[$nk]:false;
                     @endphp
                 @endif
 
             {{App\Qlib\Qlib::qForm([
                     'type'=>@$v['type'],
                     'campo'=>$k,
-                    'label'=>$v['label'],
+                    'label'=>isset($v['label']) ? $v['label'] : '',
                     'placeholder'=>@$v['placeholder'],
                     'ac'=>$config['ac'],
                     'value'=>isset($v['value'])?$v['value']: @$value[$k],
+                    'value_text'=>isset($v['value_text'])?$v['value_text']: @$value[$k],
                     'tam'=>@$v['tam'],
                     'event'=>@$v['event'],
                     'checked'=>@$value[$k],
@@ -95,13 +59,14 @@
                     'script'=>@$v['script'],
                     'valor_padrao'=>@$v['valor_padrao'],
                     'dados'=>@$v['dados'],
-                    'title'=>@$v['title'],
-                    'active'=>@$v['active'],
             ])}}
             @endforeach
         @endif
         @csrf
-
-        @include('qlib.btnsalvar')
+        @if ($ambiente=='back')
+            @include('qlib.btnsalvar')
+        @elseif($ambiente=='front')
+            @include('portal.btnsalvar')
+        @endif
     </div>
 </form>

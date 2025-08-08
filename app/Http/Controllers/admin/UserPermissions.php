@@ -245,6 +245,8 @@ class UserPermissions extends Controller
             ];
             $arrMenus = $this->listMenusPermisson();
 
+            // dd($arrMenus);
+
             $campos = $this->campos([
                 'id_menu'=>@$arrMenus,
             ]);
@@ -258,7 +260,7 @@ class UserPermissions extends Controller
                 'arrMenus'=>$arrMenus,
                 'exec'=>true,
             ];
-
+            // dump($ret);
             return view($routa.'.createedit',$ret);
         }else{
             $ret = [

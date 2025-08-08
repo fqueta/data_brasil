@@ -9,6 +9,7 @@
             //echo $redirect_base;
         }
     }
+
 @endphp
 <div class="col-md-12 div-salvar bg-light">
     @if (isset($redirect_base) && $redirect_base)
