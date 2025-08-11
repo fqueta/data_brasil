@@ -473,6 +473,7 @@ class FamiliaController extends Controller
 
 
         $campos = $this->campos();
+        // dd($campos);
         $ret = [
             'dados'=>$queryFamilias['familia'],
             'familias'=>$queryFamilias['familia'],
@@ -684,7 +685,7 @@ class FamiliaController extends Controller
                 //'class'=>'select2'
                 'value'=>@$_GET['quadra'],
             ],
-            'matricula'=>['label'=>'Matricula','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
+            'matricula'=>['label'=>'Matricula','active'=>false,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>''],
             //'area_alvo'=>['label'=>'Área Alvo','active'=>true,'type'=>'tel','exibe_busca'=>'d-block','event'=>'','tam'=>'2','placeholder'=>''],
             //'endereco'=>['label'=>'Rua','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'10'],
             //'numero'=>['label'=>'Número','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],

@@ -852,8 +852,6 @@ class PostController extends Controller
                 'post_date_gmt'=>['label'=>'Data do decreto','active'=>true,'placeholder'=>'','type'=>'date','exibe_busca'=>'d-block','event'=>'','tam'=>'3'],
                 'post_title'=>['label'=>'Título','active'=>true,'placeholder'=>'Ex.: Título do decreto','type'=>'text','exibe_busca'=>'d-block','event'=>'onkeyup=lib_typeSlug(this)','tam'=>'7'],
                 'post_name'=>['label'=>'Slug','active'=>false,'placeholder'=>'Ex.: nome-do-post','type'=>'hidden','exibe_busca'=>'d-block','event'=>'type_slug=true','tam'=>'12'],
-                //'post_excerpt'=>['label'=>'Resumo (Opcional)','active'=>true,'placeholder'=>'Uma síntese do um post','type'=>'textarea','exibe_busca'=>'d-block','event'=>'','tam'=>'12'],
-                //'ativo'=>['label'=>'Liberar','active'=>true,'type'=>'chave_checkbox','value'=>'s','valor_padrao'=>'s','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['s'=>'Sim','n'=>'Não']],
                 'post_status'=>['label'=>'Status','active'=>true,'type'=>'chave_checkbox','value'=>'publish','valor_padrao'=>'publish','exibe_busca'=>'d-block','event'=>'','tam'=>'3','arr_opc'=>['publish'=>'Em vigor','pending'=>'Cancelado']],
                 'post_content'=>['label'=>'Conteudo','active'=>false,'type'=>'textarea','exibe_busca'=>'d-block','event'=>$hidden_editor,'tam'=>'12','class_div'=>'','class'=>'editor-padrao summernote','placeholder'=>__('Escreva seu conteúdo aqui..')],
             ];
@@ -1178,21 +1176,21 @@ class PostController extends Controller
             $dados[0]['ac'] = 'alt';
             // if(isset($dados[0]['config'])){
             // }
-
+            // dd($dados);
             $listFiles = false;
             $campos = $this->campos($id);
-            if($this->i_wp=='s' && !empty($dados[0]['post_name'])){
-                $dadosApi = $this->wp_api->list([
-                    'params'=>'/'.$dados[0]['post_name'].'?_type='.$dados[0]['post_type'],
-                ]);
-                if(isset($dadosApi['arr']['arquivos'])){
-                    $listFiles = $dadosApi['arr']['arquivos'];
-                }
-            }else{
+            // if($this->i_wp=='s' && !empty($dados[0]['post_name'])){
+            //     $dadosApi = $this->wp_api->list([
+            //         'params'=>'/'.$dados[0]['post_name'].'?_type='.$dados[0]['post_type'],
+            //     ]);
+            //     if(isset($dadosApi['arr']['arquivos'])){
+            //         $listFiles = $dadosApi['arr']['arquivos'];
+            //     }
+            // }else{
                 if(isset($dados[0]['token'])){
                     $listFiles = _upload::where('token_produto','=',$dados[0]['token'])->get();
                 }
-            }
+            // }
             $config = [
                 'ac'=>'alt',
                 'frm_id'=>'frm-posts',
@@ -1238,6 +1236,7 @@ class PostController extends Controller
                 'campos'=>$campos,
                 'exec'=>true,
             ];
+            // dd($ret);
             if($this->routa=='processos-campo' || $this->routa=='processos-prefeitura' || $this->routa=='processos-cartorio'){
                 $this->view = 'admin.processos';
             }

@@ -14,12 +14,12 @@
 .event-edit{
   cursor: pointer;
 }
-table.familias td{
+/* table.familias td{
     max-width: 15ch;
     overflow: hidden;
     text-overflow: ellipsis;
-    /* white-space: nowrap; */
-}
+    white-space: nowrap;
+} */
 .card-top .small-box p {
     max-width: 28ch;
     overflow: hidden;

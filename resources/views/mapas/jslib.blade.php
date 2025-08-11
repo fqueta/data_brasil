@@ -11,8 +11,14 @@
     });
     </script>
     <script>
-        let lotes = document.querySelectorAll('#svg-img .lote').length;
-        document.querySelector('.total-lotes').innerHTML=lotes;
+        console.log(document.querySelectorAll('#svg-img .lote').value);
+
+        if(document.querySelectorAll('#svg-img .lote').value){
+
+            let lotes = document.querySelectorAll('#svg-img .lote').length;
+
+            document.querySelector('.total-lotes').innerHTML=lotes;
+        }
         let select_bairro = document.querySelector('#select_bairro');
         let select_quadra = document.querySelector('#select_quadra');
         window.onload = function () {

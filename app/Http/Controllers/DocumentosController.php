@@ -104,6 +104,7 @@ class DocumentosController extends Controller
     }
     public function campos(){
         $user = Auth::user();
+        // dd($user);
         return [
             'id'=>['label'=>'Id','active'=>true,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],
             'token'=>['label'=>'token','active'=>false,'type'=>'hidden','exibe_busca'=>'d-block','event'=>'','tam'=>'2'],

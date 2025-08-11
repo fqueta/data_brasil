@@ -85,55 +85,73 @@
                     </td>
 
                     <td class="text-right d-print-none" style="width:10%">
-                        @can('update',$routa)
-                            @if ($routa=='quadras')
-                                @if ((new App\Http\Controllers\MapasController)->verificaMapa($val->id))
-                                    <a title="Mapa" href=" {{ route('mapas.'.$routa,['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
-                                        <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                    </a>
-                                @else
-                                    <a title="Sem Mapa" href="javascript:void(0)" title="visualizar" class="btn btn-sm btn-outline-warning mr-2" disabled>
-                                        <i class="fa fa-map-marker " aria-hidden="true"></i>
-                                    </a>
-                                @endif
-                            @endif
-                            @if ($routa=='familias' || $routa=='arquivamento-text' || $routa=='arquivamento-videos' || $routa=='decretos' || $routa=='processos-campo' || $routa=='processos' || $routa=='processos-prefeitura' || $routa=='processos-cartorio' || $routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros')
-                                <a href="{{ $linkShow }}" title="visualizar" class="btn btn-sm btn-outline-secondary">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                {!!App\Qlib\Qlib::btn_ver_certidao($val->token)!!}
-                            @endif
-                            @php
-                                $linkEdit = $routa.'.edit';
-                                if($routa=='processos'){
-                                    $linkEdit = $val->post_type.'.edit';
-                                }
-                            @endphp
-                            <a href=" {{ route($linkEdit,['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="Editar" class="btn btn-sm btn-outline-secondary">
-                                <i class="fas fa-pen    "></i>
-                            </a>
-                            @else
-                            @if ($routa=='familias' || $routa=='decretos' || $routa=='processos-campo')
-                                <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="btn btn-sm btn-outline-secondary">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                {!!App\Qlib\Qlib::btn_ver_certidao($val->token)!!}
-                            @else
-                                <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " class="btn btn-sm btn-outline-primary" title="Visualizar">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                            @endif
 
-                        @endcan
-                        @can('delete',$routa)
-                            <form id="frm-{{ $val->id }}" action="{{ route($routa.'.destroy',['id'=>$val->id]) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" data-del="true" data-id="{{$val->id}}" name="button" title="Excluir" class="btn btn-sm btn-outline-danger">
-                                <i class="fas fa-trash    "></i>
-                                </button>
-                            </form>
-                        @endcan
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ __('Ação') }}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                @can('update',$routa)
+                                    @if ($routa=='quadras')
+                                        @if ((new App\Http\Controllers\MapasController)->verificaMapa($val->id))
+                                            <a class="dropdown-item" href="{{ route('mapas.'.$routa,['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}}"><i class="fa fa-map-marker" aria-hidden="true"></i> {{ __('Mapa') }}</a>
+                                            {{-- <a title="Mapa" href="  " title="visualizar" class="btn btn-sm btn-outline-secondary mr-2">
+                                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                            </a> --}}
+                                        @else
+                                            {{-- <a title="Sem Mapa" href="javascript:void(0)" title="visualizar" class="btn btn-sm btn-outline-warning mr-2" disabled>
+                                                <i class="fa fa-map-marker " aria-hidden="true"></i>
+                                            </a> --}}
+                                        @endif
+                                    @endif
+                                    @if ($routa=='familias' || $routa=='arquivamento-text' || $routa=='arquivamento-videos' || $routa=='decretos' || $routa=='processos-campo' || $routa=='processos' || $routa=='processos-prefeitura' || $routa=='processos-cartorio' || $routa=='users'||$routa=='beneficiarios'||$routa=='lotes'||$routa=='quadras'||$routa=='bairros')
+
+                                        <a class="dropdown-item" href="{{ $linkShow }}"><i class="fas fa-eye"></i> {{ __('Visualizar') }}</a>
+                                        {!!App\Qlib\Qlib::btn_ver_certidao($val->token)!!}
+                                    @endif
+                                    @php
+                                        $linkEdit = $routa.'.edit';
+                                        if($routa=='processos'){
+                                            $linkEdit = $val->post_type.'.edit';
+                                        }
+                                    @endphp
+                                    <a href=" {{ route($linkEdit,['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="Editar" class="dropdown-item">
+                                        <i class="fas fa-pen"></i> {{ __('Editar') }}
+                                    </a>
+                                    @else
+                                    @if ($routa=='familias' || $routa=='decretos' || $routa=='processos-campo')
+                                        {{-- <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-eye"></i>
+                                        </a> --}}
+                                        <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="visualizar" class="dropdown-item">
+                                            <i class="fas fa-eye"></i> {{ __('Visualizar') }}
+                                        </a>
+                                        {!!App\Qlib\Qlib::btn_ver_certidao($val->token)!!}
+                                    @else
+                                        {{-- <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " class="btn btn-sm btn-outline-primary" title="Visualizar">
+                                            <i class="fas fa-eye"></i>
+                                        </a> --}}
+
+                                        <a href=" {{ route($routa.'.show',['id'=>$val->id]) }}?redirect={{$redirect.'idCad='.$val->id}} " title="{{ __('Visualizar') }}" class="dropdown-item">
+                                            <i class="fas fa-eye"></i> {{ __('Visualizar') }}
+                                        </a>
+                                    @endif
+
+                                @endcan
+                                @can('delete',$routa)
+                                    <form id="frm-{{ $val->id }}" action="{{ route($routa.'.destroy',['id'=>$val->id]) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" data-del="true" data-id="{{$val->id}}" name="button" title="Excluir" class="dropdown-item">
+                                        <i class="fas fa-trash    "></i> {{ __('Excluir') }}
+                                        </button>
+                                    </form>
+                                @endcan
+
+
+
+                            </div>
+                        </div>
                     </td>
                 @if (isset($campos_tabela) && is_array($campos_tabela))
                     @foreach ($campos_tabela as $kd=>$vd)

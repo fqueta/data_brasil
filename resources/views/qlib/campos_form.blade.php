@@ -357,6 +357,7 @@
         @enderror
     </div>
     @else
+
     <div class="form-group col-{{$config['col']}}-{{$config['tam']}} {{$config['class_div']}}" div-id="{{$config['campo']}}" >
         @php
             $title = false;

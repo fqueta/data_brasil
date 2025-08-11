@@ -395,7 +395,7 @@ class RelatoriosController extends Controller
                 'class'=>'select2'
             ],
             'quadra'=>['label'=>'QUADRA','active'=>true,'type'=>'array','exibe_busca'=>'d-block','tam'=>'4','tab'=>'quadras','valor'=>'quadra','select'=>'nome'],
-            'matricula'=>['label'=>'MATRÍCULA','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
+            'matricula'=>['label'=>'MATRÍCULA','active'=>false,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'4','placeholder'=>''],
             // 'etapa'=>[
             //     'label'=>'Etapa',
             //     'active'=>true,
@@ -430,8 +430,8 @@ class RelatoriosController extends Controller
             'cpf'=>['label'=>'CPF','active'=>true,'type'=>'text','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'cpf'],
             'telefone'=>['label'=>'TELEFONE','active'=>true,'type'=>'json','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][telefone'],
             'escolaridades'=>['label'=>'ESCOLARDADE','active'=>true,'type'=>'json','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][escolaridade'],
-            'estadocivils'=>['label'=>'ESTADO CIVIL','active'=>true,'type'=>'json','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][estado_civil'],
-            'profissao'=>['label'=>'SITUAÇÃO PROFISSIONAL','active'=>true,'type'=>'json','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][profissao'],
+            'estadocivils'=>['label'=>'ESTADO CIVIL','active'=>false,'type'=>'json','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][estado_civil'],
+            'profissao'=>['label'=>'SITUAÇÃO PROFISSIONAL','active'=>false,'type'=>'json','exibe_busca'=>'d-block','tam'=>'4','tab'=>'beneficiarios','valor'=>'id_beneficiario','select'=>'config','cp_b'=>'config][profissao'],
             'config[registro]'=>['label'=>'REGISTRO','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][registro'],
             'config[livro]'=>['label'=>'Livro','active'=>true,'type'=>'text','exibe_busca'=>'d-block','event'=>'','tam'=>'3','placeholder'=>'','cp_busca'=>'config][livro'],
             //'situacao_profissional'=>['label'=>'Situação Profissional','type'=>'text','active'=>true,'exibe_busca'=>'d-block','event'=>'','tam'=>'4'],

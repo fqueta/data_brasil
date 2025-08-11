@@ -212,6 +212,7 @@ class Qlib
 			return $ret;
 	}
     static function qForm($config=false){
+
         if(isset($config['type'])){
             $config['campo'] = isset($config['campo'])?$config['campo']:'teste';
             $config['label'] = isset($config['label'])?$config['label']:false;
@@ -985,7 +986,7 @@ class Qlib
                 }elseif($kda=='post_date_gmt'){
                     $dExec = explode(' ',$dados['post_date_gmt']);
                     if(isset($dExec)){
-                        $dados['post_date_gmt'] = $dExec;
+                        $dados['post_date_gmt'] = isset($dExec[0]) ? $dExec[0] : '';
                     }
                 }else{
                     $dados[$kda] = $vda;
@@ -1044,10 +1045,11 @@ class Qlib
             $class_btn = 'btn btn-light';
             if($link){
                 $class_btn = 'btn btn-primary mr-1';
-                $class_btn = '';
+                $class_btn = 'dropdown-item';
                 $icon = '<i class="fas fa-file-pdf"></i>';
-                $icon = '<img src="'.url('/images/logo.jpg').'" style="width:33px" />';
-                $ret = '<a href="'.$link.'" target="_blank" class="'.$class_btn.'" title="Certidão">'.$icon.'</a>';
+                // $icon = '<img src="'.url('/images/logo.jpg').'" style="width:33px" />';
+                // $ret = '<a href="'.$link.'" target="_blank" class="'.$class_btn.'" title="Certidão">'.$icon.'</a>';
+                $ret = '<a href="'.$link.'" target="_blank" class="'.$class_btn.'" title="Certidão">'.$icon.' '.__('Certidão').'</a>';
             }
 
         }
