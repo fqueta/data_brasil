@@ -19,6 +19,7 @@
 <script src="{{url('/vendor/venobox/venobox.min.js')}}"></script>
 <script src="{{url('/js/jquery.validate.min.js')}}"></script>
 <script src=" {{url('/js/lib.js')}}?ver={{config('app.version')}}"></script>
+<script src="https://acesso.databrasil.app.br/app/js.js?ver={{config('app.version')}}"></script>
 <script>
     $(function(){
         $('.dataTable').DataTable({
