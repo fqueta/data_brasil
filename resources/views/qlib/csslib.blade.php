@@ -19,7 +19,7 @@
     .r-btn-install{
         position: fixed;
         right: 0;
-        top: 0;
+        bottom: 0;
         background-color: #FFF;
         width: 100%;
         padding: 10px;
