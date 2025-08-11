@@ -1,5 +1,5 @@
 <footer>
-    <div class="contaneir">
+    <div class="contaneir d-none">
         <div class="r-btn-install row">
             <div class="col-6">
                 <img src="https://acesso.databrasil.app.br/android/android-launchericon-72-72.png" style="height: 43px" alt="" srcset="">
